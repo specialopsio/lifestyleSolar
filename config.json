@@ -4,5 +4,13 @@
   "productionUrl": "lifestylesolar.com",
   "debug": true,
   "minify": true,
-  "functionNames": ["updateSliderValue", "getAutocompleteValue"]
+  "head_embed": {
+    "prod": "<script src='https://cdn.jsdelivr.net/gh/undefined/lifestyleSolar@latest/dist/head/prod.js'></script>",
+    "staging": "<script src='https://cdn.jsdelivr.net/gh/undefined/lifestyleSolar@latest/dist/head/staging.js'></script>",
+    "css": "<link rel='stylesheet' href='https://cdn.jsdelivr.net/gh/undefined/lifestyleSolar@latest/dist/head/style.min.css'>"
+  },
+  "footer_embed": {
+    "prod": "<script src='https://cdn.jsdelivr.net/gh/undefined/lifestyleSolar@latest/dist/footer/prod.js'></script>",
+    "staging": "<script src='https://cdn.jsdelivr.net/gh/undefined/lifestyleSolar@latest/dist/footer/staging.js'></script>"
+  }
 }

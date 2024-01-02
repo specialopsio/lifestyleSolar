@@ -37,7 +37,7 @@ function createProjectStructure(projectName, stagingUrl, productionUrl) {
 
 // Function to generate and display share links
 function generateAndDisplayShareLinks(projectName) {
-    const jsdelivrBaseUrl = `https://cdn.jsdelivr.net/gh/${process.env.GITHUB_ORG}/${projectName}@latest/dist/`;
+    const jsdelivrBaseUrl = `https://cdn.jsdelivr.net/gh/specialops/${projectName}@latest/dist/`;
     const prodHeaderJsUrl = jsdelivrBaseUrl + 'head/prod.js'; // Change 'prod.js' to your actual production JS file name
     const prodFooterJsUrl = jsdelivrBaseUrl + 'footer/prod.js'; // Change 'prod.js' to your actual production JS file name
     const stagingHeaderJsUrl = jsdelivrBaseUrl + 'head/staging.js'; // Change 'staging.js' to your actual staging JS file name

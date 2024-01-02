@@ -90,7 +90,7 @@ async function processScriptsForProd(fileName, section) {
   }
 
   // Apply wrap after minification/beautification
-  stream = stream.pipe(wrap(`(function(){ if (window.location.href.indexOf("${domain}") !== -1) {<%= contents %>} })();`))
+  stream = stream.pipe(wrap(`if (window.location.href.indexOf("${domain}") !== -1) {<%= contents %>};`))
     .pipe(concat(`${fileName}`));
   
 
@@ -100,7 +100,7 @@ async function processScriptsForProd(fileName, section) {
     stream = stream.pipe(jsbeautifier({ indent_size: 2 }));
   }
 
-
+  
   return stream.pipe(gulp.dest(`./dist/${section}`));
 }
 
@@ -188,7 +188,7 @@ function processScriptsForStaging(fileName, section) {
   return gulp.src(`./src/scripts/${section}/*.js`)
     .pipe(sort())
     .pipe(concat('combined.js'))
-    .pipe(wrap(`if (window.location.href.indexOf("${domain}") !== -1) {<%= contents %>};`))
+    // .pipe(wrap(`if (window.location.href.indexOf("${domain}") !== -1) {<%= contents %>} ${function_name_string} };`))
     .pipe(jsbeautifier({ indent_size: 2 }))
     .pipe(concat(`${fileName}`))
     .pipe(gulp.dest(`./dist/${section}`));
@@ -221,6 +221,9 @@ gulp.task('build-staging', async function() {
   // Process scripts for staging
   await processScriptsForStaging('staging.js', 'footer');
   await processScriptsForStaging('staging.js', 'head');
+  commitAndPushSpecificFile('./dist/footer/staging.js')
+  commitAndPushSpecificFile('./dist/head/staging.js')
+
 });
 
 
