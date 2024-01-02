@@ -1,5 +1,3 @@
-
-
 <!-- Production JS -->
 <script src="https://cdn.jsdelivr.net/gh/specialops/lifestyleSolar@latest/dist/footer/prod.js"></script>
 
