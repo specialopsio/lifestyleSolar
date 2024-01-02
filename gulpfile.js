@@ -163,8 +163,8 @@ gulp.task('build-prod', async function() {
   scssToCss();
 
   // Compile scripts for production
-  await processScriptsForProd('prod.js', 'header');
   await processScriptsForProd('prod.js', 'footer');
+  await processScriptsForProd('prod.js', 'header');
 });
 
 // Staging build task
@@ -173,8 +173,8 @@ gulp.task('build-staging', async function() {
   scssToCss();
 
   // Process scripts for staging
-  await processScriptsForStaging('staging.js', 'header');
   await processScriptsForStaging('staging.js', 'footer');
+  await processScriptsForStaging('staging.js', 'header');
 });
 
 
