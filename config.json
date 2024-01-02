@@ -3,5 +3,6 @@
   "stagingUrl": "lifestyle-solar.webflow.io",
   "productionUrl": "lifestylesolar.com",
   "debug": true,
-  "minify": true
+  "minify": true,
+  "functionNames": ["updateSliderValue", "getAutocompleteValue"]
 }

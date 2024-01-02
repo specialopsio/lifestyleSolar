@@ -1025,4 +1025,6 @@
       // All skeletons have been replaced with real data
     });
   }
+  window.updateSliderValue = updateSliderValue;
+  window.getAutocompleteValue = getAutocompleteValue;
 })();

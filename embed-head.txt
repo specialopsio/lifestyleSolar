@@ -1,0 +1,9 @@
+
+<!-- Production JS -->
+<script src="https://cdn.jsdelivr.net/gh/undefined/lifestyleSolar@latest/dist/head/prod.js"></script>
+
+<!-- Staging JS -->
+<script src="https://cdn.jsdelivr.net/gh/undefined/lifestyleSolar@latest/dist/head/staging.js"></script>
+
+<!-- CSS File -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/undefined/lifestyleSolar@latest/dist/head/style.min.css">

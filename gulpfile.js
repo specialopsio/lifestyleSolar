@@ -24,6 +24,33 @@ const sync = browserSync.create();
 // Load config.json
 const config = JSON.parse(fs.readFileSync('./config.json'));
 
+function readFileContents(filePath) {
+  try {
+    return fs.readFileSync(filePath, 'utf8');
+  } catch (error) {
+    console.error(`Error reading file: ${filePath}`, error);
+    return '';
+  }
+}
+
+// Function to combine import.txt with embed-*.txt for a given section (footer or head)
+function combineImportsAndEmbed(section) {
+
+    const importsPath = `./src/scripts/${section}/imports.txt`
+    const embedPath = `./embed-${section}.txt`
+    
+    const importsContent = readFileContents(importsPath)
+    const embedContent = readFileContents(embedPath)
+
+    const combinedContent = `${importsContent}\n${embedContent}`
+
+    const outputPath = `./dist/${section}/embed-${section}.txt`
+    fs.writeFileSync(outputPath, combinedContent)
+
+    console.log(`Combined file created at: ${outputPath}`)
+}
+
+
 // Asynchronously import stripDebug
 async function getStripDebug() {
   if (!getStripDebug.stripDebug) {
@@ -39,13 +66,13 @@ const scssToCss = () => {
     .pipe(sass().on('error', sass.logError))
     .pipe(rename('style.min.css'))
     .pipe(uglifycss({ "uglyComments": true }))
-    .pipe(gulp.dest('./dist/'))
+    .pipe(gulp.dest(`./dist/head/`))
     .pipe(sync.stream());
 }
 
 async function processScriptsForProd(fileName, section) {
   let domain = config.productionUrl;
-  let stream = gulp.src(`./scripts/${section}/*.js`)
+  let stream = gulp.src(`./src/scripts/${section}/*.js`)
     .pipe(sort())
     .pipe(concat('combined.js'));
 
@@ -57,7 +84,7 @@ async function processScriptsForProd(fileName, section) {
 
   // Apply wrap after minification/beautification
   stream = stream.pipe(wrap(`(function(){ if (window.location.href.indexOf("${domain}") !== -1) {<%= contents %>} })();`))
-    .pipe(concat(`${section}-${fileName}`));
+    .pipe(concat(`${fileName}`));
   
 
   if (config.minify) {
@@ -67,7 +94,7 @@ async function processScriptsForProd(fileName, section) {
   }
 
 
-  return stream.pipe(gulp.dest('./dist'));
+  return stream.pipe(gulp.dest(`./dist/${section}`));
 }
 
 function commitAndPushSpecificFile(filePath) {
@@ -120,7 +147,7 @@ gulp.task('commit-dist', function() {
 })
 
 gulp.task('commit-scripts', function(){
-  const files_to_stage = './scripts/'
+  const files_to_stage = './src/scripts/'
   const commit_message = 'Gulp Commit: Updating script/ files.'
 
   const remote = 'origin'
@@ -144,13 +171,18 @@ gulp.task('commit-scripts', function(){
 // Function to process scripts for staging
 function processScriptsForStaging(fileName, section) {
   let domain = config.stagingUrl;
-  return gulp.src(`./scripts/${section}/*.js`)
+  let function_names = config.functionNames
+  let function_name_string = ''
+  function_names.forEach((name) => {
+    function_name_string += `window.${name}=${name};`
+  })
+  return gulp.src(`./src/scripts/${section}/*.js`)
     .pipe(sort())
     .pipe(concat('combined.js'))
-    .pipe(wrap(`(function(){ if (window.location.href.indexOf("${domain}") !== -1) {<%= contents %>} })();`))
+    .pipe(wrap(`(function(){ if (window.location.href.indexOf("${domain}") !== -1) {<%= contents %>} ${function_name_string} })();`))
     .pipe(jsbeautifier({ indent_size: 2 }))
-    .pipe(concat(`${section}-${fileName}`))
-    .pipe(gulp.dest('./dist'));
+    .pipe(concat(`${fileName}`))
+    .pipe(gulp.dest(`./dist/${section}`));
 }
 
 gulp.task('commit-prod', commitAndPushSpecificFile('./dist/prod.js'))
@@ -164,8 +196,13 @@ gulp.task('build-prod', async function() {
 
   // Compile scripts for production
   await processScriptsForProd('prod.js', 'footer');
-  await processScriptsForProd('prod.js', 'header');
+  await processScriptsForProd('prod.js', 'head');
 });
+
+gulp.task('combine-embeds', async function () {
+  combineImportsAndEmbed('footer')
+  combineImportsAndEmbed('head')
+})
 
 // Staging build task
 gulp.task('build-staging', async function() {
@@ -174,13 +211,13 @@ gulp.task('build-staging', async function() {
 
   // Process scripts for staging
   await processScriptsForStaging('staging.js', 'footer');
-  await processScriptsForStaging('staging.js', 'header');
+  await processScriptsForStaging('staging.js', 'head');
 });
 
 
 gulp.task('commit-all', gulp.parallel('commit-dist', 'commit-scripts'))
 
-gulp.task('build-commit-all', gulp.series(gulp.parallel('build-prod', 'build-staging'), 'commit-all'))
+gulp.task('build-commit-all', gulp.series(gulp.parallel('build-prod', 'build-staging'), 'commit-all', 'combine-embeds'))
 
 // Default task
-gulp.task('default', gulp.parallel('build-prod', 'build-staging'));
+gulp.task('default', gulp.parallel('build-prod', 'build-staging', 'combine-embeds'));
