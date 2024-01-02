@@ -30,7 +30,7 @@ async function getProjectDetails() {
 
 // Function to create project structure
 function createProjectStructure(projectName, stagingUrl, productionUrl) {
-    const config = { projectName, stagingUrl, productionUrl, 'debug':true, 'minify': true};
+    const config = { projectName, stagingUrl, productionUrl, 'debug':true, 'minify': true, 'functionNames': []};
     fs.writeFileSync('./config.json', JSON.stringify(config, null, 2));
     console.log('Project structure created and configuration saved.');
 }

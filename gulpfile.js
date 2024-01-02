@@ -72,6 +72,13 @@ const scssToCss = () => {
 
 async function processScriptsForProd(fileName, section) {
   let domain = config.productionUrl;
+  let function_names = config.functionNames
+  let function_name_string = ''
+  if(function_names){
+    function_names.forEach((name) => {
+      function_name_string += `window.${name}=${name};`
+    })
+  }
   let stream = gulp.src(`./src/scripts/${section}/*.js`)
     .pipe(sort())
     .pipe(concat('combined.js'));
@@ -173,9 +180,11 @@ function processScriptsForStaging(fileName, section) {
   let domain = config.stagingUrl;
   let function_names = config.functionNames
   let function_name_string = ''
-  function_names.forEach((name) => {
-    function_name_string += `window.${name}=${name};`
-  })
+  if(function_names){
+    function_names.forEach((name) => {
+      function_name_string += `window.${name}=${name};`
+    })
+  }
   return gulp.src(`./src/scripts/${section}/*.js`)
     .pipe(sort())
     .pipe(concat('combined.js'))
