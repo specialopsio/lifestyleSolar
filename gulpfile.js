@@ -44,7 +44,7 @@ const scssToCss = () => {
 }
 
 async function processScriptsForProd(fileName, section) {
-  let domain = config.productionLink;
+  let domain = config.productionUrl;
   let stream = gulp.src(`./scripts/${section}/*.js`)
     .pipe(sort())
     .pipe(concat('combined.js'));
@@ -143,7 +143,7 @@ gulp.task('commit-scripts', function(){
 
 // Function to process scripts for staging
 function processScriptsForStaging(fileName, section) {
-  let domain = config.stagingLink;
+  let domain = config.stagingUrl;
   return gulp.src(`./scripts/${section}/*.js`)
     .pipe(sort())
     .pipe(concat('combined.js'))

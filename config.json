@@ -1,6 +1,7 @@
 {
+  "projectName": "lifestyleSolar",
+  "stagingUrl": "lifestyle-solar.webflow.io",
+  "productionUrl": "lifestylesolar.com",
   "debug": true,
-  "minify": true,
-  "productionLink": "production-domain.com",
-  "stagingLink": "staging-domain.com"
+  "minify": true
 }
