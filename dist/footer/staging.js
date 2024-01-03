@@ -435,7 +435,7 @@
   //         })
   //     })
   // }
-  google.maps.event.addDomListener(window, 'load', initAutoComplete)
+  // google.maps.event.addDomListener(window, 'load', initAutoComplete)
 
   // function updateButtonState(area) {
   //     const button = document.getElementById('calculateButton')
