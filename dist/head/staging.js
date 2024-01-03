@@ -1012,7 +1012,6 @@
     inputElements.forEach(function(element) {
       var autocomplete = new google.maps.places.Autocomplete(element)
       autocomplete.addListener('place_changed', function() {
-        console.debug("place changed", element.closest('div').parentElement)
         if (element.closest('div').parentElement.id === 'hero-calc') {
           selectedPlaceHero = autocomplete.getPlace()
           updateButtonState('hero')
