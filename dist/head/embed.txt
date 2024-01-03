@@ -16,10 +16,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->
 
 <!-- Production JS -->
-<script src="https://cdn.jsdelivr.net/gh/specialopsio/lifestyleSolar@main/dist/head/prod.js"></script>
+<script src="https://unpkg.com/lifestylesolar@latest/dist/head/prod.js"></script>
 
 <!-- Staging JS -->
-<script src="https://cdn.jsdelivr.net/gh/specialopsio/lifestyleSolar@main/dist/head/staging.js"></script>
+<script src="https://unpkg.com/lifestylesolar@latest/dist/head/staging.js"></script>
 
 <!-- CSS File -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/specialopsio/lifestyleSolar@main/dist/head/style.min.css">
+<link rel="stylesheet" href="https://unpkg.com/lifestylesolar@latest/dist/head/style.min.css">

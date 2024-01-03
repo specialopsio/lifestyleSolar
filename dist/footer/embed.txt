@@ -1,7 +1,7 @@
 
 
 <!-- Production JS -->
-<script src="https://cdn.jsdelivr.net/gh/specialopsio/lifestyleSolar@main/dist/footer/prod.js"></script>
+<script src="https://unpkg.com/lifestylesolar@main/dist/footer/prod.js"></script>
 
 <!-- Staging JS -->
-<script src="https://cdn.jsdelivr.net/gh/specialopsio/lifestyleSolar@main/dist/footer/staging.js"></script>
+<script src="https://unpkg.com/lifestylesolar@main/dist/footer/staging.js"></script>
