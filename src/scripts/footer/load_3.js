@@ -397,7 +397,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         data_loaded = true
                         hash_vals = data
                         document.getElementById('formAddress').value = hash_vals.display_address
-                        if (bar_filled) {
+                        if (load_bar_filled) {
                             setPageData()
                             showPage()
                         }

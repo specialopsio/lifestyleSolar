@@ -273,7 +273,7 @@
       }
     }
   }
-  let bar_filled
+  let load_bar_filled
   let data_loaded
   if (window.location.href.indexOf('quote') !== -1) {
 
@@ -317,7 +317,7 @@
                   if (quote3) {
                     quote3.style.display = "block";
                   }
-                  bar_filled = true
+                  load_bar_filled = true
                   if (data_loaded) {
 
                     setPageData()
@@ -798,7 +798,7 @@
               data_loaded = true
               hash_vals = data
               document.getElementById('formAddress').value = hash_vals.display_address
-              if (bar_filled) {
+              if (load_bar_filled) {
                 setPageData()
                 showPage()
               }

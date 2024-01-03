@@ -1102,7 +1102,7 @@
           if (window.location.pathname.match('/quote')) {
             data_loaded = true
             hash_vals = data
-            if (bar_filled) {
+            if (load_bar_filled) {
               setPageData()
               showPage()
             }
