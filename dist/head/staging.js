@@ -1107,7 +1107,7 @@
               showPage()
             }
           } else {
-            window.location.href = `/quote.html?hash=${data.hash}`
+            window.location.href = `/quote?hash=${data.hash}`
           }
         }).catch(error => {
           console.error("ERROR", error)
