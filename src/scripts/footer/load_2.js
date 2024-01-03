@@ -25,7 +25,7 @@ function generateRandomString() {
 }
 
 function initAutoComplete() {
-    var inputElements = document.querySelectorAll('.address-input')
+    var inputElements = document.querySelectorAll('input.address-input')
     inputElements.forEach(function (element) {
         var autocomplete = new google.maps.places.Autocomplete(element)
         autocomplete.addListener('place_changed', function () {
@@ -383,7 +383,7 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById('commercial').style.display = 'block';
         document.getElementById('modal').style.display = 'none';
         document.getElementById('app').style.display = 'none';
-    } else if (urlParams.has('hash')) {
+    } else if (urlParams.has('hash') && window.location.href.indexOf('quote') !== -1) {
         // showPage()
         try {
             document.getElementById('quote1').style.display = 'none'
@@ -410,26 +410,26 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 })
 
-function getAutocompleteValue() {
-    if (selectedPlace.geometry && selectedPlace.formatted_address) {
-        lat = selectedPlace.geometry.location.lat()
-        long = selectedPlace.geometry.location.lng()
-        display_address = selectedPlace.formatted_address
-        hash = generateRandomString()
-        bill = sliderValue
-        fetch(`https://vj61befm45.execute-api.us-east-1.amazonaws.com/default/solar_hash?data_hash=${hash}&set_hash=True&lat=${lat}&long=${long}&current_bill=${sliderValue}&display_address=${display_address}`)
-            .then(response => response.json())
-            .then(data => {
-                hash_vals = data
-                setPageData()
-                showPage()
-            }).catch(error => {
-                console.error("ERROR", error)
-            })
-    } else {
-        console.debug("NO VALID ADDRESS INPUT")
-    }
-}
+// function getAutocompleteValue() {
+//     if (selectedPlace.geometry && selectedPlace.formatted_address) {
+//         lat = selectedPlace.geometry.location.lat()
+//         long = selectedPlace.geometry.location.lng()
+//         display_address = selectedPlace.formatted_address
+//         hash = generateRandomString()
+//         bill = sliderValue
+//         fetch(`https://vj61befm45.execute-api.us-east-1.amazonaws.com/default/solar_hash?data_hash=${hash}&set_hash=True&lat=${lat}&long=${long}&current_bill=${sliderValue}&display_address=${display_address}`)
+//             .then(response => response.json())
+//             .then(data => {
+//                 hash_vals = data
+//                 setPageData()
+//                 showPage()
+//             }).catch(error => {
+//                 console.error("ERROR", error)
+//             })
+//     } else {
+//         console.debug("NO VALID ADDRESS INPUT")
+//     }
+// }
 
 function updateSliderValue(value, area) {
     sliderValue = value

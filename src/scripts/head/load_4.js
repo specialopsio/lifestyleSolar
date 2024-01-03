@@ -1,6 +1,7 @@
 // code to run the survey and NPS scripts on /feedback page
 
-document.addEventListener("DOMContentLoaded", function () {
+if(window.location.href.indexOf('feedback') !== -1){
+  document.addEventListener("DOMContentLoaded", function() {
     const params = new URLSearchParams(window.location.search);
     const password = params.get("password");
     const userId = params.get("user");
@@ -9,7 +10,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const makeTableId = "MnVGNFo3NA==";
     const validFormIds = ["1", "10", "22", "50", "0", "99"];
     let submitPressed
-  
+
     // URL parameter checks
     if (
       !password ||
@@ -23,10 +24,10 @@ document.addEventListener("DOMContentLoaded", function () {
     } else {
       document.getElementById("mainApp").classList.remove("hidden");
     }
-  
+
     document.getElementById("customerId").value = userId;
     document.getElementById("formId").value = formId;
-  
+
     // Display the relevant form section
     if (formId === "1") {
       document.getElementById("preInstall").classList.remove("hidden");
@@ -35,7 +36,7 @@ document.addEventListener("DOMContentLoaded", function () {
       document.getElementById("nps").classList.remove("hidden");
       initNPSValidation();
     }
-  
+
     if (formId === "1") {
       document.getElementById("heading").innerText = "Pre-Install Survey";
     } else if (formId === "0") {
@@ -49,14 +50,14 @@ document.addEventListener("DOMContentLoaded", function () {
     } else {
       document.getElementById("heading").innerText = customHeading;
     }
-  
+
     function initPreInstallValidation() {
       // Initialize event listeners for each select element in the pre-install form
       document.querySelectorAll("#preInstall select").forEach((select) => {
         select.addEventListener("change", validatePreInstallForm);
       });
     }
-  
+
     function initNPSValidation() {
       // Initialize event listeners for each button in the NPS rating scale
       document.querySelectorAll(".rating-scale button").forEach((button) => {
@@ -77,11 +78,11 @@ document.addEventListener("DOMContentLoaded", function () {
               "text-white"
             );
           });
-  
+
           // Add the selected class to the clicked button
           button.classList.add("selected");
           const rating = parseInt(button.textContent);
-  
+
           // Apply specific styles based on the rating value
           if (rating >= 1 && rating <= 3) {
             button.classList.add(
@@ -104,36 +105,36 @@ document.addEventListener("DOMContentLoaded", function () {
               "text-white"
             );
           }
-  
+
           // Validate the NPS form
           validateNPSForm();
         });
       });
     }
-  
-    function validatePreInstallForm() {
-        if(submitPressed){
-            let isValid = true;
-            document.querySelectorAll("#preInstall select").forEach((select) => {
-                const label = document.querySelector(`label[for='${select.id}']`);
-                // Check if the select value is the default placeholder
-                if (select.value === "Select your answer") {
-                isValid = false;
-                label.classList.add("text-red-600");
-                document.getElementById("error").classList.remove("opacity-0");
-                } else {
-                label.classList.remove("text-red-600");
-                }
-            });
 
-            // Hide the error message if the form is valid
-            if (isValid) {
-                document.getElementById("error").classList.add("opacity-0");
-            }
-            return isValid;
+    function validatePreInstallForm() {
+      if (submitPressed) {
+        let isValid = true;
+        document.querySelectorAll("#preInstall select").forEach((select) => {
+          const label = document.querySelector(`label[for='${select.id}']`);
+          // Check if the select value is the default placeholder
+          if (select.value === "Select your answer") {
+            isValid = false;
+            label.classList.add("text-red-600");
+            document.getElementById("error").classList.remove("opacity-0");
+          } else {
+            label.classList.remove("text-red-600");
+          }
+        });
+
+        // Hide the error message if the form is valid
+        if (isValid) {
+          document.getElementById("error").classList.add("opacity-0");
         }
+        return isValid;
+      }
     }
-  
+
     function validateNPSForm() {
       const selected = document.querySelector(".rating-scale .selected");
       const label = document.querySelector("label[for='rating']");
@@ -150,22 +151,22 @@ document.addEventListener("DOMContentLoaded", function () {
         return true;
       }
     }
-  
+
     document
       .getElementById("propertyForm")
-      .addEventListener("submit", function (event) {
+      .addEventListener("submit", function(event) {
         submitPressed = true
         event.preventDefault();
         // Determine which form to validate based on a condition (formId)
         let valid = formId === "1" ? validatePreInstallForm() : validateNPSForm();
-  
+
         // If the form is valid, get the form data and post it
         if (valid) {
           const formData = getFormData();
           postFormData(formData);
         }
       });
-  
+
     // Event listeners for input changes to remove error indicators
     document.querySelectorAll("#preInstall select").forEach((select) => {
       select.addEventListener("change", () => {
@@ -178,7 +179,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
       });
     });
-  
+
     document.querySelectorAll(".rating-scale button").forEach((button) => {
       button.addEventListener("click", () => {
         const label = document.querySelector("label[for='rating']");
@@ -186,13 +187,13 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("error").classList.add("opacity-0");
       });
     });
-  
+
     function getFormData() {
       const formData = {
         customerId: document.getElementById("customerId").value,
         formId: document.getElementById("formId").value,
       };
-  
+
       if (
         document.getElementById("preInstall").classList.contains("hidden") ===
         false
@@ -207,19 +208,19 @@ document.addEventListener("DOMContentLoaded", function () {
         formData.rating = selectedRating ? selectedRating.innerText : null;
         formData.feedback = document.getElementById("feedback").value;
       }
-  
+
       return formData;
     }
-  
+
     function postFormData() {
       const formData = getFormData();
       fetch("https://hook.us1.make.com/vlol7xw9f5kvv1lsun0ck8c0qb9vzt1a", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      })
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        })
         .then((response) => {
           if (!response.ok) {
             throw new Error("Network response was not ok");
@@ -237,7 +238,7 @@ document.addEventListener("DOMContentLoaded", function () {
           console.error("An error occurred while submitting the form.");
         });
     }
-  
+
     function handleFormSuccess() {
       // Hide the form container
       document.getElementById("app").classList.add("hidden");
@@ -247,3 +248,4 @@ document.addEventListener("DOMContentLoaded", function () {
       document.getElementById("surveySuccess").classList.remove("hidden");
     }
   });
+}

@@ -70,7 +70,7 @@ function updateButtonState(area){
 
 // This function acquires the autocomplete value and slider data on button click
 function getAutocompleteValue(area) {
-    const selectedPlace = area === 'hero' ? selectedPlaceHero : area === 'cta' ? selectedPlaceCTA : area === 'exit' ? selectedPlaceExit : selectedPlaceNav
+    // const selectedPlace = area === 'hero' ? selectedPlaceHero : area === 'cta' ? selectedPlaceCTA : area === 'exit' ? selectedPlaceExit : selectedPlaceNav
     const is_quote = window.location.pathname.match('/quote')
     if (is_quote){
         if(selectedPlace){
