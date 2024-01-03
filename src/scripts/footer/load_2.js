@@ -1,5 +1,5 @@
 let load_bar_filled
-let data_loaded
+let page_data_loaded
 if(window.location.href.indexOf('quote') !== -1){
 
   document.addEventListener("DOMContentLoaded", function() {
@@ -43,7 +43,7 @@ if(window.location.href.indexOf('quote') !== -1){
                   quote3.style.display = "block";
                 }
                 load_bar_filled = true
-                if(data_loaded){
+                if(page_data_loaded){
   
                   setPageData()
                   showPage()

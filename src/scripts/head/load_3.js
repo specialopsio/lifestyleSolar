@@ -101,7 +101,7 @@ function getAutocompleteValue(area) {
         .then(response => response.json())
         .then(data => {
           if (window.location.pathname.match('/quote')) {
-            data_loaded = true
+            page_data_loaded = true
             hash_vals = data
             if (load_bar_filled) {
               setPageData()

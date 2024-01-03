@@ -394,7 +394,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 .then(response => response.json())
                 .then(data => {
                     if (data.lat) {
-                        data_loaded = true
+                        page_data_loaded = true
                         hash_vals = data
                         document.getElementById('formAddress').value = hash_vals.display_address
                         if (load_bar_filled) {
