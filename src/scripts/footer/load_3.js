@@ -431,9 +431,9 @@ document.addEventListener("DOMContentLoaded", function () {
 //     }
 // }
 
-function updateSliderValue(value, area) {
-    sliderValue = value
-}
+// function updateSliderValue(value, area) {
+//     sliderValue = value
+// }
 
 function drawImageOnCanvas(canvasID) {
     var canvas = document.getElementById(canvasID)

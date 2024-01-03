@@ -1133,22 +1133,23 @@
 
 
   // second script
-
-  // Get all the slider-container elements by their class name
-  const sliderContainers = document.querySelectorAll('.slider-container');
-
-  // Loop through each slider-container
-  sliderContainers.forEach(function(container) {
-    // Find the slider and billValue elements within the current container
-    const billSlider = container.querySelector('input[type="range"]');
-    const billValue = container.querySelector('span');
-
-    // Attach an input event listener to the slider
-    billSlider.addEventListener('input', function() {
-      // Update the billValue innerText with the current value of the slider
-      billValue.innerText = `$${this.value}`;
+  document.addEventListener("DOMContentLoaded", function(){
+    // Get all the slider-container elements by their class name
+    const sliderContainers = document.querySelectorAll('.slider-container');
+  
+    // Loop through each slider-container
+    sliderContainers.forEach(function(container) {
+      // Find the slider and billValue elements within the current container
+      const billSlider = container.querySelector('input[type="range"]');
+      const billValue = container.querySelector('span');
+  
+      // Attach an input event listener to the slider
+      billSlider.addEventListener('input', function() {
+        // Update the billValue innerText with the current value of the slider
+        billValue.innerText = `$${this.value}`;
+      });
     });
-  });
+  })
 
   // code to run the survey and NPS scripts on /feedback page
 
