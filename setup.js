@@ -29,15 +29,15 @@ async function getProjectDetails() {
 }
 
 // Function to create project structure
-function createProjectStructure(projectName, stagingUrl, productionUrl) {
-    const config = { projectName, stagingUrl, productionUrl, 'debug':true, 'minify': true, 'functionNames': []};
+function createProjectStructure(projectName, stagingUrl, productionUrl, share_links) {
+    const config = { projectName, stagingUrl, productionUrl, 'debug':true, 'minify': true, 'functionNames': [], "head_embed":share_links.head_embed, "footer_embed":share_links.footer_embed};
     fs.writeFileSync('./config.json', JSON.stringify(config, null, 2));
     console.log('Project structure created and configuration saved.');
 }
 
 // Function to generate and display share links
 function generateAndDisplayShareLinks(projectName) {
-    const jsdelivrBaseUrl = `https://cdn.jsdelivr.net/gh/specialops/${projectName}@latest/dist/`;
+    const jsdelivrBaseUrl = `https://cdn.jsdelivr.net/gh/specialopsio/${projectName}@main/dist/`;
     const prodHeaderJsUrl = jsdelivrBaseUrl + 'head/prod.js'; // Change 'prod.js' to your actual production JS file name
     const prodFooterJsUrl = jsdelivrBaseUrl + 'footer/prod.js'; // Change 'prod.js' to your actual production JS file name
     const stagingHeaderJsUrl = jsdelivrBaseUrl + 'head/staging.js'; // Change 'staging.js' to your actual staging JS file name
@@ -68,10 +68,11 @@ function generateAndDisplayShareLinks(projectName) {
     console.log('Staging Header JS File URL:', stagingHeaderJsUrl);
     console.log('Staging Footer JS File URL:', stagingFooterJsUrl);
     console.log('CSS File URL:', cssFileUrl);
-
-    fs.writeFileSync('./embed-head.txt', embedHeaderCode);
-    fs.writeFileSync('./embed-foot.txt', embedFooterCode);
     console.log('Embed code saved to embed.txt');
+    return {
+        "head_embed": embedHeaderCode,
+        "footer_embed": embedFooterCode
+    }
 }
 
 // Main function to run the script
@@ -79,11 +80,12 @@ async function main() {
     try {
         const { projectName, stagingUrl, productionUrl } = await getProjectDetails();
 
-        // Create project structure
-        createProjectStructure(projectName, stagingUrl, productionUrl);
-
+        
         // Generate and display share links
-        generateAndDisplayShareLinks(projectName);
+        const share_links = generateAndDisplayShareLinks(projectName);
+        
+        // Create project structure
+        createProjectStructure(projectName, stagingUrl, productionUrl, share_links);
 
         console.log('Setup complete.');
     } catch (error) {
