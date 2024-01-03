@@ -425,24 +425,24 @@
     return result
   }
 
-  function initAutoComplete() {
-    var inputElements = document.querySelectorAll('input.address-input')
-    inputElements.forEach(function(element) {
-      var autocomplete = new google.maps.places.Autocomplete(element)
-      autocomplete.addListener('place_changed', function() {
-        selectedPlace = autocomplete.getPlace()
-        updateButtonState()
-      })
-    })
-  }
+  // function initAutoComplete() {
+  //     var inputElements = document.querySelectorAll('input.address-input')
+  //     inputElements.forEach(function (element) {
+  //         var autocomplete = new google.maps.places.Autocomplete(element)
+  //         autocomplete.addListener('place_changed', function () {
+  //             selectedPlace = autocomplete.getPlace()
+  //             updateButtonState()
+  //         })
+  //     })
+  // }
   google.maps.event.addDomListener(window, 'load', initAutoComplete)
 
-  function updateButtonState(area) {
-    const button = document.getElementById('calculateButton')
-    if (button.classList.contains("disabled") && selectedPlace) {
-      button.classList.remove("disabled")
-    }
-  }
+  // function updateButtonState(area) {
+  //     const button = document.getElementById('calculateButton')
+  //     if (button.classList.contains("disabled") && selectedPlace) {
+  //         button.classList.remove("disabled")
+  //     }
+  // }
 
 
   async function setPageData() {

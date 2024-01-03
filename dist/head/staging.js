@@ -1069,10 +1069,10 @@
 
   // This function acquires the autocomplete value and slider data on button click
   function getAutocompleteValue(area) {
-    // const selectedPlace = area === 'hero' ? selectedPlaceHero : area === 'cta' ? selectedPlaceCTA : area === 'exit' ? selectedPlaceExit : selectedPlaceNav
+    const selected_place = selectedPlace ? selectedPlace : area === 'hero' ? selectedPlaceHero : area === 'cta' ? selectedPlaceCTA : area === 'exit' ? selectedPlaceExit : selectedPlaceNav
     const is_quote = window.location.pathname.match('/quote')
     if (is_quote) {
-      if (selectedPlace) {
+      if (selected_place) {
         document.getElementById('quote1').style.display = 'none'
       } else {
         displayError('Please input your address.')
@@ -1091,10 +1091,10 @@
         }
       }
     })
-    if (selectedPlace.geometry && selectedPlace.formatted_address) {
-      const lat = selectedPlace.geometry.location.lat()
-      const long = selectedPlace.geometry.location.lng()
-      const display_address = selectedPlace.formatted_address
+    if (selected_place.geometry && selected_place.formatted_address) {
+      const lat = selected_place.geometry.location.lat()
+      const long = selected_place.geometry.location.lng()
+      const display_address = selected_place.formatted_address
       const hash = generateRandomString()
       fetch(`https://vj61befm45.execute-api.us-east-1.amazonaws.com/default/solar_hash?data_hash=${hash}&set_hash=True&lat=${lat}&long=${long}&current_bill=${sliderValue}&display_address=${display_address}`)
         .then(response => response.json())
@@ -1107,7 +1107,7 @@
               showPage()
             }
           } else {
-            window.location.href = `/quote?hash=${data.hash}`
+            window.location.href = `/quote.html?hash=${data.hash}`
           }
         }).catch(error => {
           console.error("ERROR", error)

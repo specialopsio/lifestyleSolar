@@ -70,53 +70,53 @@ function updateButtonState(area){
 
 // This function acquires the autocomplete value and slider data on button click
 function getAutocompleteValue(area) {
-    // const selectedPlace = area === 'hero' ? selectedPlaceHero : area === 'cta' ? selectedPlaceCTA : area === 'exit' ? selectedPlaceExit : selectedPlaceNav
+    const selected_place = selectedPlace ? selectedPlace : area === 'hero' ? selectedPlaceHero : area === 'cta' ? selectedPlaceCTA : area === 'exit' ? selectedPlaceExit : selectedPlaceNav
     const is_quote = window.location.pathname.match('/quote')
-    if (is_quote){
-        if(selectedPlace){
-            document.getElementById('quote1').style.display = 'none'
-        } else {
-            displayError('Please input your address.')
-        }
+    if (is_quote) {
+      if (selected_place) {
+        document.getElementById('quote1').style.display = 'none'
+      } else {
+        displayError('Please input your address.')
+      }
     }
     const sliderValue = area === 'hero' ? sliderValueHero : area === 'cta' ? sliderValueCTA : area === 'exit' ? sliderValueExit : sliderValueNav
     let elementsWithSharedId = document.querySelectorAll('[id="calculateButton"]');
     elementsWithSharedId.forEach(function(element) {
-        var onClickAttribute = element.getAttribute('onclick')
-        var regex = /getAutocompleteValue\('(.+?)'\)/
-        var match = regex.exec(onClickAttribute)
+      var onClickAttribute = element.getAttribute('onclick')
+      var regex = /getAutocompleteValue\('(.+?)'\)/
+      var match = regex.exec(onClickAttribute)
 
-        if (match && match[1] && !is_quote) {
-            if (match[1] === area) {
-                element.innerHTML = "One moment..."
-            }
+      if (match && match[1] && !is_quote) {
+        if (match[1] === area) {
+          element.innerHTML = "One moment..."
         }
+      }
     })
-    if (selectedPlace.geometry && selectedPlace.formatted_address) {
-        const lat = selectedPlace.geometry.location.lat()
-        const long = selectedPlace.geometry.location.lng()
-        const display_address = selectedPlace.formatted_address
-        const hash = generateRandomString()
-        fetch(`https://vj61befm45.execute-api.us-east-1.amazonaws.com/default/solar_hash?data_hash=${hash}&set_hash=True&lat=${lat}&long=${long}&current_bill=${sliderValue}&display_address=${display_address}`)
+    if (selected_place.geometry && selected_place.formatted_address) {
+      const lat = selected_place.geometry.location.lat()
+      const long = selected_place.geometry.location.lng()
+      const display_address = selected_place.formatted_address
+      const hash = generateRandomString()
+      fetch(`https://vj61befm45.execute-api.us-east-1.amazonaws.com/default/solar_hash?data_hash=${hash}&set_hash=True&lat=${lat}&long=${long}&current_bill=${sliderValue}&display_address=${display_address}`)
         .then(response => response.json())
         .then(data => {
-            if(window.location.pathname.match('/quote')){
-                data_loaded = true
-                hash_vals = data
-                if(bar_filled){
-                    setPageData()
-                    showPage()
-                }
-            } else {
-                window.location.href = `/quote?hash=${data.hash}`
+          if (window.location.pathname.match('/quote')) {
+            data_loaded = true
+            hash_vals = data
+            if (bar_filled) {
+              setPageData()
+              showPage()
             }
+          } else {
+            window.location.href = `/quote.html?hash=${data.hash}`
+          }
         }).catch(error => {
-            console.error("ERROR", error)
+          console.error("ERROR", error)
         })
     } else {
-        console.debug("NO VALID ADDRESS INPUT")
+      console.debug("NO VALID ADDRESS INPUT")
     }
-}
+  }
 
 // Just for visibilities sake this edits the input slider value so I can validate what was received
 function updateSliderValue(value, area) {
