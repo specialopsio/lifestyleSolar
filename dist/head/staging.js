@@ -1096,22 +1096,27 @@
       const long = selected_place.geometry.location.lng()
       const display_address = selected_place.formatted_address
       const hash = generateRandomString()
-      fetch(`https://vj61befm45.execute-api.us-east-1.amazonaws.com/default/solar_hash?data_hash=${hash}&set_hash=True&lat=${lat}&long=${long}&current_bill=${sliderValue}&display_address=${display_address}`)
-        .then(response => response.json())
-        .then(data => {
-          if (window.location.pathname.match('/quote')) {
+      if(is_quote){
+        fetch(`https://vj61befm45.execute-api.us-east-1.amazonaws.com/default/solar_hash?data_hash=${hash}&set_hash=True&lat=${lat}&long=${long}&current_bill=${sliderValue}&display_address=${display_address}`)
+          .then(response => response.json())
+          .then(data => {
             page_data_loaded = true
             hash_vals = data
             if (load_bar_filled) {
               setPageData()
               showPage()
             }
-          } else {
-            window.location.href = `/quote?hash=${data.hash}`
-          }
-        }).catch(error => {
-          console.error("ERROR", error)
-        })
+          }).catch(error => {
+            console.error("ERROR", error)
+          })
+
+      } else {
+        document.cookie = `lat=${lat}; path=/`
+        document.cookie = `long=${long}; path=/`
+        document.cookie = `current_bill=${sliderValue}; path=/`
+        document.cookie = `display_address=${encodeURIComponent(display_address)}; path=/`
+        window.location.href = `/quote?hash=${hash}`
+      }
     } else {
       console.debug("NO VALID ADDRESS INPUT")
     }
