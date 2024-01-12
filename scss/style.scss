@@ -315,6 +315,7 @@ select {
 input:placeholder-shown {
 font-size: 16px
 }
-input{font-size: 16px; -webkit-appearance: none; -moz-appearance: none; }
-textarea{font-size: 16px; -webkit-appearance: none; -moz-appearance: none; }
-
+input[type="text"],
+textarea,
+select
+{font-size: 16px; -webkit-appearance: none; -moz-appearance: none; }
