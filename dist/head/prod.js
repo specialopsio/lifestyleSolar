@@ -1046,7 +1046,9 @@
     }
     window.initAutoComplete = initAutocomplete
 
-    google.maps.event.addDomListener(window, 'load', initAutocomplete)
+    document.addEventListener("DOMContentLoaded", function (){
+        google.maps.event.addDomListener(window, 'load', initAutocomplete)
+    })
 
     // Generates the "hash" that differentiates requests
     function generateRandomString() {
