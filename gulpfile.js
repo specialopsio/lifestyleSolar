@@ -104,7 +104,13 @@ async function processScriptsForProd(fileName, section) {
   
 
   if (config.minify) {
-    stream = stream.pipe(uglify());
+    stream = stream.pipe(uglify(
+      {
+        mangle: {
+          reserved: ['selectedPlace', 'selectedPlaceHero', 'selectedPlaceNav', 'selectedPlaceCTA', 'selectedPlaceExit']
+        }
+      }
+    ));
   } else {
     stream = stream.pipe(jsbeautifier({ indent_size: 2 }));
   }

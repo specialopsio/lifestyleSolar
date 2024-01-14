@@ -1,6 +1,6 @@
 // code to run the survey and NPS scripts on /feedback page
 
-if(window.location.href.indexOf('feedback') !== -1){
+if (window.location.href.indexOf('feedback') !== -1) {
   document.addEventListener("DOMContentLoaded", function() {
     const params = new URLSearchParams(window.location.search);
     const password = params.get("password");

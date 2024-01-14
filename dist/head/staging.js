@@ -1,3 +1,4 @@
+if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
   ! function(e) {
     if ("object" == typeof exports && "undefined" != typeof module) module.exports = e();
     else if ("function" == typeof define && define.amd) define([], e);
@@ -1001,6 +1002,7 @@
   let selectedPlaceNav
   let selectedPlaceCTA
   let selectedPlaceExit
+  let selectedPlace
   let sliderValueHero = 150
   let sliderValueNav = 150
   let sliderValueCTA = 150
@@ -1014,33 +1016,34 @@
       autocomplete.addListener('place_changed', function() {
         console.debug("place changed", element.closest('div').parentElement)
         if (element.closest('div').parentElement.id === 'hero-calc') {
-          selectedPlaceHero = autocomplete.getPlace()
+          window.selectedPlaceHero = autocomplete.getPlace()
           updateButtonState('hero')
         } else if (element.closest('div').parentElement.id === 'nav-calc') {
-          selectedPlaceNav = autocomplete.getPlace()
+          window.selectedPlaceNav = autocomplete.getPlace()
           updateButtonState('nav')
         } else if (element.closest('div').parentElement.id === 'cta-calc') {
-          selectedPlaceCTA = autocomplete.getPlace()
+          window.selectedPlaceCTA = autocomplete.getPlace()
           updateButtonState('cta')
         } else if (element.closest('div').parentElement.id === 'exit-calc') {
-          selectedPlaceExit = autocomplete.getPlace()
+          window.selectedPlaceExit = autocomplete.getPlace()
           updateButtonState('exit')
         } else if (element.closest('div').parentElement.parentElement.id === 'hero-calc') {
-          selectedPlaceHero = autocomplete.getPlace()
+          window.selectedPlaceHero = autocomplete.getPlace()
           updateButtonState('hero')
         } else if (element.closest('div').parentElement.parentElement.id === 'nav-calc') {
-          selectedPlaceNav = autocomplete.getPlace()
+          window.selectedPlaceNav = autocomplete.getPlace()
           updateButtonState('nav')
         } else if (element.closest('div').parentElement.parentElement.id === 'cta-calc') {
-          selectedPlaceCTA = autocomplete.getPlace()
+          window.selectedPlaceCTA = autocomplete.getPlace()
           updateButtonState('cta')
         } else if (element.closest('div').parentElement.parentElement.id === 'exit-calc') {
-          selectedPlaceExit = autocomplete.getPlace()
+          window.selectedPlaceExit = autocomplete.getPlace()
           updateButtonState('exit')
         }
       });
     });
   }
+  window.initAutoComplete = initAutocomplete
 
   google.maps.event.addDomListener(window, 'load', initAutocomplete)
 
@@ -1061,7 +1064,7 @@
   function updateButtonState(area) {
     const button = document.querySelector(`#${area}-calc button`)
     if (button && button.classList.contains("disabled")) {
-      if ((area === 'hero' && selectedPlaceHero) || (area === 'nav' && selectedPlaceNav) || (area === 'cta' && selectedPlaceCTA) || (area === 'exit' && selectedPlaceExit)) {
+      if ((area === 'hero' && window.selectedPlaceHero) || (area === 'nav' && window.selectedPlaceNav) || (area === 'cta' && window.selectedPlaceCTA) || (area === 'exit' && window.selectedPlaceExit)) {
         button.classList.remove("disabled")
       }
     }
@@ -1069,7 +1072,7 @@
 
   // This function acquires the autocomplete value and slider data on button click
   function getAutocompleteValue(area) {
-    const selected_place = selectedPlace ? selectedPlace : area === 'hero' ? selectedPlaceHero : area === 'cta' ? selectedPlaceCTA : area === 'exit' ? selectedPlaceExit : selectedPlaceNav
+    const selected_place = selectedPlace ? window.selectedPlace : area === 'hero' ? window.selectedPlaceHero : area === 'cta' ? window.selectedPlaceCTA : area === 'exit' ? window.selectedPlaceExit : window.selectedPlaceNav
     const is_quote = window.location.pathname.match('/quote')
     if (is_quote) {
       if (selected_place) {
@@ -1096,12 +1099,13 @@
       const long = selected_place.geometry.location.lng()
       const display_address = selected_place.formatted_address
       const hash = generateRandomString()
-      if(is_quote){
+      if (is_quote) {
         fetch(`https://vj61befm45.execute-api.us-east-1.amazonaws.com/default/solar_hash?data_hash=${hash}&set_hash=True&lat=${lat}&long=${long}&current_bill=${sliderValue}&display_address=${display_address}`)
           .then(response => response.json())
           .then(data => {
-            page_data_loaded = true
-            hash_vals = data
+            window.page_data_loaded = true
+            window.hash_vals = data
+            document.getElementById('formAddress').value = hash_vals.display_address
             if (load_bar_filled) {
               setPageData()
               showPage()
@@ -1121,6 +1125,7 @@
       console.debug("NO VALID ADDRESS INPUT")
     }
   }
+  window.getAutocompleteValue = getAutocompleteValue
 
   // Just for visibilities sake this edits the input slider value so I can validate what was received
   function updateSliderValue(value, area) {
@@ -1136,18 +1141,20 @@
     updateButtonState(area)
   }
 
+  window.updateSliderValue = updateSliderValue;
 
   // second script
-  document.addEventListener("DOMContentLoaded", function(){
+
+  document.addEventListener("DOMContentLoaded", function() {
     // Get all the slider-container elements by their class name
     const sliderContainers = document.querySelectorAll('.slider-container');
-  
+
     // Loop through each slider-container
     sliderContainers.forEach(function(container) {
       // Find the slider and billValue elements within the current container
       const billSlider = container.querySelector('input[type="range"]');
       const billValue = container.querySelector('span');
-  
+
       // Attach an input event listener to the slider
       billSlider.addEventListener('input', function() {
         // Update the billValue innerText with the current value of the slider
@@ -1155,7 +1162,6 @@
       });
     });
   })
-
   // code to run the survey and NPS scripts on /feedback page
 
   if (window.location.href.indexOf('feedback') !== -1) {
@@ -1433,3 +1439,4 @@
       setInterval(updateYear, 365 * 24 * 60 * 60 * 1000); // Update yearly
     }
   }, millisecondsTillNextYear);
+};

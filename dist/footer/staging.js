@@ -1,3 +1,4 @@
+if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
   if (window.location.href.indexOf('quote') !== -1) {
 
     document.addEventListener("DOMContentLoaded", function() {
@@ -163,6 +164,7 @@
       errorElement.textContent = ''
       errorElement.style.opacity = 0
     }
+    window.clearError = clearError
 
     function resetFormStyling() {
       document.getElementById("error").style.opacity = 0;
@@ -274,6 +276,7 @@
     }
   }
   let load_bar_filled
+  window.load_bar_filled = load_bar_filled
   let page_data_loaded
   if (window.location.href.indexOf('quote') !== -1) {
 
@@ -314,15 +317,16 @@
                 var quote1 = document.getElementById("quote1");
                 var quote2 = document.getElementById("quote2");
                 var quote3 = document.getElementById("quote3");
-                if (selectedPlaceCTA || formAddress && formAddress.value.trim() !== '') {
+                if (window.selectedPlaceCTA || formAddress && formAddress.value.trim() !== '') {
                   if (quote2) {
                     quote2.style.display = "none";
                   }
                   if (quote3) {
                     quote3.style.display = "block";
                   }
-                  load_bar_filled = true
+                  window.load_bar_filled = true
                   if (page_data_loaded) {
+
                     setPageData()
                     showPage()
                   }
@@ -401,12 +405,9 @@
       });
     });
   }
-
   // embed 1
 
-  let sliderValue = 150
-  let selectedPlace
-  let hash_vals = null
+  window.hash_vals = null
   let maskData = {}
   let fluxData = {}
   let color_range = ['00000A', '91009C', 'E64616', 'FEB400', 'FFFFF6']
@@ -511,6 +512,7 @@
       map.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(sliderContainer)
     }
   }
+  window.setPageData = setPageData
 
   function createGroundOverlay(canvas, bounds, map) {
     const imageUrl = canvas.toDataURL()
@@ -770,6 +772,8 @@
     document.getElementById('quote2').style.display = 'none'
   }
 
+  window.showPage = showPage
+
   function showSuccess() {
     document.getElementById('app').style.display = 'block'
     document.getElementById('quote3').style.display = 'none'
@@ -809,9 +813,9 @@
           .then(data => {
             if (data.lat) {
               page_data_loaded = true
-              hash_vals = data
+              window.hash_vals = data
               document.getElementById('formAddress').value = hash_vals.display_address
-              if (load_bar_filled) {
+              if (window.load_bar_filled) {
                 setPageData()
                 showPage()
               }
@@ -824,9 +828,30 @@
     }
   })
 
-  function updateSliderValue(value, area) {
-    sliderValue = value
-  }
+  // function getAutocompleteValue() {
+  //     if (selectedPlace.geometry && selectedPlace.formatted_address) {
+  //         lat = selectedPlace.geometry.location.lat()
+  //         long = selectedPlace.geometry.location.lng()
+  //         display_address = selectedPlace.formatted_address
+  //         hash = generateRandomString()
+  //         bill = sliderValue
+  //         fetch(`https://vj61befm45.execute-api.us-east-1.amazonaws.com/default/solar_hash?data_hash=${hash}&set_hash=True&lat=${lat}&long=${long}&current_bill=${sliderValue}&display_address=${display_address}`)
+  //             .then(response => response.json())
+  //             .then(data => {
+  //                 hash_vals = data
+  //                 setPageData()
+  //                 showPage()
+  //             }).catch(error => {
+  //                 console.error("ERROR", error)
+  //             })
+  //     } else {
+  //         console.debug("NO VALID ADDRESS INPUT")
+  //     }
+  // }
+
+  // function updateSliderValue(value, area) {
+  //     sliderValue = value
+  // }
 
   function drawImageOnCanvas(canvasID) {
     var canvas = document.getElementById(canvasID)
@@ -984,3 +1009,48 @@
     });
     return newMask
   }
+  document.addEventListener("DOMContentLoaded", function() {
+    // Function to determine if the device is desktop
+    function isDesktop() {
+      return window.matchMedia('(pointer:fine)').matches;
+    }
+
+    // Set a timer to change the display and text after one minute
+    setTimeout(() => {
+      // Only change the display if it's not a desktop or if the exit intent hasn't been shown yet
+      if (!isDesktop() || !document.getElementById('exitIntent').style.display) {
+        document.getElementById('exitIntent').style.display = 'block';
+        document.getElementById('exitHeading').textContent = "Get a FREE solar savings estimate!";
+      }
+    }, 60000); // 60000 milliseconds = 1 minute
+
+    // Only add mouseout listener on desktop devices
+    if (isDesktop()) {
+      // Function to detect exit intent on desktop
+      function showExitIntent(e) {
+        // Check if the cursor is at the top of the viewport
+        if (e.clientY < 10) {
+          document.getElementById('exitIntent').style.display = 'block';
+        }
+      }
+
+      // Add an event listener for mouseout on desktop
+      document.addEventListener('mouseout', showExitIntent);
+    }
+  });
+
+  function setupTelephoneLinkListener() {
+    // Find all telephone links on the page
+    const telLinks = document.querySelectorAll('a[href^="tel:"]');
+
+    // Add click event listener to each telephone link
+    telLinks.forEach(link => {
+      link.addEventListener('click', function(event) {
+        fbq('track', 'Contact');
+      });
+    });
+  }
+
+  // Call the function when the DOM is fully loaded
+  document.addEventListener('DOMContentLoaded', setupTelephoneLinkListener);
+};
