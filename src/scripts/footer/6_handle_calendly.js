@@ -1,6 +1,9 @@
 function calendlyEventHandler(event){
     if(event.data.event && event.data.event === 'calendly.event_scheduled') {
       setTimeout(function() {
+        if (typeof fbq === "function") {
+            fbq('track', 'Schedule');
+        }
         showSuccess();
       }, 1000);
     }
