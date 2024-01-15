@@ -288,7 +288,7 @@
         var startProgress = function() {
           clearError()
           interval = setInterval(function() {
-            if (page_data_loaded) {
+            if (window.page_data_loaded) {
                 current_progress = 100;
               } else {
                 current_progress += 10;
@@ -326,7 +326,7 @@
                       quote3.style.display = "block";
                     }
                     window.load_bar_filled = true
-                    if (page_data_loaded) {
+                    if (window.page_data_loaded) {
                       setPageData()
                       showPage()
                     }
@@ -723,10 +723,8 @@
         streetViewControl: false,
         zoomControl: false,
       };
-
       const mapElement = document.getElementById(elementId);
       const map = new google.maps.Map(mapElement, mapOptions);
-
       map.addListener('zoom_changed', function() {
         console.debug("Map", map.getZoom())
         if (map.getZoom() < minZoomLevel) map.setZoom(minZoomLevel);

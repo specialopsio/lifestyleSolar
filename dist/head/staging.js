@@ -1012,9 +1012,11 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
   function initAutocomplete() {
     var inputElements = document.querySelectorAll('.address-input')
     inputElements.forEach(function(element) {
+      if(!element.id){
+        return
+    }
       var autocomplete = new google.maps.places.Autocomplete(element)
       autocomplete.addListener('place_changed', function() {
-        console.debug("place changed", element.closest('div').parentElement)
         if (element.closest('div').parentElement.id === 'hero-calc') {
           window.selectedPlaceHero = autocomplete.getPlace()
           updateButtonState('hero')

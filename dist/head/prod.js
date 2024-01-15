@@ -1013,6 +1013,9 @@
     function initAutocomplete() {
       var inputElements = document.querySelectorAll('.address-input')
       inputElements.forEach(function(element) {
+        if(!element.id){
+            return
+        }
         var autocomplete = new google.maps.places.Autocomplete(element)
         autocomplete.addListener('place_changed', function() {
           console.debug("place changed", element.closest('div').parentElement)
@@ -1047,6 +1050,7 @@
     window.initAutoComplete = initAutocomplete
 
     document.addEventListener("DOMContentLoaded", function (){
+        // initAutocomplete()
         google.maps.event.addDomListener(window, 'load', initAutocomplete)
     })
 

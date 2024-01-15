@@ -10,7 +10,7 @@ let load_bar_filled
         var startProgress = function() {
           clearError()
           interval = setInterval(function() {
-            if (page_data_loaded) {
+            if (window.page_data_loaded) {
               current_progress = 100;
             } else {
               current_progress += 10;
@@ -48,7 +48,7 @@ let load_bar_filled
                       quote3.style.display = "block";
                     }
                     window.load_bar_filled = true
-                    if (page_data_loaded) {
+                    if (window.page_data_loaded) {
 
                       setPageData()
                       showPage()
