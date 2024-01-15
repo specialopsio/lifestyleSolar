@@ -896,6 +896,7 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
       document.getElementById('commercial').style.display = 'block';
       document.getElementById('modal').style.display = 'none';
       document.getElementById('app').style.display = 'none';
+      document.querySelector('.modal1_content-wrapper').style.display = 'block'
     } else if (urlParams.has('hash') && window.location.href.indexOf('quote') !== -1) {
       // showPage()
       try {
@@ -903,6 +904,7 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
         const long = getCookie('long');
         const display_address = decodeURIComponent(getCookie('display_address'));
         document.getElementById('quote1').style.display = 'none'
+        document.querySelector('.modal1_content-wrapper').style.display = 'block'
         const hashValue = urlParams.get('hash')
         getCurrentBill(display_address, hashValue)
         fetch(`https://vj61befm45.execute-api.us-east-1.amazonaws.com/default/solar_hash?data_hash=${hashValue}&set_hash=True&lat=${lat}&long=${long}&display_address=${encodeURIComponent(display_address)}`, {
@@ -926,6 +928,8 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
         console.debug("ERROR", error)
         // hidePage()
       }
+    } else if(window.location.href.indexOf('quote')) {
+      document.querySelector('.modal1_content-wrapper').style.display = 'block' 
     }
   })
 

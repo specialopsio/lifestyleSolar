@@ -424,44 +424,48 @@ function getCurrentBill(display_address, hash){
 }
 window.getCurrentBill = getCurrentBill
 
- const urlParams = new URLSearchParams(window.location.search)
- document.addEventListener("DOMContentLoaded", function() {
-   if (isCommercial()) {
-     document.getElementById('commercial').style.display = 'block';
-     document.getElementById('modal').style.display = 'none';
-     document.getElementById('app').style.display = 'none';
-   } else if (urlParams.has('hash') && window.location.href.indexOf('quote') !== -1) {
-     // showPage()
-     try {
-        const lat = getCookie('lat');
-        const long = getCookie('long');
-        const display_address = decodeURIComponent(getCookie('display_address'));
-        document.getElementById('quote1').style.display = 'none'
-        const hashValue = urlParams.get('hash')
-        getCurrentBill(display_address, hashValue)
-        fetch(`https://vj61befm45.execute-api.us-east-1.amazonaws.com/default/solar_hash?data_hash=${hashValue}&set_hash=True&lat=${lat}&long=${long}&display_address=${encodeURIComponent(display_address)}`, {
-           method: 'GET',
-         })
-         .then(response => response.json())
-         .then(data => {
-           if (data.lat) {
-            if(window.current_bill){
-                window.page_data_loaded = true
+const urlParams = new URLSearchParams(window.location.search)
+document.addEventListener("DOMContentLoaded", function() {
+if (isCommercial()) {
+    document.getElementById('commercial').style.display = 'block';
+    document.getElementById('modal').style.display = 'none';
+    document.getElementById('app').style.display = 'none';
+    document.querySelector('.modal1_content-wrapper').style.display = 'block'
+} else if (urlParams.has('hash') && window.location.href.indexOf('quote') !== -1) {
+    // showPage()
+    try {
+    const lat = getCookie('lat');
+    const long = getCookie('long');
+    const display_address = decodeURIComponent(getCookie('display_address'));
+    document.getElementById('quote1').style.display = 'none'
+    document.querySelector('.modal1_content-wrapper').style.display = 'block'
+    const hashValue = urlParams.get('hash')
+    getCurrentBill(display_address, hashValue)
+    fetch(`https://vj61befm45.execute-api.us-east-1.amazonaws.com/default/solar_hash?data_hash=${hashValue}&set_hash=True&lat=${lat}&long=${long}&display_address=${encodeURIComponent(display_address)}`, {
+        method: 'GET',
+        })
+        .then(response => response.json())
+        .then(data => {
+        if (data.lat) {
+            if (window.current_bill) {
+            window.page_data_loaded = true
             }
-             window.hash_vals = data
-             document.getElementById('formAddress').value = hash_vals.display_address
-             if (window.load_bar_filled) {
-               setPageData()
-               showPage()
-             }
-           }
-         })
-     } catch (error) {
-       console.debug("ERROR", error)
-       // hidePage()
-     }
-   }
- })
+            window.hash_vals = data
+            document.getElementById('formAddress').value = hash_vals.display_address
+            if (window.load_bar_filled) {
+            setPageData()
+            showPage()
+            }
+        }
+        })
+    } catch (error) {
+    console.debug("ERROR", error)
+    // hidePage()
+    }
+} else if(window.location.href.indexOf('quote')) {
+    document.querySelector('.modal1_content-wrapper').style.display = 'block' 
+}
+})
 
  // function getAutocompleteValue() {
  //     if (selectedPlace.geometry && selectedPlace.formatted_address) {
