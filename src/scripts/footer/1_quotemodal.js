@@ -15,6 +15,7 @@ if (window.location.href.indexOf('quote') !== -1) {
         var phone = document.getElementById("phone").value;
         var creditScore = document.getElementById("credit-score").value;
         var owner = document.getElementById("owner").checked;
+        var current_bill = document.querySelector('input#bill').value 
 
         if (validateFormData(name, address, phone, creditScore, owner)) {
           var formData = {
@@ -207,7 +208,7 @@ if (window.location.href.indexOf('quote') !== -1) {
         address: document.getElementById('formAddress').value,
         phone: document.getElementById('phone').value,
         credit_score: document.getElementById('credit-score').value,
-        bill: document.getElementById('billSlider').value, // Get the value of the slider
+        bill: window.current_bill, // Get the value of the slider
         owner: document.getElementById('owner').checked,
         array_area: document.getElementById('array_area').value,
         roof_area: document.getElementById('roof_area').value,

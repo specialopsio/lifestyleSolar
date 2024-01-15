@@ -53,13 +53,17 @@
    document.getElementById('roofSize').textContent = hash_vals.roof_area
    document.getElementById('savingsDollars').textContent = hash_vals.year_twenty_savings
    document.getElementById('formAddress').value = hash_vals.display_address
-   document.getElementById('bill').value = hash_vals.bill
+   if(window.current_bill){
+       document.getElementById('bill').value = window.current_bill
+   } else {
+        document.getElementById('bill').value = 150
+   }
    // Select all elements that have the ID 'billValue'
    var elements = document.querySelectorAll('[id="billValue"]');
 
    // Loop through each element and update its text content
    elements.forEach(function(element) {
-     element.textContent = '$' + hash_vals.bill;
+     element.textContent = '$' + window.current_bill;
    });
    document.getElementById('array_area').value = hash_vals.array_area
    document.getElementById('formStreet').value = hash_vals.home_address
@@ -383,6 +387,43 @@
     if (parts.length === 2) return parts.pop().split(';').shift();
 }
 
+function deriveLongAddress(code){
+    const address_mapping = {"AL": "Alabama", "AK": "Alaska", "AZ": "Arizona", "AR": "Arkansas", "CA": "California", "CO": "Colorado", "CT": "Connecticut", "DE": "Delaware", "FL": "Florida", "GA": "Georgia", "HI": "Hawaii", "ID": "Idaho", "IL": "Illinois", "IN": "Indiana", "IA": "Iowa", "KS": "Kansas", "KY": "Kentucky", "LA": "Louisiana", "ME": "Maine", "MD": "Maryland", "MA": "Massachusetts", "MI": "Michigan", "MN": "Minnesota", "MS": "Mississippi", "MO": "Missouri", "MT": "Montana", "NE": "Nebraska", "NV": "Nevada", "NH": "New Hampshire", "NJ": "New Jersey", "NM": "New Mexico", "NY": "New York", "NC": "North Carolina", "ND": "North Dakota", "OH": "Ohio", "OK": "Oklahoma", "OR": "Oregon", "PA": "Pennsylvania", "RI": "Rhode Island", "SC": "South Carolina", "SD": "South Dakota", "TN": "Tennessee", "TX": "Texas", "UT": "Utah", "VT": "Vermont", "VA": "Virginia", "WA": "Washington", "WV": "West Virginia", "WI": "Wisconsin", "WY": "Wyoming",}
+    return address_mapping[code]
+}
+
+function getCurrentBill(display_address, hash){
+    const address = display_address.split(',')
+    const fetch_url = ""
+    const split_obj_2 = address[2].trim().split(" ")
+    const fetch_object = {
+        "hash": hash,
+        "address": {
+            "street": address[0].trim(),
+            "city": address[1].trim(),
+            "state": {
+                "short": split_obj_2[0],
+                "long": deriveLongAddress(split_obj_2[0])
+            },
+            "zip": split_obj_2[1]
+        }
+    }
+    console.debug('fetch object',fetch_object)
+    // fetch(fetch_url, {method: 'POST'}).then(response => response.json()).then(data => {
+    // TO DO: ONCE ENDPOINT IS CREATED PROCESS CODE
+    // })
+    if(window.hash_vals){
+        window.page_data_loaded = true
+      }
+      if(window.current_bill){
+        const sliders = document.querySelectorAll('.slider-container')
+        sliders[0].style.display = 'none'
+        return
+      }
+      window.current_bill = 150
+}
+window.getCurrentBill = getCurrentBill
+
  const urlParams = new URLSearchParams(window.location.search)
  document.addEventListener("DOMContentLoaded", function() {
    if (isCommercial()) {
@@ -394,17 +435,19 @@
      try {
         const lat = getCookie('lat');
         const long = getCookie('long');
-        const current_bill = getCookie('current_bill');
         const display_address = decodeURIComponent(getCookie('display_address'));
         document.getElementById('quote1').style.display = 'none'
         const hashValue = urlParams.get('hash')
-        fetch(`https://vj61befm45.execute-api.us-east-1.amazonaws.com/default/solar_hash?data_hash=${hashValue}&set_hash=True&lat=${lat}&long=${long}&current_bill=${current_bill}&display_address=${encodeURIComponent(display_address)}`, {
+        getCurrentBill(display_address, hashValue)
+        fetch(`https://vj61befm45.execute-api.us-east-1.amazonaws.com/default/solar_hash?data_hash=${hashValue}&set_hash=True&lat=${lat}&long=${long}&display_address=${encodeURIComponent(display_address)}`, {
            method: 'GET',
          })
          .then(response => response.json())
          .then(data => {
            if (data.lat) {
-             page_data_loaded = true
+            if(window.current_bill){
+                window.page_data_loaded = true
+            }
              window.hash_vals = data
              document.getElementById('formAddress').value = hash_vals.display_address
              if (window.load_bar_filled) {

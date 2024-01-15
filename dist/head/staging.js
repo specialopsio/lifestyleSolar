@@ -1083,7 +1083,6 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
         displayError('Please input your address.')
       }
     }
-    const sliderValue = area === 'hero' ? sliderValueHero : area === 'cta' ? sliderValueCTA : area === 'exit' ? sliderValueExit : sliderValueNav
     let elementsWithSharedId = document.querySelectorAll('[id="calculateButton"]');
     elementsWithSharedId.forEach(function(element) {
       var onClickAttribute = element.getAttribute('onclick')
@@ -1102,13 +1101,16 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
       const display_address = selected_place.formatted_address
       const hash = generateRandomString()
       if (is_quote) {
-        fetch(`https://vj61befm45.execute-api.us-east-1.amazonaws.com/default/solar_hash?data_hash=${hash}&set_hash=True&lat=${lat}&long=${long}&current_bill=${sliderValue}&display_address=${display_address}`)
+        getCurrentBill(display_address, hash)
+        fetch(`https://vj61befm45.execute-api.us-east-1.amazonaws.com/default/solar_hash?data_hash=${hash}&set_hash=True&lat=${lat}&long=${long}&display_address=${display_address}`)
           .then(response => response.json())
           .then(data => {
-            window.page_data_loaded = true
             window.hash_vals = data
+            if(window.current_bill){
+              window.page_data_loaded = true
+            }
             document.getElementById('formAddress').value = hash_vals.display_address
-            if (load_bar_filled) {
+            if (window.load_bar_filled) {
               setPageData()
               showPage()
             }
@@ -1119,7 +1121,6 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
       } else {
         document.cookie = `lat=${lat}; path=/`
         document.cookie = `long=${long}; path=/`
-        document.cookie = `current_bill=${sliderValue}; path=/`
         document.cookie = `display_address=${encodeURIComponent(display_address)}; path=/`
         window.location.href = `/quote?hash=${hash}`
       }
