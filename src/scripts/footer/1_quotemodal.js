@@ -263,7 +263,13 @@ if (window.location.href.indexOf('quote') !== -1) {
 
 
     function handleFormSuccess() {
-      showSuccess()
+        const credit_val = document.getElementById('credit-score').value
+        if(credit_val === '640-700' || credit_val === '700+'){
+          document.querySelector('.modal1_content-wrapper').style.display = 'none'
+          document.querySelector('.calendly').style.display = 'block'
+        } else {
+          showSuccess()
+        }
       // document.getElementById("formContainer").classList.add("hidden");
       // document.getElementById("arrowGraphic").classList.add("hidden");
       // var congratsContainer = document.getElementById("congratsContainer");

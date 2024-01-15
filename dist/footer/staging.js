@@ -1,4 +1,4 @@
-if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
+if (window.location.href.indexOf(".html") !== -1) {
   if (window.location.href.indexOf('quote') !== -1) {
 
     document.addEventListener("DOMContentLoaded", function() {
@@ -16,6 +16,7 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
         var phone = document.getElementById("phone").value;
         var creditScore = document.getElementById("credit-score").value;
         var owner = document.getElementById("owner").checked;
+        var current_bill = document.querySelector('input#bill').value
 
         if (validateFormData(name, address, phone, creditScore, owner)) {
           var formData = {
@@ -263,7 +264,13 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
 
 
     function handleFormSuccess() {
-      showSuccess()
+      const credit_val = document.getElementById('credit-score').value
+      if (credit_val === '640-700' || credit_val === '700+') {
+        document.querySelector('.modal1_content-wrapper').style.display = 'none'
+        document.querySelector('.calendly').style.display = 'block'
+      } else {
+        showSuccess()
+      }
       // document.getElementById("formContainer").classList.add("hidden");
       // document.getElementById("arrowGraphic").classList.add("hidden");
       // var congratsContainer = document.getElementById("congratsContainer");
@@ -460,10 +467,10 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
     document.getElementById('roofSize').textContent = hash_vals.roof_area
     document.getElementById('savingsDollars').textContent = hash_vals.year_twenty_savings
     document.getElementById('formAddress').value = hash_vals.display_address
-    if(window.current_bill){
+    if (window.current_bill) {
       document.getElementById('bill').value = window.current_bill
     } else {
-        document.getElementById('bill').value = 150
+      document.getElementById('bill').value = 150
     }
     // Select all elements that have the ID 'billValue'
     var elements = document.querySelectorAll('[id="billValue"]');
@@ -795,52 +802,103 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
     if (parts.length === 2) return parts.pop().split(';').shift();
   }
 
-  function deriveLongAddress(code){
-    const address_mapping = {"AL": "Alabama", "AK": "Alaska", "AZ": "Arizona", "AR": "Arkansas", "CA": "California", "CO": "Colorado", "CT": "Connecticut", "DE": "Delaware", "FL": "Florida", "GA": "Georgia", "HI": "Hawaii", "ID": "Idaho", "IL": "Illinois", "IN": "Indiana", "IA": "Iowa", "KS": "Kansas", "KY": "Kentucky", "LA": "Louisiana", "ME": "Maine", "MD": "Maryland", "MA": "Massachusetts", "MI": "Michigan", "MN": "Minnesota", "MS": "Mississippi", "MO": "Missouri", "MT": "Montana", "NE": "Nebraska", "NV": "Nevada", "NH": "New Hampshire", "NJ": "New Jersey", "NM": "New Mexico", "NY": "New York", "NC": "North Carolina", "ND": "North Dakota", "OH": "Ohio", "OK": "Oklahoma", "OR": "Oregon", "PA": "Pennsylvania", "RI": "Rhode Island", "SC": "South Carolina", "SD": "South Dakota", "TN": "Tennessee", "TX": "Texas", "UT": "Utah", "VT": "Vermont", "VA": "Virginia", "WA": "Washington", "WV": "West Virginia", "WI": "Wisconsin", "WY": "Wyoming",}
+  function deriveLongAddress(code) {
+    const address_mapping = {
+      "AL": "Alabama",
+      "AK": "Alaska",
+      "AZ": "Arizona",
+      "AR": "Arkansas",
+      "CA": "California",
+      "CO": "Colorado",
+      "CT": "Connecticut",
+      "DE": "Delaware",
+      "FL": "Florida",
+      "GA": "Georgia",
+      "HI": "Hawaii",
+      "ID": "Idaho",
+      "IL": "Illinois",
+      "IN": "Indiana",
+      "IA": "Iowa",
+      "KS": "Kansas",
+      "KY": "Kentucky",
+      "LA": "Louisiana",
+      "ME": "Maine",
+      "MD": "Maryland",
+      "MA": "Massachusetts",
+      "MI": "Michigan",
+      "MN": "Minnesota",
+      "MS": "Mississippi",
+      "MO": "Missouri",
+      "MT": "Montana",
+      "NE": "Nebraska",
+      "NV": "Nevada",
+      "NH": "New Hampshire",
+      "NJ": "New Jersey",
+      "NM": "New Mexico",
+      "NY": "New York",
+      "NC": "North Carolina",
+      "ND": "North Dakota",
+      "OH": "Ohio",
+      "OK": "Oklahoma",
+      "OR": "Oregon",
+      "PA": "Pennsylvania",
+      "RI": "Rhode Island",
+      "SC": "South Carolina",
+      "SD": "South Dakota",
+      "TN": "Tennessee",
+      "TX": "Texas",
+      "UT": "Utah",
+      "VT": "Vermont",
+      "VA": "Virginia",
+      "WA": "Washington",
+      "WV": "West Virginia",
+      "WI": "Wisconsin",
+      "WY": "Wyoming",
+    }
     return address_mapping[code]
-}
+  }
 
-function getCurrentBill(display_address, hash){
+  function getCurrentBill(display_address, hash) {
     const address = display_address.split(',')
     const fetch_url = ""
     const split_obj_2 = address[2].trim().split(" ")
     const fetch_object = {
-        "hash": hash,
-        "address": {
-            "street": address[0].trim(),
-            "city": address[1].trim(),
-            "state": {
-                "short": split_obj_2[0],
-                "long": deriveLongAddress(split_obj_2[0])
-            },
-            "zip": split_obj_2[1]
-        }
+      "hash": hash,
+      "address": {
+        "street": address[0].trim(),
+        "city": address[1].trim(),
+        "state": {
+          "short": split_obj_2[0],
+          "long": deriveLongAddress(split_obj_2[0])
+        },
+        "zip": split_obj_2[1]
+      }
     }
-    console.debug('fetch object',fetch_object)
+    console.debug('fetch object', fetch_object)
     // fetch(fetch_url, {method: 'POST'}).then(response => response.json()).then(data => {
     // TO DO: ONCE ENDPOINT IS CREATED PROCESS CODE
     // })
-    if(window.hash_vals){
+    if (window.hash_vals) {
       window.page_data_loaded = true
     }
-    if(window.current_bill){
+    if (window.current_bill) {
       const sliders = document.querySelectorAll('.slider-container')
       sliders[0].style.display = 'none'
       return
     }
     window.current_bill = 150
-}
-window.getCurrentBill = getCurrentBill
+  }
+  window.getCurrentBill = getCurrentBill
 
- const urlParams = new URLSearchParams(window.location.search)
- document.addEventListener("DOMContentLoaded", function() {
-   if (isCommercial()) {
-     document.getElementById('commercial').style.display = 'block';
-     document.getElementById('modal').style.display = 'none';
-     document.getElementById('app').style.display = 'none';
-   } else if (urlParams.has('hash') && window.location.href.indexOf('quote') !== -1) {
-     // showPage()
-     try {
+  const urlParams = new URLSearchParams(window.location.search)
+  document.addEventListener("DOMContentLoaded", function() {
+    if (isCommercial()) {
+      document.getElementById('commercial').style.display = 'block';
+      document.getElementById('modal').style.display = 'none';
+      document.getElementById('app').style.display = 'none';
+    } else if (urlParams.has('hash') && window.location.href.indexOf('quote') !== -1) {
+      // showPage()
+      try {
         const lat = getCookie('lat');
         const long = getCookie('long');
         const display_address = decodeURIComponent(getCookie('display_address'));
@@ -848,28 +906,28 @@ window.getCurrentBill = getCurrentBill
         const hashValue = urlParams.get('hash')
         getCurrentBill(display_address, hashValue)
         fetch(`https://vj61befm45.execute-api.us-east-1.amazonaws.com/default/solar_hash?data_hash=${hashValue}&set_hash=True&lat=${lat}&long=${long}&display_address=${encodeURIComponent(display_address)}`, {
-           method: 'GET',
-         })
-         .then(response => response.json())
-         .then(data => {
-           if (data.lat) {
-            if(window.current_bill){
+            method: 'GET',
+          })
+          .then(response => response.json())
+          .then(data => {
+            if (data.lat) {
+              if (window.current_bill) {
                 window.page_data_loaded = true
+              }
+              window.hash_vals = data
+              document.getElementById('formAddress').value = hash_vals.display_address
+              if (window.load_bar_filled) {
+                setPageData()
+                showPage()
+              }
             }
-             window.hash_vals = data
-             document.getElementById('formAddress').value = hash_vals.display_address
-             if (window.load_bar_filled) {
-               setPageData()
-               showPage()
-             }
-           }
-         })
-     } catch (error) {
-       console.debug("ERROR", error)
-       // hidePage()
-     }
-   }
- })
+          })
+      } catch (error) {
+        console.debug("ERROR", error)
+        // hidePage()
+      }
+    }
+  })
 
   // function getAutocompleteValue() {
   //     if (selectedPlace.geometry && selectedPlace.formatted_address) {
@@ -1096,4 +1154,26 @@ window.getCurrentBill = getCurrentBill
 
   // Call the function when the DOM is fully loaded
   document.addEventListener('DOMContentLoaded', setupTelephoneLinkListener);
+
+  function calendlyEventHandler(event) {
+    if (event.data.event && event.data.event === 'calendly.event_scheduled') {
+      setTimeout(function() {
+        showSuccess();
+      }, 1000);
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", function() {
+    window.addEventListener('message', function(e) {
+      calendlyEventHandler(e)
+    })
+    const a_buttons = document.querySelectorAll('a.text-align-center')
+    a_buttons.forEach((button) => {
+      if (button.outerText === 'Skip this step') {
+        button.addEventListener('click', function() {
+          showSuccess()
+        })
+      }
+    })
+  })
 };

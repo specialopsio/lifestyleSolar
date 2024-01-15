@@ -1,4 +1,4 @@
-if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
+if (window.location.href.indexOf(".html") !== -1) {
   ! function(e) {
     if ("object" == typeof exports && "undefined" != typeof module) module.exports = e();
     else if ("function" == typeof define && define.amd) define([], e);
@@ -1012,9 +1012,9 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
   function initAutocomplete() {
     var inputElements = document.querySelectorAll('.address-input')
     inputElements.forEach(function(element) {
-      if(!element.id){
+      if (!element.id) {
         return
-    }
+      }
       var autocomplete = new google.maps.places.Autocomplete(element)
       autocomplete.addListener('place_changed', function() {
         if (element.closest('div').parentElement.id === 'hero-calc') {
@@ -1083,6 +1083,7 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
         displayError('Please input your address.')
       }
     }
+    const sliderValue = area === 'hero' ? sliderValueHero : area === 'cta' ? sliderValueCTA : area === 'exit' ? sliderValueExit : sliderValueNav
     let elementsWithSharedId = document.querySelectorAll('[id="calculateButton"]');
     elementsWithSharedId.forEach(function(element) {
       var onClickAttribute = element.getAttribute('onclick')
@@ -1106,7 +1107,7 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
           .then(response => response.json())
           .then(data => {
             window.hash_vals = data
-            if(window.current_bill){
+            if (window.current_bill) {
               window.page_data_loaded = true
             }
             document.getElementById('formAddress').value = hash_vals.display_address
