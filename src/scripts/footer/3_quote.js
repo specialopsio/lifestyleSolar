@@ -409,9 +409,29 @@ function getCurrentBill(display_address, hash){
         }
     }
     console.debug('fetch object',fetch_object)
-    // fetch(fetch_url, {method: 'POST'}).then(response => response.json()).then(data => {
-    // TO DO: ONCE ENDPOINT IS CREATED PROCESS CODE
-    // })
+    fetch(fetch_url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(fetch_object)
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        // Check if 'amount' exists in the response and set window.current_bill
+        if (data && 'amount' in data) {
+            window.current_bill = data.amount;
+            console.log('Current bill set to:', window.current_bill);
+        }
+    })
+    .catch(error => {
+        console.error('Error fetching current bill:', error);
+    });
     if(window.hash_vals){
         window.page_data_loaded = true
       }
