@@ -1,4 +1,4 @@
-if (window.location.href.indexOf("html") !== -1) {
+if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
   if (window.location.href.indexOf('quote') !== -1) {
 
     document.addEventListener("DOMContentLoaded", function() {
