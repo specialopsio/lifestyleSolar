@@ -270,10 +270,16 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
         document.querySelector('.calendly').style.display = 'block'
         if (typeof fbq === "function") {
           fbq('track', 'Lead');
+          if (typeof dataLayer !== 'undefined') {
+            dataLayer.push({'event': 'sql'});
+          }
         }
       } else {
       if (typeof fbq === "function") {
           fbq('track', 'SubmitApplication');
+          if (typeof dataLayer !== 'undefined') {
+            dataLayer.push({'event': 'mql'});
+          }
       }
         showSuccess()
       }
@@ -1149,6 +1155,9 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
     telLinks.forEach(link => {
       link.addEventListener('click', function(event) {
         fbq('track', 'Contact');
+        if (typeof dataLayer !== 'undefined') {
+          dataLayer.push({'event': 'phone_call'});
+      }
       });
     });
   }
@@ -1161,6 +1170,9 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
       setTimeout(function() {
         if (typeof fbq === "function") {
           fbq('track', 'Schedule');
+          if (typeof dataLayer !== 'undefined') {
+            dataLayer.push({'event': 'appointment_scheduled'});
+          }
         }
         showSuccess();
       }, 1000);

@@ -4,6 +4,9 @@ function calendlyEventHandler(event){
         if (typeof fbq === "function") {
             fbq('track', 'Schedule');
         }
+        if (typeof dataLayer !== 'undefined') {
+            dataLayer.push({'event': 'appointment_scheduled'});
+          }
         showSuccess();
       }, 1000);
     }

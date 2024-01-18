@@ -270,10 +270,16 @@ if (window.location.href.indexOf('quote') !== -1) {
           if (typeof fbq === "function") {
             fbq('track', 'Lead');
           }
+          if (typeof dataLayer !== 'undefined') {
+            dataLayer.push({'event': 'sql'});
+          }
         } else {
         if (typeof fbq === "function") {
             fbq('track', 'SubmitApplication');
         }
+        if (typeof dataLayer !== 'undefined') {
+            dataLayer.push({'event': 'mql'});
+          }
           showSuccess()
         }
       }

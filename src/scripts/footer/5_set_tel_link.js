@@ -6,6 +6,9 @@ function setupTelephoneLinkListener() {
     telLinks.forEach(link => {
       link.addEventListener('click', function(event) {
         fbq('track', 'Contact');
+        if (typeof dataLayer !== 'undefined') {
+            dataLayer.push({'event': 'phone_call'});
+          }
       });
     });
   }
