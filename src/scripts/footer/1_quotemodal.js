@@ -265,8 +265,8 @@ if (window.location.href.indexOf('quote') !== -1) {
     function handleFormSuccess() {
         const credit_val = document.getElementById('credit-score').value
         if (credit_val === '640-700' || credit_val === '700+') {
-          document.querySelector('.modal1_content-wrapper').style.display = 'none'
-          document.querySelector('.calendly').style.display = 'block'
+        //   document.querySelector('.modal1_content-wrapper').style.display = 'none'
+        //   document.querySelector('.calendly').style.display = 'block'
           if (typeof fbq === "function") {
             fbq('track', 'Lead');
           }
@@ -280,7 +280,7 @@ if (window.location.href.indexOf('quote') !== -1) {
         if (typeof dataLayer !== 'undefined') {
             dataLayer.push({'event': 'mql'});
           }
-          showSuccess()
         }
+        showSuccess()
       }
   }

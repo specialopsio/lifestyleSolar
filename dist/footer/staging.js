@@ -266,23 +266,23 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
     function handleFormSuccess() {
       const credit_val = document.getElementById('credit-score').value
       if (credit_val === '640-700' || credit_val === '700+') {
-        document.querySelector('.modal1_content-wrapper').style.display = 'none'
-        document.querySelector('.calendly').style.display = 'block'
+      //   document.querySelector('.modal1_content-wrapper').style.display = 'none'
+      //   document.querySelector('.calendly').style.display = 'block'
         if (typeof fbq === "function") {
           fbq('track', 'Lead');
-          if (typeof dataLayer !== 'undefined') {
-            dataLayer.push({'event': 'sql'});
-          }
+        }
+        if (typeof dataLayer !== 'undefined') {
+          dataLayer.push({'event': 'sql'});
         }
       } else {
       if (typeof fbq === "function") {
           fbq('track', 'SubmitApplication');
-          if (typeof dataLayer !== 'undefined') {
-            dataLayer.push({'event': 'mql'});
-          }
       }
-        showSuccess()
+      if (typeof dataLayer !== 'undefined') {
+          dataLayer.push({'event': 'mql'});
+        }
       }
+      showSuccess()
     }
   }
   let load_bar_filled
