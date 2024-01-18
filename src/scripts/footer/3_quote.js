@@ -394,7 +394,7 @@ function deriveLongAddress(code){
 
 function getCurrentBill(display_address, hash){
     const address = display_address.split(',')
-    const fetch_url = ""
+    const fetch_url = "https://hook.us1.make.com/tep8c8fk7o805g1fk9dd16vjder5hpp9"
     const split_obj_2 = address[2].trim().split(" ")
     const fetch_object = {
         "hash": hash,
@@ -426,6 +426,8 @@ function getCurrentBill(display_address, hash){
         // Check if 'amount' exists in the response and set window.current_bill
         if (data && 'amount' in data) {
             window.current_bill = data.amount;
+            const sliders = document.querySelectorAll('.slider-container')
+            sliders[0].style.display = 'none'
             console.log('Current bill set to:', window.current_bill);
         }
     })

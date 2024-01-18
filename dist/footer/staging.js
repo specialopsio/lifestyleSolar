@@ -1,4 +1,4 @@
-if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
+if (window.location.href.indexOf("html") !== -1) {
   if (window.location.href.indexOf('quote') !== -1) {
 
     document.addEventListener("DOMContentLoaded", function() {
@@ -861,36 +861,58 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
     return address_mapping[code]
   }
 
-  function getCurrentBill(display_address, hash) {
+  function getCurrentBill(display_address, hash){
     const address = display_address.split(',')
-    const fetch_url = ""
+    const fetch_url = "https://hook.us1.make.com/tep8c8fk7o805g1fk9dd16vjder5hpp9"
     const split_obj_2 = address[2].trim().split(" ")
     const fetch_object = {
-      "hash": hash,
-      "address": {
-        "street": address[0].trim(),
-        "city": address[1].trim(),
-        "state": {
-          "short": split_obj_2[0],
-          "long": deriveLongAddress(split_obj_2[0])
+        "hash": hash,
+        "address": {
+            "street": address[0].trim(),
+            "city": address[1].trim(),
+            "state": {
+                "short": split_obj_2[0],
+                "long": deriveLongAddress(split_obj_2[0])
+            },
+            "zip": split_obj_2[1]
+        }
+    }
+    console.debug('fetch object',fetch_object)
+    fetch(fetch_url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
         },
-        "zip": split_obj_2[1]
+        body: JSON.stringify(fetch_object)
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        // Check if 'amount' exists in the response and set window.current_bill
+        if (data && 'amount' in data) {
+            window.current_bill = data.amount;
+            const sliders = document.querySelectorAll('.slider-container')
+            sliders[0].style.display = 'none'
+            console.log('Current bill set to:', window.current_bill);
+        }
+    })
+    .catch(error => {
+        console.error('Error fetching current bill:', error);
+    });
+    if(window.hash_vals){
+        window.page_data_loaded = true
       }
-    }
-    console.debug('fetch object', fetch_object)
-    // fetch(fetch_url, {method: 'POST'}).then(response => response.json()).then(data => {
-    // TO DO: ONCE ENDPOINT IS CREATED PROCESS CODE
-    // })
-    if (window.hash_vals) {
-      window.page_data_loaded = true
-    }
-    if (window.current_bill) {
-      const sliders = document.querySelectorAll('.slider-container')
-      sliders[0].style.display = 'none'
-      return
-    }
-    window.current_bill = 150
-  }
+      if(window.current_bill){
+        const sliders = document.querySelectorAll('.slider-container')
+        sliders[0].style.display = 'none'
+        return
+      }
+      window.current_bill = 150
+}
   window.getCurrentBill = getCurrentBill
 
   const urlParams = new URLSearchParams(window.location.search)
