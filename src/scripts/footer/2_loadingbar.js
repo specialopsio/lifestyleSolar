@@ -12,7 +12,7 @@ let load_bar_filled
           interval = setInterval(function() {
             if (window.page_data_loaded) {
               current_progress = 100;
-            } else {
+            } else if (current_progress < 100){
               current_progress += 10;
             }
             var dynamicElement = document.getElementById("dynamic");
@@ -32,7 +32,7 @@ let load_bar_filled
                 messageElement.textContent = "Getting quote";
               }
 
-              if (current_progress >= 100) {
+              if (current_progress >= 100 && window.hash_vals && window.current_bill) {
                 clearInterval(interval);
 
                 setTimeout(function() {

@@ -85,7 +85,6 @@
        fluxData,
        maskData
      } = await fetchAndProcessTiffs(tiffs.flux, tiffs.mask)
-     console.debug("maskdata", maskData)
      const width = maskData.width
      const height = maskData.height
      const centerX = Math.floor(width / 2)
@@ -408,7 +407,6 @@ function getCurrentBill(display_address, hash){
             "zip": split_obj_2[1]
         }
     }
-    console.debug('fetch object',fetch_object)
     fetch(fetch_url, {
         method: 'POST',
         headers: {
@@ -433,6 +431,7 @@ function getCurrentBill(display_address, hash){
     })
     .catch(error => {
         console.error('Error fetching current bill:', error);
+        window.current_bill = 150
     });
     if(window.hash_vals){
         window.page_data_loaded = true
@@ -442,7 +441,7 @@ function getCurrentBill(display_address, hash){
         sliders[0].style.display = 'none'
         return
       }
-      window.current_bill = 150
+      
 }
 window.getCurrentBill = getCurrentBill
 

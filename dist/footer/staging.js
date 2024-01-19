@@ -302,7 +302,7 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
         interval = setInterval(function() {
           if (window.page_data_loaded) {
             current_progress = 100;
-          } else {
+          } else if(current_progress < 100) {
             current_progress += 10;
           }
           var dynamicElement = document.getElementById("dynamic");
@@ -322,7 +322,7 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
               messageElement.textContent = "Getting quote";
             }
 
-            if (current_progress >= 100) {
+            if (current_progress >= 100 && window.hash_vals && window.current_bill) {
               clearInterval(interval);
 
               setTimeout(function() {
@@ -339,7 +339,6 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
                   }
                   window.load_bar_filled = true
                   if (window.page_data_loaded) {
-
                     setPageData()
                     showPage()
                   }
@@ -505,7 +504,6 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
         fluxData,
         maskData
       } = await fetchAndProcessTiffs(tiffs.flux, tiffs.mask)
-      console.debug("maskdata", maskData)
       const width = maskData.width
       const height = maskData.height
       const centerX = Math.floor(width / 2)
@@ -880,7 +878,6 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
             "zip": split_obj_2[1]
         }
     }
-    console.debug('fetch object',fetch_object)
     fetch(fetch_url, {
         method: 'POST',
         headers: {
@@ -897,24 +894,24 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
     .then(data => {
         // Check if 'amount' exists in the response and set window.current_bill
         if (data && 'amount' in data) {
-            window.current_bill = data.amount;
             const sliders = document.querySelectorAll('.slider-container')
             sliders[0].style.display = 'none'
+            window.current_bill = data.amount;
             console.log('Current bill set to:', window.current_bill);
-        }
+        } 
     })
     .catch(error => {
         console.error('Error fetching current bill:', error);
+        window.current_bill = 150
     });
     if(window.hash_vals){
-        window.page_data_loaded = true
-      }
-      if(window.current_bill){
-        const sliders = document.querySelectorAll('.slider-container')
-        sliders[0].style.display = 'none'
-        return
-      }
-      window.current_bill = 150
+      window.page_data_loaded = true
+    }
+    if(window.current_bill){
+      const sliders = document.querySelectorAll('.slider-container')
+      sliders[0].style.display = 'none'
+      return
+    }
 }
   window.getCurrentBill = getCurrentBill
 
