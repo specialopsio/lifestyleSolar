@@ -275,6 +275,9 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
           dataLayer.push({'event': 'sql'});
         }
       } else {
+        document.getElementById('exitCTAButton').style.display = 'none'
+        document.getElementById('exitCTAHeading').innerHTML = 'Your Free Quote'
+        document.getElementById('exitCTASubHeading').innerHTML = "This is an estimate based on the information you provided. For an accurate assessment on your total savings, you'll need to speak with a qualified solar representative."
       if (typeof fbq === "function") {
           fbq('track', 'SubmitApplication');
       }
@@ -1196,7 +1199,7 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
             dataLayer.push({'event': 'appointment_scheduled'});
           }
         }
-        showSuccess();
+        // showSuccess();
       }, 1000);
     }
   }
@@ -1209,7 +1212,7 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
     a_buttons.forEach((button) => {
       if (button.outerText === 'Skip this step') {
         button.addEventListener('click', function() {
-          showSuccess()
+          // showSuccess()
         })
       }
     })

@@ -7,7 +7,7 @@ function calendlyEventHandler(event){
         if (typeof dataLayer !== 'undefined') {
             dataLayer.push({'event': 'appointment_scheduled'});
           }
-        showSuccess();
+        // showSuccess();
       }, 1000);
     }
   }
@@ -20,7 +20,7 @@ function calendlyEventHandler(event){
     a_buttons.forEach((button) => {
       if(button.outerText === 'Skip this step'){
         button.addEventListener('click', function(){
-          showSuccess()
+        //   showSuccess()
         })
       }
     })
