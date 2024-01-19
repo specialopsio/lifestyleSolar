@@ -266,23 +266,34 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
     function handleFormSuccess() {
       const credit_val = document.getElementById('credit-score').value
       if (credit_val === '640-700' || credit_val === '700+') {
-      //   document.querySelector('.modal1_content-wrapper').style.display = 'none'
-      //   document.querySelector('.calendly').style.display = 'block'
+        //   document.querySelector('.modal1_content-wrapper').style.display = 'none'
+        //   document.querySelector('.calendly').style.display = 'block'
         if (typeof fbq === "function") {
           fbq('track', 'Lead');
         }
         if (typeof dataLayer !== 'undefined') {
-          dataLayer.push({'event': 'sql'});
+          dataLayer.push({
+            'event': 'sql'
+          });
         }
+        document.getElementById('exitCTAButton').style.display = 'block'
+        window.is_sql = true
+        // Set a timer to trigger the Calendly widget after 10 seconds
+        let timer = setTimeout(() => {
+          if (checkConditions()) {
+            initCalendly();
+          }
+        }, 10000); // 10000 milliseconds = 10 seconds
       } else {
-        document.getElementById('exitCTAButton').style.display = 'none'
         document.getElementById('exitCTAHeading').innerHTML = 'Your Free Quote'
         document.getElementById('exitCTASubHeading').innerHTML = "This is an estimate based on the information you provided. For an accurate assessment on your total savings, you'll need to speak with a qualified solar representative."
-      if (typeof fbq === "function") {
+        if (typeof fbq === "function") {
           fbq('track', 'SubmitApplication');
-      }
-      if (typeof dataLayer !== 'undefined') {
-          dataLayer.push({'event': 'mql'});
+        }
+        if (typeof dataLayer !== 'undefined') {
+          dataLayer.push({
+            'event': 'mql'
+          });
         }
       }
       showSuccess()
@@ -302,7 +313,7 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
         interval = setInterval(function() {
           if (window.page_data_loaded) {
             current_progress = 100;
-          } else if(current_progress < 100) {
+          } else if (current_progress < 100) {
             current_progress += 10;
           }
           var dynamicElement = document.getElementById("dynamic");
@@ -339,6 +350,7 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
                   }
                   window.load_bar_filled = true
                   if (window.page_data_loaded) {
+
                     setPageData()
                     showPage()
                   }
@@ -862,57 +874,58 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
     return address_mapping[code]
   }
 
-  function getCurrentBill(display_address, hash){
+  function getCurrentBill(display_address, hash) {
     const address = display_address.split(',')
     const fetch_url = "https://hook.us1.make.com/tep8c8fk7o805g1fk9dd16vjder5hpp9"
     const split_obj_2 = address[2].trim().split(" ")
     const fetch_object = {
-        "hash": hash,
-        "address": {
-            "street": address[0].trim(),
-            "city": address[1].trim(),
-            "state": {
-                "short": split_obj_2[0],
-                "long": deriveLongAddress(split_obj_2[0])
-            },
-            "zip": split_obj_2[1]
-        }
+      "hash": hash,
+      "address": {
+        "street": address[0].trim(),
+        "city": address[1].trim(),
+        "state": {
+          "short": split_obj_2[0],
+          "long": deriveLongAddress(split_obj_2[0])
+        },
+        "zip": split_obj_2[1]
+      }
     }
     fetch(fetch_url, {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify(fetch_object)
-    })
-    .then(response => {
+      })
+      .then(response => {
         if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+          throw new Error(`HTTP error! status: ${response.status}`);
         }
         return response.json();
-    })
-    .then(data => {
+      })
+      .then(data => {
         // Check if 'amount' exists in the response and set window.current_bill
         if (data && 'amount' in data) {
-            const sliders = document.querySelectorAll('.slider-container')
-            sliders[0].style.display = 'none'
-            window.current_bill = data.amount;
-            console.log('Current bill set to:', window.current_bill);
-        } 
-    })
-    .catch(error => {
+          window.current_bill = data.amount;
+          const sliders = document.querySelectorAll('.slider-container')
+          sliders[0].style.display = 'none'
+          console.log('Current bill set to:', window.current_bill);
+        }
+      })
+      .catch(error => {
         console.error('Error fetching current bill:', error);
         window.current_bill = 150
-    });
-    if(window.hash_vals){
+      });
+    if (window.hash_vals) {
       window.page_data_loaded = true
     }
-    if(window.current_bill){
+    if (window.current_bill) {
       const sliders = document.querySelectorAll('.slider-container')
       sliders[0].style.display = 'none'
       return
     }
-}
+
+  }
   window.getCurrentBill = getCurrentBill
 
   const urlParams = new URLSearchParams(window.location.search)
@@ -953,8 +966,8 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
         console.debug("ERROR", error)
         // hidePage()
       }
-    } else if(window.location.href.indexOf('quote')) {
-      document.querySelector('.modal1_content-wrapper').style.display = 'block' 
+    } else if (window.location.href.indexOf('quote')) {
+      document.querySelector('.modal1_content-wrapper').style.display = 'block'
     }
   })
 
@@ -1178,8 +1191,10 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
       link.addEventListener('click', function(event) {
         fbq('track', 'Contact');
         if (typeof dataLayer !== 'undefined') {
-          dataLayer.push({'event': 'phone_call'});
-      }
+          dataLayer.push({
+            'event': 'phone_call'
+          });
+        }
       });
     });
   }
@@ -1192,9 +1207,11 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
       setTimeout(function() {
         if (typeof fbq === "function") {
           fbq('track', 'Schedule');
-          if (typeof dataLayer !== 'undefined') {
-            dataLayer.push({'event': 'appointment_scheduled'});
-          }
+        }
+        if (typeof dataLayer !== 'undefined') {
+          dataLayer.push({
+            'event': 'appointment_scheduled'
+          });
         }
         // showSuccess();
       }, 1000);
@@ -1209,9 +1226,51 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
     a_buttons.forEach((button) => {
       if (button.outerText === 'Skip this step') {
         button.addEventListener('click', function() {
-          // showSuccess()
+          //   showSuccess()
         })
       }
     })
   })
+  document.addEventListener("DOMContentLoaded", function() {
+    // Function to determine if the device is desktop
+    function isDesktop() {
+      return window.matchMedia('(pointer:fine)').matches;
+    }
+
+    // Function to initialize Calendly widget
+    function initCalendly() {
+      Calendly.initPopupWidget({
+        url: 'https://calendly.com/calendly-test-account/30min?hide_event_type_details=1&hide_gdpr_banner=1&text_color=0f0f0f&primary_color=00ba81'
+      });
+    }
+    window.initCalendly = initCalendly
+
+    // Function to check the required conditions
+    function checkConditions() {
+      var calendlyClicked = document.getElementById('calendlyLink');
+      var urlContainsQuote = window.location.href.includes('/quote');
+      var exitCTAButtonVisible = window.is_sql
+      return !calendlyClicked.clicked && urlContainsQuote && exitCTAButtonVisible;
+    }
+    window.checkConditions = checkConditions
+
+    // Event listener to set 'clicked' property on the calendlyClicked element
+    document.getElementById('calendlyClicked').addEventListener('click', function() {
+      this.clicked = true;
+    });
+
+    // Only add mouseout listener on desktop devices
+    if (isDesktop()) {
+      // Function to detect exit intent on desktop
+      function showExitIntent(e) {
+        // Check if the cursor is at the top of the viewport
+        if (e.clientY < 10 && checkConditions()) {
+          initCalendly();
+        }
+      }
+
+      // Add an event listener for mouseout on desktop
+      document.addEventListener('mouseout', showExitIntent);
+    }
+  });
 };

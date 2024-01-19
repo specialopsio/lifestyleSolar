@@ -265,23 +265,34 @@ if (window.location.href.indexOf('quote') !== -1) {
     function handleFormSuccess() {
         const credit_val = document.getElementById('credit-score').value
         if (credit_val === '640-700' || credit_val === '700+') {
-        //   document.querySelector('.modal1_content-wrapper').style.display = 'none'
-        //   document.querySelector('.calendly').style.display = 'block'
+          //   document.querySelector('.modal1_content-wrapper').style.display = 'none'
+          //   document.querySelector('.calendly').style.display = 'block'
           if (typeof fbq === "function") {
             fbq('track', 'Lead');
           }
           if (typeof dataLayer !== 'undefined') {
-            dataLayer.push({'event': 'sql'});
+            dataLayer.push({
+              'event': 'sql'
+            });
           }
+          document.getElementById('exitCTAButton').style.display = 'block'
+          window.is_sql = true
+          // Set a timer to trigger the Calendly widget after 10 seconds
+          let timer = setTimeout(() => {
+            if (checkConditions()) {
+              initCalendly();
+            }
+          }, 10000); // 10000 milliseconds = 10 seconds
         } else {
-          document.getElementById('exitCTAButton').style.display = 'none'
           document.getElementById('exitCTAHeading').innerHTML = 'Your Free Quote'
           document.getElementById('exitCTASubHeading').innerHTML = "This is an estimate based on the information you provided. For an accurate assessment on your total savings, you'll need to speak with a qualified solar representative."
-        if (typeof fbq === "function") {
+          if (typeof fbq === "function") {
             fbq('track', 'SubmitApplication');
-        }
-        if (typeof dataLayer !== 'undefined') {
-            dataLayer.push({'event': 'mql'});
+          }
+          if (typeof dataLayer !== 'undefined') {
+            dataLayer.push({
+              'event': 'mql'
+            });
           }
         }
         showSuccess()
