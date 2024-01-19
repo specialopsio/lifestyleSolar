@@ -4,8 +4,10 @@
  let maskData = {}
  let fluxData = {}
  let color_range = ['00000A', '91009C', 'E64616', 'FEB400', 'FFFFF6']
+ window.color_range = color_range
  const panelsPalette = ['E8EAF6', '1A237E']
- let solar_panels = []
+ window.panelsPalette = panelsPalette
+ window.solar_panels = []
  let solarPotentialData
  let map
 
@@ -169,12 +171,12 @@
  // embed 2
 
  async function showSolarPotential(map) {
-   solar_panels.forEach(panel => panel.setMap(null))
+    window.solar_panels.forEach(panel => panel.setMap(null))
    const solarPotential = solarPotentialData
    const palette = createPalette(panelsPalette, 256)
    const minEnergy = solarPotential.solarPanels[solarPotential.solarPanels.length - 1].yearlyEnergyDcKwh
    const maxEnergy = solarPotential.solarPanels[0].yearlyEnergyDcKwh
-   solar_panels = solarPotential.solarPanels.map(panel => {
+   window.solar_panels = solarPotential.solarPanels.map(panel => {
      const [w, h] = [solarPotential.panelWidthMeters / 2, solarPotential.panelHeightMeters / 2];
      const points = [{
          x: +w,
@@ -220,7 +222,7 @@
      })
    })
 
-   const init_amount = Math.ceil((solar_panels.length - 1) / 4)
+   const init_amount = Math.ceil((window.solar_panels.length - 1) / 4)
    if (init_amount > 4) {
      updateSolarPanels(map, init_amount)
    } else {
@@ -229,9 +231,9 @@
  }
 
  function updateSolarPanels(map, setIndex) {
-   solar_panels.forEach(panel => panel.setMap(null))
+    window.solar_panels.forEach(panel => panel.setMap(null))
    for (let i = 0; i <= setIndex; i++) {
-     solar_panels[i].setMap(map)
+    window.solar_panels[i].setMap(map)
    }
    let slider = document.getElementById('sliderValue')
    slider.innerText = setIndex + 1
