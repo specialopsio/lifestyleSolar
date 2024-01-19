@@ -1,4 +1,4 @@
-if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
+if (window.location.href.indexOf("html") !== -1) {
   if (window.location.href.indexOf('quote') !== -1) {
 
     document.addEventListener("DOMContentLoaded", function() {
@@ -279,11 +279,7 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
         document.getElementById('exitCTAButton').style.display = 'block'
         window.is_sql = true
         // Set a timer to trigger the Calendly widget after 10 seconds
-        let timer = setTimeout(() => {
-          if (checkConditions()) {
-            initCalendly();
-          }
-        }, 10000); // 10000 milliseconds = 10 seconds
+        startCalendlyTimer()
       } else {
         document.getElementById('exitCTAHeading').innerHTML = 'Your Free Quote'
         document.getElementById('exitCTASubHeading').innerHTML = "This is an estimate based on the information you provided. For an accurate assessment on your total savings, you'll need to speak with a qualified solar representative."
@@ -349,11 +345,10 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
                     quote3.style.display = "block";
                   }
                   window.load_bar_filled = true
-                  if (window.page_data_loaded) {
-
+                  // if (window.page_data_loaded) {
                     setPageData()
                     showPage()
-                  }
+                  // }
                 } else {
                   if (quote1) {
                     quote1.style.display = "block";
@@ -1239,9 +1234,13 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
 
     // Function to initialize Calendly widget
     function initCalendly() {
-      Calendly.initPopupWidget({
-        url: 'https://calendly.com/calendly-test-account/30min?hide_event_type_details=1&hide_gdpr_banner=1&text_color=0f0f0f&primary_color=00ba81'
-      });
+      if(!window.calendly_initialized){
+        Calendly.initPopupWidget({
+          url: 'https://calendly.com/calendly-test-account/30min?hide_event_type_details=1&hide_gdpr_banner=1&text_color=0f0f0f&primary_color=00ba81'
+        });
+        document.getElementById('loadingCountdown').style.display = 'none'
+        window.calendly_initialized = true
+      }
     }
     window.initCalendly = initCalendly
 
@@ -1254,8 +1253,29 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
     }
     window.checkConditions = checkConditions
 
+    function startCalendlyTimer() {
+      var countdownElement = document.getElementById('loadingCountdownNumber');
+      if (countdownElement) {
+        var countdownValue = parseInt(countdownElement.textContent, 10);
+        var countdownInterval = setInterval(function() {
+          countdownValue--;
+          countdownElement.textContent = countdownValue;
+          if (countdownValue <= 0) {
+            clearInterval(countdownInterval);
+          }
+        }, 1000); // 1000 milliseconds = 1 second
+      }
+    
+      setTimeout(function() {
+        if (checkConditions()) {
+          initCalendly();
+        }
+      }, 10000); // 10000 milliseconds = 10 seconds
+    }
+    window.startCalendlyTimer = startCalendlyTimer
+
     // Event listener to set 'clicked' property on the calendlyClicked element
-    document.getElementById('calendlyClicked').addEventListener('click', function() {
+    document.getElementById('calendlyLink').addEventListener('click', function() {
       this.clicked = true;
     });
 

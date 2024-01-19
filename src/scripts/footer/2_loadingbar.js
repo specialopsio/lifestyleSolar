@@ -48,11 +48,10 @@ let load_bar_filled
                       quote3.style.display = "block";
                     }
                     window.load_bar_filled = true
-                    if (window.page_data_loaded) {
-
+                    // if (window.page_data_loaded) {
                       setPageData()
                       showPage()
-                    }
+                    // }
                   } else {
                     if (quote1) {
                       quote1.style.display = "block";

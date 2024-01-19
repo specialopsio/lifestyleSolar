@@ -6,9 +6,13 @@ document.addEventListener("DOMContentLoaded", function() {
 
   // Function to initialize Calendly widget
   function initCalendly() {
-    Calendly.initPopupWidget({
-      url: 'https://calendly.com/calendly-test-account/30min?hide_event_type_details=1&hide_gdpr_banner=1&text_color=0f0f0f&primary_color=00ba81'
-    });
+    if(!window.calendly_initialized){
+      Calendly.initPopupWidget({
+        url: 'https://calendly.com/calendly-test-account/30min?hide_event_type_details=1&hide_gdpr_banner=1&text_color=0f0f0f&primary_color=00ba81'
+      });
+      document.getElementById('loadingCountdown').style.display = 'none'
+      window.calendly_initialized = true
+    }
   }
   window.initCalendly = initCalendly
 
@@ -21,8 +25,29 @@ document.addEventListener("DOMContentLoaded", function() {
   }
   window.checkConditions = checkConditions
 
+  function startCalendlyTimer() {
+    var countdownElement = document.getElementById('loadingCountdownNumber');
+    if (countdownElement) {
+      var countdownValue = parseInt(countdownElement.textContent, 10);
+      var countdownInterval = setInterval(function() {
+        countdownValue--;
+        countdownElement.textContent = countdownValue;
+        if (countdownValue <= 0) {
+          clearInterval(countdownInterval);
+        }
+      }, 1000); // 1000 milliseconds = 1 second
+    }
+  
+    setTimeout(function() {
+      if (checkConditions()) {
+        initCalendly();
+      }
+    }, 10000); // 10000 milliseconds = 10 seconds
+  }
+  window.startCalendlyTimer = startCalendlyTimer
+
   // Event listener to set 'clicked' property on the calendlyClicked element
-  document.getElementById('calendlyClicked').addEventListener('click', function() {
+  document.getElementById('calendlyLink').addEventListener('click', function() {
     this.clicked = true;
   });
 

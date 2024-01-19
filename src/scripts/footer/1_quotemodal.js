@@ -278,11 +278,7 @@ if (window.location.href.indexOf('quote') !== -1) {
           document.getElementById('exitCTAButton').style.display = 'block'
           window.is_sql = true
           // Set a timer to trigger the Calendly widget after 10 seconds
-          let timer = setTimeout(() => {
-            if (checkConditions()) {
-              initCalendly();
-            }
-          }, 10000); // 10000 milliseconds = 10 seconds
+          startCalendlyTimer()
         } else {
           document.getElementById('exitCTAHeading').innerHTML = 'Your Free Quote'
           document.getElementById('exitCTASubHeading').innerHTML = "This is an estimate based on the information you provided. For an accurate assessment on your total savings, you'll need to speak with a qualified solar representative."
