@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // Function to check the required conditions
     function checkConditions() {
-      var calendlyClicked = document.getElementById('calendlyClicked');
+      var calendlyClicked = document.getElementById('calendlyLink');
       var exitCTAButton = document.getElementById('exitCTAButton');
       var urlContainsQuote = window.location.href.includes('/quote');
       var exitCTAButtonVisible = exitCTAButton && exitCTAButton.style.display !== 'none';
