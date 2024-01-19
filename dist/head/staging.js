@@ -1074,7 +1074,7 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
 
   // This function acquires the autocomplete value and slider data on button click
   function getAutocompleteValue(area) {
-    const selected_place = selectedPlace ? window.selectedPlace : area === 'hero' ? window.selectedPlaceHero : area === 'cta' ? window.selectedPlaceCTA : area === 'exit' ? window.selectedPlaceExit : window.selectedPlaceNav
+    const selected_place = window.selectedPlace ? window.selectedPlace : area === 'hero' ? window.selectedPlaceHero : area === 'cta' ? window.selectedPlaceCTA : area === 'exit' ? window.selectedPlaceExit : window.selectedPlaceNav
     const is_quote = window.location.pathname.match('/quote')
     if (is_quote) {
       if (selected_place) {
@@ -1083,13 +1083,13 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
         displayError('Please input your address.')
       }
     }
-    const sliderValue = area === 'hero' ? sliderValueHero : area === 'cta' ? sliderValueCTA : area === 'exit' ? sliderValueExit : sliderValueNav
+    // const sliderValue = area === 'hero' ? sliderValueHero : area === 'cta' ? sliderValueCTA : area === 'exit' ? sliderValueExit : sliderValueNav
     let elementsWithSharedId = document.querySelectorAll('[id="calculateButton"]');
     elementsWithSharedId.forEach(function(element) {
       var onClickAttribute = element.getAttribute('onclick')
       var regex = /getAutocompleteValue\('(.+?)'\)/
       var match = regex.exec(onClickAttribute)
-
+      
       if (match && match[1] && !is_quote) {
         if (match[1] === area) {
           element.innerHTML = "One moment..."

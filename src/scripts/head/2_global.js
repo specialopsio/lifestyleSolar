@@ -83,7 +83,7 @@ let selectedPlaceHero
           displayError('Please input your address.')
         }
       }
-      const sliderValue = area === 'hero' ? sliderValueHero : area === 'cta' ? sliderValueCTA : area === 'exit' ? sliderValueExit : sliderValueNav
+      // const sliderValue = area === 'hero' ? sliderValueHero : area === 'cta' ? sliderValueCTA : area === 'exit' ? sliderValueExit : sliderValueNav
       let elementsWithSharedId = document.querySelectorAll('[id="calculateButton"]');
       elementsWithSharedId.forEach(function(element) {
         var onClickAttribute = element.getAttribute('onclick')
