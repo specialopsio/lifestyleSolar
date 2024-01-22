@@ -1,5 +1,5 @@
 (function() {
-  if (window.location.href.indexOf("html") !== -1) {
+  if (window.location.href.indexOf("lifestylesolar.com") !== -1) {
     ! function(e) {
       if ("object" == typeof exports && "undefined" != typeof module) module.exports = e();
       else if ("function" == typeof define && define.amd) define([], e);
