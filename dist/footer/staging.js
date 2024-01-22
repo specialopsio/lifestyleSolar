@@ -346,8 +346,8 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
                   }
                   window.load_bar_filled = true
                   // if (window.page_data_loaded) {
-                    setPageData()
-                    showPage()
+                  setPageData()
+                  showPage()
                   // }
                 } else {
                   if (quote1) {
@@ -1236,9 +1236,9 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
 
     // Function to initialize Calendly widget
     function initCalendly() {
-      if(!window.calendly_initialized){
+      if (!window.calendly_initialized) {
         Calendly.initPopupWidget({
-          url: 'https://calendly.com/calendly-test-account/30min?hide_event_type_details=1&hide_gdpr_banner=1&text_color=0f0f0f&primary_color=00ba81'
+          url: 'https://calendly.com/lifestyle-solar/discoverycall?hide_event_type_details=1&hide_gdpr_banner=1&text_color=0f0f0f&primary_color=00ba81'
         });
         document.getElementById('loadingCountdown').style.display = 'none'
         window.calendly_initialized = true
@@ -1267,7 +1267,7 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
           }
         }, 1000); // 1000 milliseconds = 1 second
       }
-    
+
       setTimeout(function() {
         if (checkConditions()) {
           initCalendly();
