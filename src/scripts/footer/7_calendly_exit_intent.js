@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", function() {
   function initCalendly() {
     if(!window.calendly_initialized){
       Calendly.initPopupWidget({
-        url: 'https://calendly.com/calendly-test-account/30min?hide_event_type_details=1&hide_gdpr_banner=1&text_color=0f0f0f&primary_color=00ba81'
+        url: 'https://calendly.com/lifestyle-solar/discoverycall?hide_event_type_details=1&hide_gdpr_banner=1&text_color=0f0f0f&primary_color=00ba81'
       });
       document.getElementById('loadingCountdown').style.display = 'none'
       window.calendly_initialized = true
