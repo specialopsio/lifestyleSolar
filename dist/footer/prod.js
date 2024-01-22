@@ -802,6 +802,7 @@
             const long = getCookie('long');
             const current_bill = getCookie('current_bill');
             const display_address = decodeURIComponent(getCookie('display_address'));
+            document.querySelector('.modal1_content-wrapper').style.display = 'block';
             document.getElementById('quote1').style.display = 'none'
             const hashValue = urlParams.get('hash')
             fetch(`https://vj61befm45.execute-api.us-east-1.amazonaws.com/default/solar_hash?data_hash=${hashValue}&set_hash=True&lat=${lat}&long=${long}&current_bill=${current_bill}&display_address=${encodeURIComponent(display_address)}`, {
@@ -823,6 +824,8 @@
           console.debug("ERROR", error)
           // hidePage()
         }
+      } else if (window.location.href.indexOf('quote')) {
+        document.querySelector('.modal1_content-wrapper').style.display = 'block'
       }
     })
 
