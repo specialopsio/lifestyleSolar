@@ -903,9 +903,10 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
       .then(data => {
         // Check if 'amount' exists in the response and set window.current_bill
         if (data && 'amount' in data) {
-          window.current_bill = data.amount;
-          const sliders = document.querySelectorAll('.slider-container')
-          sliders[0].style.display = 'none'
+          // window.current_bill = data.amount;
+          // const sliders = document.querySelectorAll('.slider-container')
+          // sliders[0].style.display = 'none'
+          window.current_bill = 150
           console.log('Current bill set to:', window.current_bill);
         }
       })
@@ -917,8 +918,8 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
       window.page_data_loaded = true
     }
     if (window.current_bill) {
-      const sliders = document.querySelectorAll('.slider-container')
-      sliders[0].style.display = 'none'
+      // const sliders = document.querySelectorAll('.slider-container')
+      // sliders[0].style.display = 'none'
       return
     }
 

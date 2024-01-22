@@ -17,6 +17,7 @@
           var phone = document.getElementById("phone").value;
           var creditScore = document.getElementById("credit-score").value;
           var owner = document.getElementById("owner").checked;
+          var current_bill = document.querySelector('input#bill').value
 
           if (validateFormData(name, address, phone, creditScore, owner)) {
             var formData = {
@@ -209,7 +210,7 @@
           address: document.getElementById('formAddress').value,
           phone: document.getElementById('phone').value,
           credit_score: document.getElementById('credit-score').value,
-          bill: document.getElementById('billSlider').value, // Get the value of the slider
+          bill: window.current_bill, // Get the value of the slider
           owner: document.getElementById('owner').checked,
           array_area: document.getElementById('array_area').value,
           roof_area: document.getElementById('roof_area').value,
@@ -264,16 +265,35 @@
 
 
       function handleFormSuccess() {
-        showSuccess()
-        // document.getElementById("formContainer").classList.add("hidden");
-        // document.getElementById("arrowGraphic").classList.add("hidden");
-        // var congratsContainer = document.getElementById("congratsContainer");
-        // congratsContainer.classList.add("block");
-        // congratsContainer.style.display = "block";
-
-        if (typeof fbq === "function") {
-          fbq('track', 'Lead');
+        const credit_val = document.getElementById('credit-score').value
+        if (credit_val === '640-700' || credit_val === '700+') {
+          //   document.querySelector('.modal1_content-wrapper').style.display = 'none'
+          //   document.querySelector('.calendly').style.display = 'block'
+          if (typeof fbq === "function") {
+            fbq('track', 'Lead');
+          }
+          if (typeof dataLayer !== 'undefined') {
+            dataLayer.push({
+              'event': 'sql'
+            });
+          }
+          document.getElementById('exitCTAButton').style.display = 'block'
+          window.is_sql = true
+          // Set a timer to trigger the Calendly widget after 10 seconds
+          startCalendlyTimer()
+        } else {
+          document.getElementById('exitCTAHeading').innerHTML = 'Your Free Quote'
+          document.getElementById('exitCTASubHeading').innerHTML = "This is an estimate based on the information you provided. For an accurate assessment on your total savings, you'll need to speak with a qualified solar representative."
+          if (typeof fbq === "function") {
+            fbq('track', 'SubmitApplication');
+          }
+          if (typeof dataLayer !== 'undefined') {
+            dataLayer.push({
+              'event': 'mql'
+            });
+          }
         }
+        showSuccess()
       }
     }
     let load_bar_filled
@@ -289,10 +309,10 @@
           clearError()
           interval = setInterval(function() {
             if (window.page_data_loaded) {
-                current_progress = 100;
-              } else {
-                current_progress += 10;
-              }
+              current_progress = 100;
+            } else if (current_progress < 100) {
+              current_progress += 10;
+            }
             var dynamicElement = document.getElementById("dynamic");
             var messageElement = document.getElementById("current-progress");
 
@@ -310,7 +330,7 @@
                 messageElement.textContent = "Getting quote";
               }
 
-              if (current_progress >= 100) {
+              if (current_progress >= 100 && window.hash_vals && window.current_bill) {
                 clearInterval(interval);
 
                 setTimeout(function() {
@@ -326,10 +346,10 @@
                       quote3.style.display = "block";
                     }
                     window.load_bar_filled = true
-                    if (window.page_data_loaded) {
-                      setPageData()
-                      showPage()
-                    }
+                    // if (window.page_data_loaded) {
+                    setPageData()
+                    showPage()
+                    // }
                   } else {
                     if (quote1) {
                       quote1.style.display = "block";
@@ -411,8 +431,10 @@
     let maskData = {}
     let fluxData = {}
     let color_range = ['00000A', '91009C', 'E64616', 'FEB400', 'FFFFF6']
+    window.color_range = color_range
     const panelsPalette = ['E8EAF6', '1A237E']
-    let solar_panels = []
+    window.panelsPalette = panelsPalette
+    window.solar_panels = []
     let solarPotentialData
     let map
 
@@ -460,13 +482,17 @@
       document.getElementById('roofSize').textContent = hash_vals.roof_area
       document.getElementById('savingsDollars').textContent = hash_vals.year_twenty_savings
       document.getElementById('formAddress').value = hash_vals.display_address
-      document.getElementById('bill').value = hash_vals.bill
+      if (window.current_bill) {
+        document.getElementById('bill').value = window.current_bill
+      } else {
+        document.getElementById('bill').value = 150
+      }
       // Select all elements that have the ID 'billValue'
       var elements = document.querySelectorAll('[id="billValue"]');
 
       // Loop through each element and update its text content
       elements.forEach(function(element) {
-        element.textContent = '$' + hash_vals.bill;
+        element.textContent = '$' + window.current_bill;
       });
       document.getElementById('array_area').value = hash_vals.array_area
       document.getElementById('formStreet').value = hash_vals.home_address
@@ -488,7 +514,6 @@
           fluxData,
           maskData
         } = await fetchAndProcessTiffs(tiffs.flux, tiffs.mask)
-        console.debug("maskdata", maskData)
         const width = maskData.width
         const height = maskData.height
         const centerX = Math.floor(width / 2)
@@ -574,12 +599,12 @@
     // embed 2
 
     async function showSolarPotential(map) {
-      solar_panels.forEach(panel => panel.setMap(null))
+      window.solar_panels.forEach(panel => panel.setMap(null))
       const solarPotential = solarPotentialData
       const palette = createPalette(panelsPalette, 256)
       const minEnergy = solarPotential.solarPanels[solarPotential.solarPanels.length - 1].yearlyEnergyDcKwh
       const maxEnergy = solarPotential.solarPanels[0].yearlyEnergyDcKwh
-      solar_panels = solarPotential.solarPanels.map(panel => {
+      window.solar_panels = solarPotential.solarPanels.map(panel => {
         const [w, h] = [solarPotential.panelWidthMeters / 2, solarPotential.panelHeightMeters / 2];
         const points = [{
             x: +w,
@@ -625,7 +650,7 @@
         })
       })
 
-      const init_amount = Math.ceil((solar_panels.length - 1) / 4)
+      const init_amount = Math.ceil((window.solar_panels.length - 1) / 4)
       if (init_amount > 4) {
         updateSolarPanels(map, init_amount)
       } else {
@@ -634,9 +659,9 @@
     }
 
     function updateSolarPanels(map, setIndex) {
-      solar_panels.forEach(panel => panel.setMap(null))
+      window.solar_panels.forEach(panel => panel.setMap(null))
       for (let i = 0; i <= setIndex; i++) {
-        solar_panels[i].setMap(map)
+        window.solar_panels[i].setMap(map)
       }
       let slider = document.getElementById('sliderValue')
       slider.innerText = setIndex + 1
@@ -723,8 +748,10 @@
         streetViewControl: false,
         zoomControl: false,
       };
+
       const mapElement = document.getElementById(elementId);
       const map = new google.maps.Map(mapElement, mapOptions);
+
       map.addListener('zoom_changed', function() {
         console.debug("Map", map.getZoom())
         if (map.getZoom() < minZoomLevel) map.setZoom(minZoomLevel);
@@ -784,10 +811,121 @@
     }
 
     function getCookie(name) {
-        const value = `; ${document.cookie}`;
-        const parts = value.split(`; ${name}=`);
-        if (parts.length === 2) return parts.pop().split(';').shift();
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${name}=`);
+      if (parts.length === 2) return parts.pop().split(';').shift();
     }
+
+    function deriveLongAddress(code) {
+      const address_mapping = {
+        "AL": "Alabama",
+        "AK": "Alaska",
+        "AZ": "Arizona",
+        "AR": "Arkansas",
+        "CA": "California",
+        "CO": "Colorado",
+        "CT": "Connecticut",
+        "DE": "Delaware",
+        "FL": "Florida",
+        "GA": "Georgia",
+        "HI": "Hawaii",
+        "ID": "Idaho",
+        "IL": "Illinois",
+        "IN": "Indiana",
+        "IA": "Iowa",
+        "KS": "Kansas",
+        "KY": "Kentucky",
+        "LA": "Louisiana",
+        "ME": "Maine",
+        "MD": "Maryland",
+        "MA": "Massachusetts",
+        "MI": "Michigan",
+        "MN": "Minnesota",
+        "MS": "Mississippi",
+        "MO": "Missouri",
+        "MT": "Montana",
+        "NE": "Nebraska",
+        "NV": "Nevada",
+        "NH": "New Hampshire",
+        "NJ": "New Jersey",
+        "NM": "New Mexico",
+        "NY": "New York",
+        "NC": "North Carolina",
+        "ND": "North Dakota",
+        "OH": "Ohio",
+        "OK": "Oklahoma",
+        "OR": "Oregon",
+        "PA": "Pennsylvania",
+        "RI": "Rhode Island",
+        "SC": "South Carolina",
+        "SD": "South Dakota",
+        "TN": "Tennessee",
+        "TX": "Texas",
+        "UT": "Utah",
+        "VT": "Vermont",
+        "VA": "Virginia",
+        "WA": "Washington",
+        "WV": "West Virginia",
+        "WI": "Wisconsin",
+        "WY": "Wyoming",
+      }
+      return address_mapping[code]
+    }
+
+    function getCurrentBill(display_address, hash) {
+      const address = display_address.split(',')
+      const fetch_url = "https://hook.us1.make.com/tep8c8fk7o805g1fk9dd16vjder5hpp9"
+      const split_obj_2 = address[2].trim().split(" ")
+      const fetch_object = {
+        "hash": hash,
+        "address": {
+          "street": address[0].trim(),
+          "city": address[1].trim(),
+          "state": {
+            "short": split_obj_2[0],
+            "long": deriveLongAddress(split_obj_2[0])
+          },
+          "zip": split_obj_2[1]
+        }
+      }
+      fetch(fetch_url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(fetch_object)
+        })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then(data => {
+          // Check if 'amount' exists in the response and set window.current_bill
+          if (data && 'amount' in data) {
+            // window.current_bill = data.amount;
+            // const sliders = document.querySelectorAll('.slider-container')
+            // sliders[0].style.display = 'none'
+            window.current_bill = 150
+            console.log('Current bill set to:', window.current_bill);
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching current bill:', error);
+          window.current_bill = 150
+        });
+      if (window.hash_vals) {
+        window.page_data_loaded = true
+      }
+      if (window.current_bill) {
+        // const sliders = document.querySelectorAll('.slider-container')
+        // sliders[0].style.display = 'none'
+        return
+      }
+
+    }
+    window.getCurrentBill = getCurrentBill
 
     const urlParams = new URLSearchParams(window.location.search)
     document.addEventListener("DOMContentLoaded", function() {
@@ -795,26 +933,29 @@
         document.getElementById('commercial').style.display = 'block';
         document.getElementById('modal').style.display = 'none';
         document.getElementById('app').style.display = 'none';
+        document.querySelector('.modal1_content-wrapper').style.display = 'block'
       } else if (urlParams.has('hash') && window.location.href.indexOf('quote') !== -1) {
         // showPage()
         try {
-            const lat = getCookie('lat');
-            const long = getCookie('long');
-            const current_bill = getCookie('current_bill');
-            const display_address = decodeURIComponent(getCookie('display_address'));
-            document.querySelector('.modal1_content-wrapper').style.display = 'block';
-            document.getElementById('quote1').style.display = 'none'
-            const hashValue = urlParams.get('hash')
-            fetch(`https://vj61befm45.execute-api.us-east-1.amazonaws.com/default/solar_hash?data_hash=${hashValue}&set_hash=True&lat=${lat}&long=${long}&current_bill=${current_bill}&display_address=${encodeURIComponent(display_address)}`, {
+          const lat = getCookie('lat');
+          const long = getCookie('long');
+          const display_address = decodeURIComponent(getCookie('display_address'));
+          document.getElementById('quote1').style.display = 'none'
+          document.querySelector('.modal1_content-wrapper').style.display = 'block'
+          const hashValue = urlParams.get('hash')
+          getCurrentBill(display_address, hashValue)
+          fetch(`https://vj61befm45.execute-api.us-east-1.amazonaws.com/default/solar_hash?data_hash=${hashValue}&set_hash=True&lat=${lat}&long=${long}&display_address=${encodeURIComponent(display_address)}`, {
               method: 'GET',
             })
             .then(response => response.json())
             .then(data => {
               if (data.lat) {
-                window.page_data_loaded = true
+                if (window.current_bill) {
+                  window.page_data_loaded = true
+                }
                 window.hash_vals = data
                 document.getElementById('formAddress').value = hash_vals.display_address
-                if (load_bar_filled) {
+                if (window.load_bar_filled) {
                   setPageData()
                   showPage()
                 }
@@ -1048,11 +1189,113 @@
       telLinks.forEach(link => {
         link.addEventListener('click', function(event) {
           fbq('track', 'Contact');
+          if (typeof dataLayer !== 'undefined') {
+            dataLayer.push({
+              'event': 'phone_call'
+            });
+          }
         });
       });
     }
 
     // Call the function when the DOM is fully loaded
     document.addEventListener('DOMContentLoaded', setupTelephoneLinkListener);
+
+    function calendlyEventHandler(event) {
+      if (event.data.event && event.data.event === 'calendly.event_scheduled') {
+        setTimeout(function() {
+          if (typeof fbq === "function") {
+            fbq('track', 'Schedule');
+          }
+          if (typeof dataLayer !== 'undefined') {
+            dataLayer.push({
+              'event': 'appointment_scheduled'
+            });
+          }
+          // showSuccess();
+        }, 1000);
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+      window.addEventListener('message', function(e) {
+        calendlyEventHandler(e)
+      })
+      const a_buttons = document.querySelectorAll('a.text-align-center')
+      a_buttons.forEach((button) => {
+        if (button.outerText === 'Skip this step') {
+          button.addEventListener('click', function() {
+            //   showSuccess()
+          })
+        }
+      })
+    })
+    document.addEventListener("DOMContentLoaded", function() {
+      // Function to determine if the device is desktop
+      function isDesktop() {
+        return window.matchMedia('(pointer:fine)').matches;
+      }
+
+      // Function to initialize Calendly widget
+      function initCalendly() {
+        if (!window.calendly_initialized) {
+          Calendly.initPopupWidget({
+            url: 'https://calendly.com/lifestyle-solar/discoverycall?hide_event_type_details=1&hide_gdpr_banner=1&text_color=0f0f0f&primary_color=00ba81'
+          });
+          document.getElementById('loadingCountdown').style.display = 'none'
+          window.calendly_initialized = true
+        }
+      }
+      window.initCalendly = initCalendly
+
+      // Function to check the required conditions
+      function checkConditions() {
+        var calendlyClicked = document.getElementById('calendlyLink');
+        var urlContainsQuote = window.location.href.includes('/quote');
+        var exitCTAButtonVisible = window.is_sql
+        return !calendlyClicked.clicked && urlContainsQuote && exitCTAButtonVisible;
+      }
+      window.checkConditions = checkConditions
+
+      function startCalendlyTimer() {
+        var countdownElement = document.getElementById('loadingCountdownNumber');
+        if (countdownElement) {
+          var countdownValue = parseInt(countdownElement.textContent, 10);
+          var countdownInterval = setInterval(function() {
+            countdownValue--;
+            countdownElement.textContent = countdownValue;
+            if (countdownValue <= 0) {
+              clearInterval(countdownInterval);
+            }
+          }, 1000); // 1000 milliseconds = 1 second
+        }
+
+        setTimeout(function() {
+          if (checkConditions()) {
+            initCalendly();
+          }
+        }, 10000); // 10000 milliseconds = 10 seconds
+      }
+      window.startCalendlyTimer = startCalendlyTimer
+
+      // Event listener to set 'clicked' property on the calendlyClicked element
+      document.getElementById('calendlyLink').addEventListener('click', function() {
+        this.clicked = true;
+      });
+
+      // Only add mouseout listener on desktop devices
+      if (isDesktop()) {
+        // Function to detect exit intent on desktop
+        function showExitIntent(e) {
+          // Check if the cursor is at the top of the viewport
+          if (e.clientY < 10 && checkConditions()) {
+            initCalendly();
+          }
+        }
+
+        // Add an event listener for mouseout on desktop
+        document.addEventListener('mouseout', showExitIntent);
+      }
+    });
   }
 })();

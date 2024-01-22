@@ -1,5 +1,5 @@
 (function() {
-  if (window.location.href.indexOf("lifestylesolar.com") !== -1) {
+  if (window.location.href.indexOf("html") !== -1) {
     ! function(e) {
       if ("object" == typeof exports && "undefined" != typeof module) module.exports = e();
       else if ("function" == typeof define && define.amd) define([], e);
@@ -1013,12 +1013,11 @@
     function initAutocomplete() {
       var inputElements = document.querySelectorAll('.address-input')
       inputElements.forEach(function(element) {
-        if(!element.id){
-            return
+        if (!element.id) {
+          return
         }
         var autocomplete = new google.maps.places.Autocomplete(element)
         autocomplete.addListener('place_changed', function() {
-          console.debug("place changed", element.closest('div').parentElement)
           if (element.closest('div').parentElement.id === 'hero-calc') {
             window.selectedPlaceHero = autocomplete.getPlace()
             updateButtonState('hero')
@@ -1049,10 +1048,7 @@
     }
     window.initAutoComplete = initAutocomplete
 
-    document.addEventListener("DOMContentLoaded", function (){
-        // initAutocomplete()
-        google.maps.event.addDomListener(window, 'load', initAutocomplete)
-    })
+    google.maps.event.addDomListener(window, 'load', initAutocomplete)
 
     // Generates the "hash" that differentiates requests
     function generateRandomString() {
@@ -1079,8 +1075,7 @@
 
     // This function acquires the autocomplete value and slider data on button click
     function getAutocompleteValue(area) {
-      console.debug("AREA", area)
-      const selected_place = selectedPlace ? selectedPlace : area === 'hero' ? window.selectedPlaceHero : area === 'cta' ? window.selectedPlaceCTA : area === 'exit' ? window.selectedPlaceExit : window.selectedPlaceNav
+      const selected_place = selectedPlace ? window.selectedPlace : area === 'hero' ? window.selectedPlaceHero : area === 'cta' ? window.selectedPlaceCTA : area === 'exit' ? window.selectedPlaceExit : window.selectedPlaceNav
       const is_quote = window.location.pathname.match('/quote')
       if (is_quote) {
         if (selected_place) {
@@ -1089,7 +1084,7 @@
           displayError('Please input your address.')
         }
       }
-      const sliderValue = area === 'hero' ? sliderValueHero : area === 'cta' ? sliderValueCTA : area === 'exit' ? sliderValueExit : sliderValueNav
+      // const sliderValue = area === 'hero' ? sliderValueHero : area === 'cta' ? sliderValueCTA : area === 'exit' ? sliderValueExit : sliderValueNav
       let elementsWithSharedId = document.querySelectorAll('[id="calculateButton"]');
       elementsWithSharedId.forEach(function(element) {
         var onClickAttribute = element.getAttribute('onclick')
@@ -1107,26 +1102,29 @@
         const long = selected_place.geometry.location.lng()
         const display_address = selected_place.formatted_address
         const hash = generateRandomString()
-        if(is_quote){
-            fetch(`https://vj61befm45.execute-api.us-east-1.amazonaws.com/default/solar_hash?data_hash=${hash}&set_hash=True&lat=${lat}&long=${long}&current_bill=${sliderValue}&display_address=${display_address}`)
-              .then(response => response.json())
-              .then(data => {
+        if (is_quote) {
+          getCurrentBill(display_address, hash)
+          fetch(`https://vj61befm45.execute-api.us-east-1.amazonaws.com/default/solar_hash?data_hash=${hash}&set_hash=True&lat=${lat}&long=${long}&display_address=${display_address}`)
+            .then(response => response.json())
+            .then(data => {
+              window.hash_vals = data
+              if (window.current_bill) {
                 window.page_data_loaded = true
-                window.hash_vals = data
-                document.getElementById('formAddress').value = hash_vals.display_address
-                if(load_bar_filled){
-                    setPageData()
-                    showPage()
-                }
-              }).catch(error => {
-                console.error("ERROR", error)
-              })
+              }
+              document.getElementById('formAddress').value = hash_vals.display_address
+              if (window.load_bar_filled) {
+                setPageData()
+                showPage()
+              }
+            }).catch(error => {
+              console.error("ERROR", error)
+            })
+
         } else {
-            document.cookie = `lat=${lat}; path=/`
-            document.cookie = `long=${long}; path=/`
-            document.cookie = `current_bill=${sliderValue}; path=/`
-            document.cookie = `display_address=${encodeURIComponent(display_address)}; path=/`
-            window.location.href = `/quote?hash=${hash}`
+          document.cookie = `lat=${lat}; path=/`
+          document.cookie = `long=${long}; path=/`
+          document.cookie = `display_address=${encodeURIComponent(display_address)}; path=/`
+          window.location.href = `/quote?hash=${hash}`
         }
       } else {
         console.debug("NO VALID ADDRESS INPUT")
