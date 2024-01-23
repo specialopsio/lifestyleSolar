@@ -223,6 +223,7 @@ if (window.location.href.indexOf('quote') !== -1) {
         state_short: document.getElementById('formStateShort').value,
         state_long: document.getElementById('formStateLong').value,
         zip: document.getElementById('formZip').value,
+        business_name: document.getElementById('businessName').value,
 
         carbon_offset: document.getElementById('carbon_offset').value
       };

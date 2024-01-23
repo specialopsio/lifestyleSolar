@@ -224,6 +224,7 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
         state_short: document.getElementById('formStateShort').value,
         state_long: document.getElementById('formStateLong').value,
         zip: document.getElementById('formZip').value,
+        business_name: document.getElementById('businessName').value,
 
         carbon_offset: document.getElementById('carbon_offset').value
       };
@@ -1244,7 +1245,10 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
     function initCalendly() {
       if (!window.calendly_initialized) {
         Calendly.initPopupWidget({
-          url: 'https://calendly.com/lifestyle-solar/discoverycall?hide_event_type_details=1&hide_gdpr_banner=1&text_color=0f0f0f&primary_color=00ba81'
+          url: 'https://calendly.com/lifestyle-solar/discoverycall?hide_event_type_details=1&hide_gdpr_banner=1&text_color=0f0f0f&primary_color=00ba81' + `&location=${document.getElementById('phone').value}`,
+          prefill: {
+            name: document.getElementById('name').value,
+          }
         });
         document.getElementById('loadingCountdown').style.display = 'none'
         window.calendly_initialized = true

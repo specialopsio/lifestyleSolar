@@ -6,9 +6,12 @@ document.addEventListener("DOMContentLoaded", function() {
 
   // Function to initialize Calendly widget
   function initCalendly() {
-    if(!window.calendly_initialized){
+    if (!window.calendly_initialized) {
       Calendly.initPopupWidget({
-        url: 'https://calendly.com/lifestyle-solar/discoverycall?hide_event_type_details=1&hide_gdpr_banner=1&text_color=0f0f0f&primary_color=00ba81'
+        url: 'https://calendly.com/lifestyle-solar/discoverycall?hide_event_type_details=1&hide_gdpr_banner=1&text_color=0f0f0f&primary_color=00ba81' + `&location=${document.getElementById('phone').value}`,
+        prefill: {
+          name: document.getElementById('name').value,
+        }
       });
       document.getElementById('loadingCountdown').style.display = 'none'
       window.calendly_initialized = true
