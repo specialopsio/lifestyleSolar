@@ -1074,7 +1074,7 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
 
   // This function acquires the autocomplete value and slider data on button click
   function getAutocompleteValue(area) {
-    const selected_place = window.selectedPlace ? window.selectedPlace : area === 'hero' ? window.selectedPlaceHero : area === 'cta' ? window.selectedPlaceCTA : area === 'exit' ? window.selectedPlaceExit : window.selectedPlaceNav
+    const selected_place = selectedPlace ? window.selectedPlace : area === 'hero' ? window.selectedPlaceHero : area === 'cta' ? window.selectedPlaceCTA : area === 'exit' ? window.selectedPlaceExit : window.selectedPlaceNav
     const is_quote = window.location.pathname.match('/quote')
     if (is_quote) {
       if (selected_place) {
@@ -1089,7 +1089,7 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
       var onClickAttribute = element.getAttribute('onclick')
       var regex = /getAutocompleteValue\('(.+?)'\)/
       var match = regex.exec(onClickAttribute)
-      
+
       if (match && match[1] && !is_quote) {
         if (match[1] === area) {
           element.innerHTML = "One moment..."
@@ -1443,4 +1443,41 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
       setInterval(updateYear, 365 * 24 * 60 * 60 * 1000); // Update yearly
     }
   }, millisecondsTillNextYear);
+  (function() {
+    // Backup original methods
+    const originalAppendChild = Node.prototype.appendChild;
+    const originalInsertBefore = Node.prototype.insertBefore;
+
+    // Function to check if the node has specific classes
+    function hasTargetClasses(node) {
+        return node.classList && node.classList.contains('tawk-flex') &&
+               node.classList.contains('tawk-flex-center') &&
+               node.classList.contains('tawk-text-center') &&
+               node.classList.contains('tawk-padding-small');
+    }
+
+    // Override appendChild
+    Node.prototype.appendChild = function(node) {
+        if (!hasTargetClasses(node)) {
+            return originalAppendChild.call(this, node);
+        }
+    };
+
+    // Override insertBefore
+    Node.prototype.insertBefore = function(newNode, referenceNode) {
+        if (!hasTargetClasses(newNode)) {
+            return originalInsertBefore.call(this, newNode, referenceNode);
+        }
+    };
+
+    // CSS to hide the elements, as a fallback
+    const style = document.createElement('style');
+    style.type = 'text/css';
+    style.innerHTML = `
+        .tawk-flex.tawk-flex-center.tawk-text-center.tawk-padding-small {
+            display: none !important;
+        }
+    `;
+    document.head.appendChild(style);
+})();
 };
