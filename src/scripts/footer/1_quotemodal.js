@@ -10,6 +10,7 @@ if (window.location.href.indexOf('quote') !== -1) {
       document.getElementById("propertyForm").addEventListener("submit", function(event) {
         event.preventDefault();
 
+        var businessName = document.getElementById('businessName').value
         var name = document.getElementById("name").value;
         var address = document.getElementById("formAddress").value;
         var phone = document.getElementById("phone").value;
@@ -17,7 +18,7 @@ if (window.location.href.indexOf('quote') !== -1) {
         var owner = document.getElementById("owner").checked;
         var current_bill = document.querySelector('input#bill').value 
 
-        if (validateFormData(name, address, phone, creditScore, owner)) {
+        if (validateFormData(name, address, phone, creditScore, owner, businessName)) {
           var formData = {
             name,
             address,
@@ -131,11 +132,11 @@ if (window.location.href.indexOf('quote') !== -1) {
     }
 
 
-    function validateFormData(name, address, phone, creditScore, owner) {
-      resetFormStyling();
-      var isValid = true;
+    function validateFormData(name, address, phone, creditScore, owner, businessName) {
+        resetFormStyling();
+        var isValid = true;
 
-      if (!name || !address || !phone || creditScore === "Credit Score" || !owner) {
+        if (!name || !address || !phone || creditScore === "Credit Score" || !owner || (isCommercial() && !businessName)) {
         displayError("Please complete all fields.");
         highlightIncompleteFields({
           name,

@@ -106,8 +106,8 @@
        updateSolarPanels(map, setIndex - 1)
      })
      const sliderContainer = document.getElementById('solarPanelSliderContainer');
-     sliderContainer.style.display = 'flex'
      map.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(sliderContainer)
+    //  sliderContainer.style.display = 'flex'
    }
  }
  window.setPageData = setPageData
@@ -375,6 +375,9 @@
    document.getElementById('app').style.display = 'block'
    document.getElementById('quote3').style.display = 'none'
    document.getElementById('modal').style.display = 'none'
+   setTimeout(() => {
+    document.getElementById('solarPanelSliderContainer').style.display = 'flex'
+   }, 1000);
  }
 
  function hidePage() {
@@ -451,11 +454,12 @@ window.getCurrentBill = getCurrentBill
 const urlParams = new URLSearchParams(window.location.search)
 document.addEventListener("DOMContentLoaded", function() {
 if (isCommercial()) {
-    document.getElementById('commercial').style.display = 'block';
-    document.getElementById('modal').style.display = 'none';
-    document.getElementById('app').style.display = 'none';
-    document.querySelector('.modal1_content-wrapper').style.display = 'block'
-} else if (urlParams.has('hash') && window.location.href.indexOf('quote') !== -1) {
+    document.getElementById('businessName').style.display = 'block';
+    // document.getElementById('modal').style.display = 'none';
+    // document.getElementById('app').style.display = 'none';
+    // document.querySelector('.modal1_content-wrapper').style.display = 'block'
+}  
+if (urlParams.has('hash') && window.location.href.indexOf('quote') !== -1) {
     // showPage()
     try {
     const lat = getCookie('lat');

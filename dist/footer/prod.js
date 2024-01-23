@@ -12,6 +12,7 @@
         document.getElementById("propertyForm").addEventListener("submit", function(event) {
           event.preventDefault();
 
+          var businessName = document.getElementById('businessName').value
           var name = document.getElementById("name").value;
           var address = document.getElementById("formAddress").value;
           var phone = document.getElementById("phone").value;
@@ -19,7 +20,7 @@
           var owner = document.getElementById("owner").checked;
           var current_bill = document.querySelector('input#bill').value
 
-          if (validateFormData(name, address, phone, creditScore, owner)) {
+          if (validateFormData(name, address, phone, creditScore, owner, businessName)) {
             var formData = {
               name,
               address,
@@ -133,11 +134,11 @@
       }
 
 
-      function validateFormData(name, address, phone, creditScore, owner) {
+      function validateFormData(name, address, phone, creditScore, owner, businessName) {
         resetFormStyling();
         var isValid = true;
 
-        if (!name || !address || !phone || creditScore === "Credit Score" || !owner) {
+        if (!name || !address || !phone || creditScore === "Credit Score" || !owner || (isCommercial() && !businessName)) {
           displayError("Please complete all fields.");
           highlightIncompleteFields({
             name,
@@ -533,8 +534,8 @@
           updateSolarPanels(map, setIndex - 1)
         })
         const sliderContainer = document.getElementById('solarPanelSliderContainer');
-        sliderContainer.style.display = 'flex'
         map.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(sliderContainer)
+        //  sliderContainer.style.display = 'flex'
       }
     }
     window.setPageData = setPageData
@@ -803,6 +804,9 @@
       document.getElementById('app').style.display = 'block'
       document.getElementById('quote3').style.display = 'none'
       document.getElementById('modal').style.display = 'none'
+      setTimeout(() => {
+        document.getElementById('solarPanelSliderContainer').style.display = 'flex'
+      }, 1000);
     }
 
     function hidePage() {
@@ -930,11 +934,12 @@
     const urlParams = new URLSearchParams(window.location.search)
     document.addEventListener("DOMContentLoaded", function() {
       if (isCommercial()) {
-        document.getElementById('commercial').style.display = 'block';
-        document.getElementById('modal').style.display = 'none';
-        document.getElementById('app').style.display = 'none';
-        document.querySelector('.modal1_content-wrapper').style.display = 'block'
-      } else if (urlParams.has('hash') && window.location.href.indexOf('quote') !== -1) {
+        document.getElementById('businessName').style.display = 'block';
+        // document.getElementById('modal').style.display = 'none';
+        // document.getElementById('app').style.display = 'none';
+        // document.querySelector('.modal1_content-wrapper').style.display = 'block'
+      }
+      if (urlParams.has('hash') && window.location.href.indexOf('quote') !== -1) {
         // showPage()
         try {
           const lat = getCookie('lat');
