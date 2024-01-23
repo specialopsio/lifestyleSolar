@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", function() {
+  if (window.location.href.indexOf('quote') !== -1) {
   // Function to determine if the device is desktop
   function isDesktop() {
     return window.matchMedia('(pointer:fine)').matches;
@@ -67,4 +68,5 @@ document.addEventListener("DOMContentLoaded", function() {
     // Add an event listener for mouseout on desktop
     document.addEventListener('mouseout', showExitIntent);
   }
+}
 });

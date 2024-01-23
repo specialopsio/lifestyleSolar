@@ -1,5 +1,3 @@
-// code to run the survey and NPS scripts on /feedback page
-
 if (window.location.href.indexOf('feedback') !== -1) {
   document.addEventListener("DOMContentLoaded", function() {
     const params = new URLSearchParams(window.location.search);
@@ -29,17 +27,12 @@ if (window.location.href.indexOf('feedback') !== -1) {
     document.getElementById("formId").value = formId;
 
     // Display the relevant form section
-    if (formId === "1") {
-      document.getElementById("preInstall").classList.remove("hidden");
-      initPreInstallValidation();
-    } else {
+    if (formId != "1") {
       document.getElementById("nps").classList.remove("hidden");
       initNPSValidation();
-    }
+    } 
 
-    if (formId === "1") {
-      document.getElementById("heading").innerText = "Pre-Install Survey";
-    } else if (formId === "0") {
+    if (formId === "0") {
       document.getElementById("heading").innerText = "We miss hearing from you!";
     } else if (formId === "10") {
       document.getElementById("heading").innerText = "How was your consultation?";
@@ -49,13 +42,6 @@ if (window.location.href.indexOf('feedback') !== -1) {
       document.getElementById("heading").innerText = "Enjoying solar so far?";
     } else {
       document.getElementById("heading").innerText = customHeading;
-    }
-
-    function initPreInstallValidation() {
-      // Initialize event listeners for each select element in the pre-install form
-      document.querySelectorAll("#preInstall select").forEach((select) => {
-        select.addEventListener("change", validatePreInstallForm);
-      });
     }
 
     function initNPSValidation() {
@@ -112,29 +98,6 @@ if (window.location.href.indexOf('feedback') !== -1) {
       });
     }
 
-    function validatePreInstallForm() {
-      if (submitPressed) {
-        let isValid = true;
-        document.querySelectorAll("#preInstall select").forEach((select) => {
-          const label = document.querySelector(`label[for='${select.id}']`);
-          // Check if the select value is the default placeholder
-          if (select.value === "Select your answer") {
-            isValid = false;
-            label.classList.add("text-red-600");
-            document.getElementById("error").classList.remove("opacity-0");
-          } else {
-            label.classList.remove("text-red-600");
-          }
-        });
-
-        // Hide the error message if the form is valid
-        if (isValid) {
-          document.getElementById("error").classList.add("opacity-0");
-        }
-        return isValid;
-      }
-    }
-
     function validateNPSForm() {
       const selected = document.querySelector(".rating-scale .selected");
       const label = document.querySelector("label[for='rating']");
@@ -158,7 +121,7 @@ if (window.location.href.indexOf('feedback') !== -1) {
         submitPressed = true
         event.preventDefault();
         // Determine which form to validate based on a condition (formId)
-        let valid = formId === "1" ? validatePreInstallForm() : validateNPSForm();
+        let valid = formId === "1" ? true : validateNPSForm();
 
         // If the form is valid, get the form data and post it
         if (valid) {
@@ -198,10 +161,10 @@ if (window.location.href.indexOf('feedback') !== -1) {
         document.getElementById("preInstall").classList.contains("hidden") ===
         false
       ) {
-        formData.motivation = document.getElementById("motivation").value;
-        formData.blocker = document.getElementById("blocker").value;
-        formData.knowledge = document.getElementById("knowledge").value;
-        formData.concern = document.getElementById("concern").value;
+        formData.motivation = window.form_array.motivation;
+        formData.blocker = window.form_array.blocker;
+        formData.knowledge = window.form_array.knowledge;
+        formData.concern = window.form_array.concern;
         formData.comments = document.getElementById("comments").value;
       } else {
         const selectedRating = document.querySelector(".rating-scale .selected");
