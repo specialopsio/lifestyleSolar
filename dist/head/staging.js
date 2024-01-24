@@ -1647,7 +1647,7 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
       "rounded-md"
     );
     backButton.onclick = () => navigateToStep(stepIndex - 1);
-    app.appendChild(backButton)
+    stepDiv.appendChild(backButton)
 
     const label = document.createElement("label");
     label.setAttribute("for", "comments");
