@@ -1304,7 +1304,7 @@
           }
     
           // Add an event listener for mouseout on desktop
-          document.addEventListener('mouseout', showExitIntent);
+          // document.addEventListener('mouseout', showExitIntent);
         }
       }
     });
