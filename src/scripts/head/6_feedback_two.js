@@ -186,6 +186,7 @@ window.form_array = {
   // Function to create the final step with a text area and submit button
   function createFinalStep(stepIndex) {
     const stepDiv = document.createElement("div");
+    const app = document.getElementById("app");
     stepDiv.id = `step${stepIndex}`;
     stepDiv.classList.add("step", "hidden", "flex", "flex-col", "gap-4");
     const backButton = document.createElement("button");
@@ -201,7 +202,7 @@ window.form_array = {
       "rounded-md"
     );
     backButton.onclick = () => navigateToStep(stepIndex - 1);
-    stepDiv.appendChild(backButton)
+    app.appendChild(backButton)
 
     const label = document.createElement("label");
     label.setAttribute("for", "comments");
