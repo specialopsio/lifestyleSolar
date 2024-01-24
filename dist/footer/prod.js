@@ -1242,10 +1242,10 @@
         function isDesktop() {
           return window.matchMedia('(pointer:fine)').matches;
         }
-
+    
         // Function to initialize Calendly widget
-        function initCalendly() {
-          if (!window.calendly_initialized) {
+        function initCalendly(is_timeout=false) {
+          if (!window.calendly_initialized && is_timeout || !is_timeout) {
             Calendly.initPopupWidget({
               url: 'https://calendly.com/lifestyle-solar/discoverycall?hide_event_type_details=1&hide_gdpr_banner=1&text_color=0f0f0f&primary_color=00ba81' + `&location=${document.getElementById('phone').value}`,
               prefill: {
@@ -1257,7 +1257,7 @@
           }
         }
         window.initCalendly = initCalendly
-
+    
         // Function to check the required conditions
         function checkConditions() {
           var calendlyClicked = document.getElementById('calendlyLink');
@@ -1266,7 +1266,7 @@
           return !calendlyClicked.clicked && urlContainsQuote && exitCTAButtonVisible;
         }
         window.checkConditions = checkConditions
-
+    
         function startCalendlyTimer() {
           var countdownElement = document.getElementById('loadingCountdownNumber');
           if (countdownElement) {
@@ -1279,20 +1279,20 @@
               }
             }, 1000); // 1000 milliseconds = 1 second
           }
-
+    
           setTimeout(function() {
             if (checkConditions()) {
-              initCalendly();
+              initCalendly(true);
             }
           }, 10000); // 10000 milliseconds = 10 seconds
         }
         window.startCalendlyTimer = startCalendlyTimer
-
+    
         // Event listener to set 'clicked' property on the calendlyClicked element
         document.getElementById('calendlyLink').addEventListener('click', function() {
           this.clicked = true;
         });
-
+    
         // Only add mouseout listener on desktop devices
         if (isDesktop()) {
           // Function to detect exit intent on desktop
@@ -1302,7 +1302,7 @@
               initCalendly();
             }
           }
-
+    
           // Add an event listener for mouseout on desktop
           document.addEventListener('mouseout', showExitIntent);
         }

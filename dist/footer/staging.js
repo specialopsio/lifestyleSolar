@@ -1243,8 +1243,8 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
       }
 
       // Function to initialize Calendly widget
-      function initCalendly() {
-        if (!window.calendly_initialized) {
+      function initCalendly(is_timeout=false) {
+        if (!window.calendly_initialized && is_timeout || !is_timeout) {
           Calendly.initPopupWidget({
             url: 'https://calendly.com/lifestyle-solar/discoverycall?hide_event_type_details=1&hide_gdpr_banner=1&text_color=0f0f0f&primary_color=00ba81' + `&location=${document.getElementById('phone').value}`,
             prefill: {
@@ -1281,7 +1281,7 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
 
         setTimeout(function() {
           if (checkConditions()) {
-            initCalendly();
+            initCalendly(true);
           }
         }, 10000); // 10000 milliseconds = 10 seconds
       }
