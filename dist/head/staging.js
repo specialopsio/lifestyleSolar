@@ -1583,7 +1583,6 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
       textSpan.classList.add("w-full", "pr-6");
       textSpan.textContent = option.text;
       button.appendChild(textSpan);
-
       button.classList.add(
         "option-button",
         "text-center",
@@ -1611,6 +1610,7 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
       const backButton = document.createElement("button");
       backButton.type = "button";
       backButton.textContent = "Back";
+      backButton.setAttribute("data-back-button", stepIndex);
       backButton.classList.add(
         "back-button",
         "self-start",
@@ -1623,13 +1623,12 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
         "mt-4",
         "rounded-md",
         "cursor-pointer",
-        "absolute",
-        "left-[47%]",
-        "bottom-[19rem]",
-        "z-10"
+        "hidden"
       );
       backButton.onclick = () => navigateToStep(stepIndex - 1);
-      stepDiv.appendChild(backButton);
+      const appElement = document.getElementById("app");
+      appElement.parentNode.insertBefore(backButton, appElement.nextSibling);
+      // stepDiv.appendChild(backButton);
     }
 
     return stepDiv;
@@ -1639,7 +1638,6 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
   // Function to create the final step with a text area and submit button
   function createFinalStep(stepIndex) {
     const stepDiv = document.createElement("div");
-    const app = document.getElementById("app");
     stepDiv.id = `step${stepIndex}`;
     stepDiv.classList.add("step", "hidden", "flex", "flex-col", "gap-4");
 
@@ -1659,7 +1657,7 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
       "border-2",
       "border-gray-300",
       "rounded-md",
-      "h-32"
+      "h-32",
     );
     stepDiv.appendChild(textarea);
 
@@ -1682,6 +1680,7 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
     const backButton = document.createElement("button");
     backButton.textContent = "Back";
     backButton.type = "button";
+    backButton.setAttribute("data-back-button", stepIndex);
     backButton.classList.add(
       "back-button",
       "self-start",
@@ -1694,13 +1693,12 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
       "mt-4",
       "rounded-md",
       "cursor-pointer",
-      "absolute",
-      "left-[47%]",
-      "bottom-[21rem]",
-      "z-10"
+      "hidden"
     );
     backButton.onclick = () => navigateToStep(stepIndex - 1);
-    stepDiv.appendChild(backButton)
+    // stepDiv.appendChild(backButton)
+    const appElement = document.getElementById("app");
+    appElement.parentNode.insertBefore(backButton, appElement.nextSibling);
     return stepDiv;
   }
 
@@ -1710,6 +1708,11 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
       .querySelectorAll(".step")
       .forEach((step) => step.classList.add("hidden"));
     document.getElementById(`step${stepIndex}`).classList.remove("hidden");
+    document.querySelectorAll("[data-back-button]").forEach((button) => button.classList.add("hidden"));
+    const backButton = document.querySelector(`[data-back-button="${stepIndex}"]`);
+    if (backButton) {
+      backButton.classList.remove("hidden");
+    }
     if (stepIndex - 1 === 4) {
       document.querySelector('button.w-full.mt-4.text-white.rounded-md.py-2.px-4').classList.remove('hidden')
     } else {
