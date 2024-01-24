@@ -68,7 +68,7 @@ let selectedPlaceHero
       if (button && button.classList.contains("disabled")) {
         if ((area === 'hero' && window.selectedPlaceHero) || (area === 'nav' && window.selectedPlaceNav) || (area === 'cta' && window.selectedPlaceCTA) || (area === 'exit' && window.selectedPlaceExit)) {
           button.classList.remove("disabled")
-          button.classList.remove("is-yellow")
+          button.classList.add("is-yellow")
         }
       }
     }
