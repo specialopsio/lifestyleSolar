@@ -1703,6 +1703,7 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
       const button = document.querySelector('button.w-full.mt-4.text-white.rounded-md.py-2.px-4')
       button.classList.add('hidden')
       const form = document.getElementById("preInstall");
+      form.classList.remove('hidden');
       formSteps.forEach((step, index) =>
         form.appendChild(createSelectableStep(step, index + 1))
       );

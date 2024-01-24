@@ -263,6 +263,7 @@ window.form_array = {
             const button = document.querySelector('button.w-full.mt-4.text-white.rounded-md.py-2.px-4')
             button.classList.add('hidden')
             const form = document.getElementById("preInstall");
+            form.classList.remove('hidden');
             formSteps.forEach((step, index) =>
               form.appendChild(createSelectableStep(step, index + 1))
             );
@@ -278,8 +279,6 @@ window.form_array = {
       
                 event.target.classList.add("selected");
                 window.form_array[event.target.tag_val] = event.target.text_val
-                console.debug("event", event.target.index_val)
-                console.debug("window form", window.form_array)
                 setTimeout(
                   () =>
                     navigateToStep(
