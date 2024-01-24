@@ -319,3 +319,8 @@ input[type="text"],
 textarea,
 select
 {font-size: 16px; -webkit-appearance: none; -moz-appearance: none; }
+.selected {
+  border-color: #00ba81;
+  color: #00ba81; 
+  border-color:#00BA81 !important;
+}

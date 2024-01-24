@@ -109,78 +109,86 @@ window.form_array = {
   function createSelectableStep(stepData, stepIndex) {
     console.debug("STEP")
     const stepDiv = document.createElement("div");
-    if (stepIndex > 1) {
-        const backButton = document.createElement("button");
-        backButton.type = "button";
-        backButton.textContent = "Back";
-        backButton.classList.add(
-            "back-button",
-            "self-start",
-            "pb-2",
-            "px-4",
-            "border-2",
-            "border-gray-300",
-            "rounded-md"
-        );
-        backButton.onclick = () => navigateToStep(stepIndex - 1);
-        stepDiv.appendChild(backButton);
-    }
     stepDiv.id = `step${stepIndex}`;
     stepDiv.classList.add("step", "flex", "flex-col", "gap-2");
     if (stepIndex !== 1) {
-        stepDiv.classList.add("hidden");
+      stepDiv.classList.add("hidden");
     }
-
+    
     const label = document.createElement("label");
     label.setAttribute("for", stepData.id);
     label.textContent = stepData.question;
     label.classList.add("block", "text-lg", "font-bold", "mb-4", "text-center");
     stepDiv.appendChild(label);
-
+    
     stepData.options.forEach((option) => {
-        const button = document.createElement("button");
-        button.type = "button";
-        button.index_val = stepIndex;
-        button.dataset.value = option.value;
-        button.text_val = option.text;
-        button.tag_val = stepData.id;
-        const svgContainer = document.createElement("span");
-        svgContainer.innerHTML = option.svg;
-        svgContainer.classList.add("svg-icon");
-        button.appendChild(svgContainer);
-
-        // Wrap the button text in a span with the specified classes
-        const textSpan = document.createElement("span");
-        textSpan.classList.add("w-full", "pr-6");
-        textSpan.textContent = option.text;
-        button.appendChild(textSpan);
-
-        button.classList.add(
-            "option-button",
-            "text-center",
-            "w-full", // Changed from max-w-100 to w-full
-            "flex",
-            "items-center",
-            "justify-center",
-            "gap-2",
-            "py-4",
-            "px-4",
-            "border-2",
-            "border-gray-300",
-            "rounded-md",
-            "text-left",
-            "border-solid",
-            "border-2",
-            "border-gray-100",
-            "hover:border-[#00BA81]",
-            "hover:text-[#00BA81]",
-            "pointer"
+      const button = document.createElement("button");
+      button.type = "button";
+      button.index_val = stepIndex;
+      button.dataset.value = option.value;
+      button.text_val = option.text;
+      button.tag_val = stepData.id;
+      const svgContainer = document.createElement("span");
+      svgContainer.innerHTML = option.svg;
+      svgContainer.classList.add("svg-icon");
+      button.appendChild(svgContainer);
+      
+      // Wrap the button text in a span with the specified classes
+      const textSpan = document.createElement("span");
+      textSpan.classList.add("w-full", "pr-6");
+      textSpan.textContent = option.text;
+      button.appendChild(textSpan);
+      
+      button.classList.add(
+        "option-button",
+        "text-center",
+        "w-full", // Changed from max-w-100 to w-full
+        "flex",
+        "items-center",
+        "justify-center",
+        "gap-2",
+        "py-4",
+        "px-4",
+        "border-2",
+        "border-gray-300",
+        "rounded-md",
+        "text-left",
+        "border-solid",
+        "border-2",
+        "border-gray-100",
+        "hover:border-[#00BA81]",
+        "hover:text-[#00BA81]",
+        "pointer"
         );
         stepDiv.appendChild(button);
-    });
+      });
+      if (stepIndex > 1) {
+        const backButton = document.createElement("button");
+        backButton.type = "button";
+        backButton.textContent = "Back";
+        backButton.classList.add(
+          "back-button",
+          "self-start",
+          "pb-2",
+          "px-4",
+          "border-2",
+          "border-gray-300",
+          "rounded-md",
+          "m-auto",
+          "mt-4",
+          "rounded-md",
+          "cursor-pointer",
+          "absolute",
+          "left-[48%]",
+          "bottom-8",
+          "z-10"
+        );
+        backButton.onclick = () => navigateToStep(stepIndex - 1);
+        stepDiv.appendChild(backButton);
+      }
 
     return stepDiv;
-}
+  }
 
 
   // Function to create the final step with a text area and submit button
@@ -189,20 +197,6 @@ window.form_array = {
     const app = document.getElementById("app");
     stepDiv.id = `step${stepIndex}`;
     stepDiv.classList.add("step", "hidden", "flex", "flex-col", "gap-4");
-    const backButton = document.createElement("button");
-    backButton.textContent = "Back";
-    backButton.type = "button";
-    backButton.classList.add(
-      "back-button",
-      "self-start",
-      "pb-2",
-      "px-4",
-      "border-2",
-      "border-gray-300",
-      "rounded-md"
-    );
-    backButton.onclick = () => navigateToStep(stepIndex - 1);
-    stepDiv.appendChild(backButton)
 
     const label = document.createElement("label");
     label.setAttribute("for", "comments");
@@ -240,6 +234,28 @@ window.form_array = {
 
     stepDiv.insertBefore(textarea);
 
+    const backButton = document.createElement("button");
+    backButton.textContent = "Back";
+    backButton.type = "button";
+    backButton.classList.add(
+      "back-button",
+      "self-start",
+      "pb-2",
+      "px-4",
+      "border-2",
+      "border-gray-300",
+      "rounded-md",
+      "m-auto",
+      "mt-4",
+      "rounded-md",
+      "cursor-pointer",
+      "absolute",
+      "left-[48%]",
+      "bottom-8",
+      "z-10"
+    );
+    backButton.onclick = () => navigateToStep(stepIndex - 1);
+    stepDiv.appendChild(backButton)
     return stepDiv;
   }
 
@@ -272,6 +288,7 @@ window.form_array = {
       button.classList.add('hidden')
       const form = document.getElementById("preInstall");
       form.classList.remove('hidden');
+      document.getElementById('heading').textContent = 'Pre-Install survey'
       formSteps.forEach((step, index) =>
         form.appendChild(createSelectableStep(step, index + 1))
       );
