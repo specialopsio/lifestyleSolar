@@ -171,7 +171,7 @@ window.form_array = {
         "border-solid",
         "border-2",
         "border-gray-100",
-        "hover:border[#00BA81]",
+        "hover:border-[#00BA81]",
         "hover:text-[#00BA81]",
         "pointer"
       );

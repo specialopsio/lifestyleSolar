@@ -1616,7 +1616,7 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
         "border-solid",
         "border-2",
         "border-gray-100",
-        "hover:border[#00BA81]",
+        "hover:border-[#00BA81]",
         "hover:text-[#00BA81]",
         "pointer"
       );
