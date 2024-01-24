@@ -1571,7 +1571,7 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
       stepDiv.appendChild(backButton);
     }
     stepDiv.id = `step${stepIndex}`;
-    stepDiv.classList.add("step", "flex", "flex-col", "gap-4");
+    stepDiv.classList.add("step", "flex", "flex-col", "gap-2");
     if (stepIndex !== 1) {
       stepDiv.classList.add("hidden");
     }
