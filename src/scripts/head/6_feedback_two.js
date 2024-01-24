@@ -250,8 +250,8 @@ window.form_array = {
       "rounded-md",
       "cursor-pointer",
       "absolute",
-      "left-[48%]",
-      "bottom-8",
+      "left-[47%]",
+      "bottom-[19rem]",
       "z-10"
     );
     backButton.onclick = () => navigateToStep(stepIndex - 1);
