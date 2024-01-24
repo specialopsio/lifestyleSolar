@@ -1374,6 +1374,7 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
         // Hide the form container
         document.getElementById("app").classList.add("hidden");
         document.getElementById("surveyHeading").classList.add("hidden");
+        document.getElementById("formContainer").classList.add("hidden");
         document.getElementById("error").classList.add("hidden");
         // Show the success message
         document.getElementById("surveySuccess").classList.remove("hidden");
