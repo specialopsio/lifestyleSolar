@@ -106,31 +106,29 @@ window.form_array = {
     },
   ];
 
-  // Function to create a step with selectable options
   function createSelectableStep(stepData, stepIndex) {
     console.debug("STEP")
     const stepDiv = document.createElement("div");
     if (stepIndex > 1) {
-      const backButton = document.createElement("button");
-      backButton.type = "button";
-      backButton.textContent = "Back";
-      backButton.classList.add(
-        "back-button",
-        "self-start",
-        "pb-2",
-        "px-4",
-        "border-2",
-        "border-gray-300",
-        "rounded-md"
-      );
-      backButton.onclick = () => navigateToStep(stepIndex - 1);
-      stepDiv.appendChild(backButton);
+        const backButton = document.createElement("button");
+        backButton.type = "button";
+        backButton.textContent = "Back";
+        backButton.classList.add(
+            "back-button",
+            "self-start",
+            "pb-2",
+            "px-4",
+            "border-2",
+            "border-gray-300",
+            "rounded-md"
+        );
+        backButton.onclick = () => navigateToStep(stepIndex - 1);
+        stepDiv.appendChild(backButton);
     }
-    // Add back button if not the first step
     stepDiv.id = `step${stepIndex}`;
     stepDiv.classList.add("step", "flex", "flex-col", "gap-4");
     if (stepIndex !== 1) {
-      stepDiv.classList.add("hidden");
+        stepDiv.classList.add("hidden");
     }
 
     const label = document.createElement("label");
@@ -140,46 +138,50 @@ window.form_array = {
     stepDiv.appendChild(label);
 
     stepData.options.forEach((option) => {
-      const button = document.createElement("button");
-      button.type = "button";
-      button.index_val = stepIndex;
-      button.dataset.value = option.value;
-      button.text_val = option.text;
-      button.tag_val = stepData.id;
-      const svgContainer = document.createElement("span");
-      svgContainer.innerHTML = option.svg;
-      svgContainer.classList.add("svg-icon");
-      button.appendChild(svgContainer);
+        const button = document.createElement("button");
+        button.type = "button";
+        button.index_val = stepIndex;
+        button.dataset.value = option.value;
+        button.text_val = option.text;
+        button.tag_val = stepData.id;
+        const svgContainer = document.createElement("span");
+        svgContainer.innerHTML = option.svg;
+        svgContainer.classList.add("svg-icon");
+        button.appendChild(svgContainer);
 
-      const textNode = document.createTextNode(option.text);
-      button.appendChild(textNode);
+        // Wrap the button text in a span with the specified classes
+        const textSpan = document.createElement("span");
+        textSpan.classList.add("w-full", "pr-6");
+        textSpan.textContent = option.text;
+        button.appendChild(textSpan);
 
-      button.classList.add(
-        "option-button",
-        "text-center",
-        "max-w-100",
-        "flex",
-        "items-center",
-        "justify-center",
-        "gap-2",
-        "py-4",
-        "px-4",
-        "border-2",
-        "border-gray-300",
-        "rounded-md",
-        "text-left",
-        "border-solid",
-        "border-2",
-        "border-gray-100",
-        "hover:border-[#00BA81]",
-        "hover:text-[#00BA81]",
-        "pointer"
-      );
-      stepDiv.appendChild(button);
+        button.classList.add(
+            "option-button",
+            "text-center",
+            "w-full", // Changed from max-w-100 to w-full
+            "flex",
+            "items-center",
+            "justify-center",
+            "gap-2",
+            "py-4",
+            "px-4",
+            "border-2",
+            "border-gray-300",
+            "rounded-md",
+            "text-left",
+            "border-solid",
+            "border-2",
+            "border-gray-100",
+            "hover:border-[#00BA81]",
+            "hover:text-[#00BA81]",
+            "pointer"
+        );
+        stepDiv.appendChild(button);
     });
 
     return stepDiv;
-  }
+}
+
 
   // Function to create the final step with a text area and submit button
   function createFinalStep(stepIndex) {

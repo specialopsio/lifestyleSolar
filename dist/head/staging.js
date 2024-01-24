@@ -1551,7 +1551,6 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
     },
   ];
 
-  // Function to create a step with selectable options
   function createSelectableStep(stepData, stepIndex) {
     console.debug("STEP")
     const stepDiv = document.createElement("div");
@@ -1571,7 +1570,6 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
       backButton.onclick = () => navigateToStep(stepIndex - 1);
       stepDiv.appendChild(backButton);
     }
-    // Add back button if not the first step
     stepDiv.id = `step${stepIndex}`;
     stepDiv.classList.add("step", "flex", "flex-col", "gap-4");
     if (stepIndex !== 1) {
@@ -1596,13 +1594,16 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
       svgContainer.classList.add("svg-icon");
       button.appendChild(svgContainer);
 
-      const textNode = document.createTextNode(option.text);
-      button.appendChild(textNode);
+      // Wrap the button text in a span with the specified classes
+      const textSpan = document.createElement("span");
+      textSpan.classList.add("w-full", "pr-6");
+      textSpan.textContent = option.text;
+      button.appendChild(textSpan);
 
       button.classList.add(
         "option-button",
         "text-center",
-        "max-w-100",
+        "w-full", // Changed from max-w-100 to w-full
         "flex",
         "items-center",
         "justify-center",
@@ -1625,6 +1626,7 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
 
     return stepDiv;
   }
+
 
   // Function to create the final step with a text area and submit button
   function createFinalStep(stepIndex) {
@@ -1714,7 +1716,6 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
       button.classList.add('hidden')
       const form = document.getElementById("preInstall");
       form.classList.remove('hidden');
-      document.getElementById('heading').textContent = 'Pre-Install survey'
       formSteps.forEach((step, index) =>
         form.appendChild(createSelectableStep(step, index + 1))
       );
