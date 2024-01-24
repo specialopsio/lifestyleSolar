@@ -200,7 +200,7 @@ window.form_array = {
 
     const label = document.createElement("label");
     label.setAttribute("for", "comments");
-    label.textContent = "Do you have any questions, comments, or concerns?";
+    label.textContent = "Any questions or comments?";
     label.classList.add("block", "text-lg", "font-bold", "mb-4", "text-center");
     stepDiv.appendChild(label);
 

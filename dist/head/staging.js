@@ -1559,13 +1559,13 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
     if (stepIndex !== 1) {
       stepDiv.classList.add("hidden");
     }
-    
+
     const label = document.createElement("label");
     label.setAttribute("for", stepData.id);
     label.textContent = stepData.question;
     label.classList.add("block", "text-lg", "font-bold", "mb-4", "text-center");
     stepDiv.appendChild(label);
-    
+
     stepData.options.forEach((option) => {
       const button = document.createElement("button");
       button.type = "button";
@@ -1577,13 +1577,13 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
       svgContainer.innerHTML = option.svg;
       svgContainer.classList.add("svg-icon");
       button.appendChild(svgContainer);
-      
+
       // Wrap the button text in a span with the specified classes
       const textSpan = document.createElement("span");
       textSpan.classList.add("w-full", "pr-6");
       textSpan.textContent = option.text;
       button.appendChild(textSpan);
-      
+
       button.classList.add(
         "option-button",
         "text-center",
@@ -1604,33 +1604,33 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
         "hover:border-[#00BA81]",
         "hover:text-[#00BA81]",
         "pointer"
-        );
-        stepDiv.appendChild(button);
-      });
-      if (stepIndex > 1) {
-        const backButton = document.createElement("button");
-        backButton.type = "button";
-        backButton.textContent = "Back";
-        backButton.classList.add(
-          "back-button",
-          "self-start",
-          "pb-2",
-          "px-4",
-          "border-2",
-          "border-gray-300",
-          "rounded-md",
-          "m-auto",
-          "mt-4",
-          "rounded-md",
-          "cursor-pointer",
-          "absolute",
-          "left-[47%]",
-          "bottom-[19rem]",
-          "z-10"
-        );
-        backButton.onclick = () => navigateToStep(stepIndex - 1);
-        stepDiv.appendChild(backButton);
-      }
+      );
+      stepDiv.appendChild(button);
+    });
+    if (stepIndex > 1) {
+      const backButton = document.createElement("button");
+      backButton.type = "button";
+      backButton.textContent = "Back";
+      backButton.classList.add(
+        "back-button",
+        "self-start",
+        "pb-2",
+        "px-4",
+        "border-2",
+        "border-gray-300",
+        "rounded-md",
+        "m-auto",
+        "mt-4",
+        "rounded-md",
+        "cursor-pointer",
+        "absolute",
+        "left-[47%]",
+        "bottom-[19rem]",
+        "z-10"
+      );
+      backButton.onclick = () => navigateToStep(stepIndex - 1);
+      stepDiv.appendChild(backButton);
+    }
 
     return stepDiv;
   }
@@ -1645,7 +1645,7 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
 
     const label = document.createElement("label");
     label.setAttribute("for", "comments");
-    label.textContent = "Do you have any questions, comments, or concerns?";
+    label.textContent = "Any questions or comments?";
     label.classList.add("block", "text-lg", "font-bold", "mb-4", "text-center");
     stepDiv.appendChild(label);
 
