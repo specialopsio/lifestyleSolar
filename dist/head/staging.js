@@ -1075,7 +1075,7 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
 
   // This function acquires the autocomplete value and slider data on button click
   function getAutocompleteValue(area) {
-    const selected_place = selectedPlace ? window.selectedPlace : area === 'hero' ? window.selectedPlaceHero : area === 'cta' ? window.selectedPlaceCTA : area === 'exit' ? window.selectedPlaceExit : window.selectedPlaceNav
+    const selected_place = window.selectedPlace ? window.selectedPlace : area === 'hero' ? window.selectedPlaceHero : area === 'cta' ? window.selectedPlaceCTA : area === 'exit' ? window.selectedPlaceExit : window.selectedPlaceNav
     const is_quote = window.location.pathname.match('/quote')
     if (is_quote) {
       if (selected_place) {
