@@ -322,7 +322,7 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
           encodedData.append(key, combinedData[key]);
         }
 
-        fetch("https://script.google.com/macros/s/AKfycbww4RZ-Wg4x7h-MChGnOxFmKWJSQpZSkfDYe2NLlvqI50eJVqy5DOo1zFwxHBj2GSFnbA/exec", {
+        fetch("https://script.google.com/macros/s/AKfycbx7-6jXhp-ECM7-I_7GlNwhVirwqLhBEcQeUq8dGcE59_1yDoaENdWou071KF1hXcdQgQ/exec", {
           method: "POST",
           headers: {
             "Content-Type": "application/x-www-form-urlencoded",
