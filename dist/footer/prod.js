@@ -256,7 +256,7 @@
         if(combinedData.phone === "1+ (555) 555-5555"){
           combinedData['test'] = true
         }
-        conbinedData['hash'] = window.hash_vals.hash
+        combinedData['hash'] = window.hash_vals.hash
         let hook_failed = false
         let fallback_failed = false
   
