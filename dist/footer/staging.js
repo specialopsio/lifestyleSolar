@@ -252,6 +252,9 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
         ...formData,
         ...utmParams
       };
+      handleFormSuccess()
+      return
+
       if(combinedData.phone === "1+ (555) 555-5555"){
         combinedData['test'] = true
       }
@@ -628,7 +631,9 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
         })
         const sliderContainer = document.getElementById('solarPanelSliderContainer');
         map.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(sliderContainer)
-        sliderContainer.style.display = 'flex'
+        setInterval(() => {
+          // sliderContainer.style.display = 'flex'
+        }, 2000);
       }
     }
   }
@@ -903,7 +908,7 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
     document.getElementById('quote3').style.display = 'none'
     document.getElementById('modal').style.display = 'none'
     setTimeout(() => {
-      if(window.hash_vals.roofSegmentStats){
+      if(window.hash_vals.roof_stats){
         document.getElementById('solarPanelSliderContainer').style.display = 'flex'
       }
     }, 1000);

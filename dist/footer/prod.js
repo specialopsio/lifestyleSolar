@@ -630,7 +630,7 @@
           })
           const sliderContainer = document.getElementById('solarPanelSliderContainer');
           map.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(sliderContainer)
-          sliderContainer.style.display = 'flex'
+          // sliderContainer.style.display = 'flex'
         }
       }
     }
@@ -905,7 +905,7 @@
       document.getElementById('quote3').style.display = 'none'
       document.getElementById('modal').style.display = 'none'
       setTimeout(() => {
-        if(window.hash_vals.roofSegmentStats){
+        if(window.hash_vals.roof_stats){
           document.getElementById('solarPanelSliderContainer').style.display = 'flex'
         }
       }, 1000);

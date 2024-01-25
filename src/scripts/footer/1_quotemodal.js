@@ -257,7 +257,7 @@ if (window.location.href.indexOf('quote') !== -1) {
         combinedData['hash'] = window.hash_vals.hash
         let hook_failed = false
         let fallback_failed = false
-  
+
         fetch("https://hook.us1.make.com/8xt51qbsf0c2o58sd12w62gv5gypn8ms", {
             method: "POST",
             headers: {
