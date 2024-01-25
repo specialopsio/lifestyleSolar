@@ -525,16 +525,18 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
       const canvas = renderPalette(fluxData, maskData, color_range, 0, 1800)
       createGroundOverlay(canvas, fluxData.bounds, map)
       solarPotentialData = hash_vals.solar_potential
-      showSolarPotential(map)
-      document.getElementById('solarPanelSlider').max = solarPotentialData.solarPanelConfigs[solarPotentialData.solarPanelConfigs.length - 1].panelsCount
-      document.getElementById('solarPanelSlider').min = solarPotentialData.solarPanelConfigs[0].panelsCount
-      document.getElementById('solarPanelSlider').value = solarPotentialData.solarPanelConfigs[solarPotentialData.solarPanelConfigs.length - 1].panelsCount / 4
-      document.getElementById('solarPanelSlider').addEventListener('input', (event) => {
-        const setIndex = parseInt(event.target.value, 10)
-        updateSolarPanels(map, setIndex - 1)
-      })
-      const sliderContainer = document.getElementById('solarPanelSliderContainer');
-      map.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(sliderContainer)
+      const potential = showSolarPotential(map)
+      if(potential){
+        document.getElementById('solarPanelSlider').max = solarPotentialData.solarPanelConfigs[solarPotentialData.solarPanelConfigs.length - 1].panelsCount
+        document.getElementById('solarPanelSlider').min = solarPotentialData.solarPanelConfigs[0].panelsCount
+        document.getElementById('solarPanelSlider').value = solarPotentialData.solarPanelConfigs[solarPotentialData.solarPanelConfigs.length - 1].panelsCount / 4
+        document.getElementById('solarPanelSlider').addEventListener('input', (event) => {
+          const setIndex = parseInt(event.target.value, 10)
+          updateSolarPanels(map, setIndex - 1)
+        })
+        const sliderContainer = document.getElementById('solarPanelSliderContainer');
+        map.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(sliderContainer)
+      }
       //  sliderContainer.style.display = 'flex'
     }
   }
@@ -602,6 +604,9 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
   async function showSolarPotential(map) {
     window.solar_panels.forEach(panel => panel.setMap(null))
     const solarPotential = solarPotentialData
+    if(!solarPotential.roofSegmentStats){
+      return false
+    }
     const palette = createPalette(panelsPalette, 256)
     const minEnergy = solarPotential.solarPanels[solarPotential.solarPanels.length - 1].yearlyEnergyDcKwh
     const maxEnergy = solarPotential.solarPanels[0].yearlyEnergyDcKwh
@@ -805,7 +810,9 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
     document.getElementById('quote3').style.display = 'none'
     document.getElementById('modal').style.display = 'none'
     setTimeout(() => {
-      document.getElementById('solarPanelSliderContainer').style.display = 'flex'
+      if(window.hash_vals.roofSegmentStats){
+        document.getElementById('solarPanelSliderContainer').style.display = 'flex'
+      }
     }, 1000);
   }
 
