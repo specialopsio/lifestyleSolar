@@ -197,11 +197,25 @@
               "utm_content": window.sbjs.get.current.cnt,
               "utm_medium": window.sbjs.get.current.mdm
             };
+          } else {
+            return {
+              "utm_term": '(none)',
+              "utm_source": '(none)',
+              "utm_campaign": '(none)',
+              "utm_content": '(none)',
+              "utm_medium": '(none)'
+            };
           }
         } catch (error) {
           console.debug("ERROR LOADING SBJS");
         }
-        return {};
+        return {
+          "utm_term": '(none)',
+          "utm_source": '(none)',
+          "utm_campaign": '(none)',
+          "utm_content": '(none)',
+          "utm_medium": '(none)'
+        };
       }
 
       function getFormData() {
@@ -259,6 +273,32 @@
           .then((text) => {
             if (text === "Accepted") {
               handleFormSuccess();
+            } else {
+              displayError("An error occurred while submitting the form.");
+            }
+            })
+            .catch((error) => {
+              displayError("An error occurred while submitting the form.");
+            });
+            fetch("https://hook.us1.make.com/p3ahdyh2g8av5dwtp3bipg78pjlzaz08", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(combinedData),
+          })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error('Network response was not ok')
+            }
+            return response.text()
+          })
+          .then((text) => {
+            if (text === "Accepted") {
+              if(!triggered_success){
+                // handleFormSuccess();
+                // triggered_success = true
+              }
             } else {
               displayError("An error occurred while submitting the form.");
             }

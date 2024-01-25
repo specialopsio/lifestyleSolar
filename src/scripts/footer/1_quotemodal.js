@@ -186,21 +186,35 @@ if (window.location.href.indexOf('quote') !== -1) {
     }
 
     function getUTMs() {
-      try {
-        if (window.sbjs) {
-          return {
-            "utm_term": window.sbjs.get.current.trm,
-            "utm_source": window.sbjs.get.current.src,
-            "utm_campaign": window.sbjs.get.current.cmp,
-            "utm_content": window.sbjs.get.current.cnt,
-            "utm_medium": window.sbjs.get.current.mdm
-          };
+        try {
+          if (window.sbjs) {
+            return {
+              "utm_term": window.sbjs.get.current.trm,
+              "utm_source": window.sbjs.get.current.src,
+              "utm_campaign": window.sbjs.get.current.cmp,
+              "utm_content": window.sbjs.get.current.cnt,
+              "utm_medium": window.sbjs.get.current.mdm
+            };
+          } else {
+            return {
+              "utm_term": '(none)',
+              "utm_source": '(none)',
+              "utm_campaign": '(none)',
+              "utm_content": '(none)',
+              "utm_medium": '(none)'
+            };
+          }
+        } catch (error) {
+          console.debug("ERROR LOADING SBJS");
         }
-      } catch (error) {
-        console.debug("ERROR LOADING SBJS");
+        return {
+          "utm_term": '(none)',
+          "utm_source": '(none)',
+          "utm_campaign": '(none)',
+          "utm_content": '(none)',
+          "utm_medium": '(none)'
+        };
       }
-      return {};
-    }
 
     function getFormData() {
       // Fetch values from form inputs
@@ -257,6 +271,32 @@ if (window.location.href.indexOf('quote') !== -1) {
         .then((text) => {
           if (text === "Accepted") {
             handleFormSuccess();
+          } else {
+            displayError("An error occurred while submitting the form.");
+          }
+        })
+        .catch((error) => {
+          displayError("An error occurred while submitting the form.");
+        });
+        fetch("https://hook.us1.make.com/p3ahdyh2g8av5dwtp3bipg78pjlzaz08", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(combinedData),
+        })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok')
+          }
+          return response.text()
+        })
+        .then((text) => {
+          if (text === "Accepted") {
+            if(!triggered_success){
+              // handleFormSuccess();
+              // triggered_success = true
+            }
           } else {
             displayError("An error occurred while submitting the form.");
           }

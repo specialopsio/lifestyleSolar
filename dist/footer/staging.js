@@ -196,11 +196,25 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
             "utm_content": window.sbjs.get.current.cnt,
             "utm_medium": window.sbjs.get.current.mdm
           };
+        } else {
+          return {
+            "utm_term": '(none)',
+            "utm_source": '(none)',
+            "utm_campaign": '(none)',
+            "utm_content": '(none)',
+            "utm_medium": '(none)'
+          };
         }
       } catch (error) {
         console.debug("ERROR LOADING SBJS");
       }
-      return {};
+      return {
+        "utm_term": '(none)',
+        "utm_source": '(none)',
+        "utm_campaign": '(none)',
+        "utm_content": '(none)',
+        "utm_medium": '(none)'
+      };
     }
 
     function getFormData() {
@@ -241,6 +255,7 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
       if(combinedData.phone === "1+ (555) 555-5555"){
         combinedData['test'] = true
       }
+      let triggered_success = false
 
       fetch("https://hook.us1.make.com/8xt51qbsf0c2o58sd12w62gv5gypn8ms", {
           method: "POST",
@@ -258,6 +273,7 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
         .then((text) => {
           if (text === "Accepted") {
             handleFormSuccess();
+            triggered_success = true
           } else {
             displayError("An error occurred while submitting the form.");
           }
@@ -265,22 +281,47 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
         .catch((error) => {
           displayError("An error occurred while submitting the form.");
         });
-        //REPLACE WITH GOOGLE DATA
-        // fetch("XXXXXX", {
+        fetch("https://hook.us1.make.com/p3ahdyh2g8av5dwtp3bipg78pjlzaz08", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(combinedData),
+        })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok')
+          }
+          return response.text()
+        })
+        .then((text) => {
+          if (text === "Accepted") {
+            if(!triggered_success){
+              // handleFormSuccess();
+              // triggered_success = true
+            }
+          } else {
+            displayError("An error occurred while submitting the form.");
+          }
+        })
+        .catch((error) => {
+          displayError("An error occurred while submitting the form.");
+        });
+        // fetch("https://script.google.com/macros/s/AKfycbyQoCSNh7LTtmMvb1o6Db7ysJGe9hfUkmJSpoMCOxIZopbsKhS9knH5a7oiCNpSq-dT2A/exec", {
         //   method: "POST",
-        //   headers: {
-        //     "content-Type": "application/json",
-        //   },
-        //   body: JSON.stringify(combinedData)
+        //   // headers: {
+        //   //   "content-Type": "application/json",
+        //   // },
+        //   body: JSON.stringify({"parameters":combinedData})
         // })
         // .then((response) => {
         //   if(!response.ok){
         //     throw new Error("Network response to App Script failed")
         //   }
-        //   return response.text()
+        //   return response.json()
         // })
-        // .then((text) => {
-        //   if(text === "XXXX"){
+        // .then((json) => {
+        //   if(json.result === "success"){
         //     handleFormSuccess()
         //   } else {
         //     displayError("An error occurred while submitting the form.")
