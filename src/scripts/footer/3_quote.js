@@ -97,7 +97,7 @@
      const canvas = renderPalette(fluxData, maskData, color_range, 0, 1800)
      createGroundOverlay(canvas, fluxData.bounds, map)
      solarPotentialData = hash_vals.solar_potential
-     const potential = showSolarPotential(map)
+     const potential = await showSolarPotential(map)
       if(potential){
         document.getElementById('solarPanelSlider').max = solarPotentialData.solarPanelConfigs[solarPotentialData.solarPanelConfigs.length - 1].panelsCount
         document.getElementById('solarPanelSlider').min = solarPotentialData.solarPanelConfigs[0].panelsCount
@@ -108,8 +108,8 @@
         })
         const sliderContainer = document.getElementById('solarPanelSliderContainer');
         map.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(sliderContainer)
+        sliderContainer.style.display = 'flex'
       }
-    //  sliderContainer.style.display = 'flex'
    }
  }
  window.setPageData = setPageData
@@ -233,6 +233,7 @@
    } else {
      updateSolarPanels(map, 3)
    }
+   return true
  }
 
  function updateSolarPanels(map, setIndex) {
