@@ -252,8 +252,6 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
         ...formData,
         ...utmParams
       };
-      handleFormSuccess()
-      return
 
       if(combinedData.phone === "1+ (555) 555-5555"){
         combinedData['test'] = true
