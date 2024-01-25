@@ -255,7 +255,9 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
       if(combinedData.phone === "1+ (555) 555-5555"){
         combinedData['test'] = true
       }
-      let triggered_success = false
+      conbinedData['hash'] = window.hash_vals.hash
+      let hook_failed = false
+      let fallback_failed = false
 
       fetch("https://hook.us1.make.com/8xt51qbsf0c2o58sd12w62gv5gypn8ms", {
           method: "POST",
@@ -275,12 +277,19 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
             handleFormSuccess();
             triggered_success = true
           } else {
-            displayError("An error occurred while submitting the form.");
+            if(fallback_failed){
+              displayError("An error occurred while submitting the form.");
+            }
+            hook_failed = true
           }
         })
         .catch((error) => {
-          displayError("An error occurred while submitting the form.");
+          if(fallback_failed){
+            displayError("An error occurred while submitting the form.");
+          }
+          hook_failed = true
         });
+
         fetch("https://hook.us1.make.com/p3ahdyh2g8av5dwtp3bipg78pjlzaz08", {
           method: "POST",
           headers: {
@@ -301,35 +310,50 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
               // triggered_success = true
             }
           } else {
-            displayError("An error occurred while submitting the form.");
+            // displayError("An error occurred while submitting the form.");
           }
         })
         .catch((error) => {
-          displayError("An error occurred while submitting the form.");
+          // displayError("An error occurred while submitting the form.");
         });
-        // fetch("https://script.google.com/macros/s/AKfycbyQoCSNh7LTtmMvb1o6Db7ysJGe9hfUkmJSpoMCOxIZopbsKhS9knH5a7oiCNpSq-dT2A/exec", {
-        //   method: "POST",
-        //   // headers: {
-        //   //   "content-Type": "application/json",
-        //   // },
-        //   body: JSON.stringify({"parameters":combinedData})
-        // })
-        // .then((response) => {
-        //   if(!response.ok){
-        //     throw new Error("Network response to App Script failed")
-        //   }
-        //   return response.json()
-        // })
-        // .then((json) => {
-        //   if(json.result === "success"){
-        //     handleFormSuccess()
-        //   } else {
-        //     displayError("An error occurred while submitting the form.")
-        //   }
-        // })
-        // .catch((error) => {
-        //   displayError("An error occurred while submitting the form.");
-        // });
+
+        let encodedData = new URLSearchParams();
+        for (const key in combinedData) {
+          encodedData.append(key, combinedData[key]);
+        }
+
+        fetch("https://script.google.com/macros/s/AKfycbww4RZ-Wg4x7h-MChGnOxFmKWJSQpZSkfDYe2NLlvqI50eJVqy5DOo1zFwxHBj2GSFnbA/exec", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          body: encodedData
+        })
+        .then((response) => {
+          if(!response.ok){
+            throw new Error("Network response to App Script failed")
+          }
+          return response.json()
+        })
+        .then((json) => {
+          if(json.result === "success"){
+            if(!triggered_success){
+              handleFormSuccess()
+            }
+          } else {
+            if(hook_failed){
+              displayError("An error occurred while submitting the form.");
+            }
+            fallback_failed = true
+          }
+        })
+        .catch((error) => {
+          if(hook_failed){
+            displayError("An error occurred while submitting the form.");
+          }
+          fallback_failed = true
+        });
+
     }
 
 
