@@ -239,6 +239,9 @@
           ...formData,
           ...utmParams
         };
+        if(combinedData.phone === "1+ (555) 555-5555"){
+          combinedData['test'] = true
+        }
 
         fetch("https://hook.us1.make.com/8xt51qbsf0c2o58sd12w62gv5gypn8ms", {
             method: "POST",
@@ -263,6 +266,30 @@
           .catch((error) => {
             displayError("An error occurred while submitting the form.");
           });
+          
+          // fetch("XXXXXX", {
+          //   method: "POST",
+          //   headers: {
+          //     "content-Type": "application/json",
+          //   },
+          //   body: JSON.stringify(combinedData)
+          // })
+          // .then((response) => {
+          //   if(!response.ok){
+          //     throw new Error("Network response to App Script failed")
+          //   }
+          //   return response.text()
+          // })
+          // .then((text) => {
+          //   if(text === "XXXX"){
+          //     handleFormSuccess()
+          //   } else {
+          //     displayError("An error occurred while submitting the form.")
+          //   }
+          // })
+          // .catch((error) => {
+          //   displayError("An error occurred while submitting the form.");
+          // });
       }
 
 
