@@ -197,68 +197,76 @@ if (window.location.href.indexOf('quote') !== -1) {
             };
           } else {
             return {
-              "utm_term": '(none)',
-              "utm_source": '(none)',
-              "utm_campaign": '(none)',
-              "utm_content": '(none)',
-              "utm_medium": '(none)'
+              // "utm_term": '(none)',
+              // "utm_source": '(none)',
+              // "utm_campaign": '(none)',
+              // "utm_content": '(none)',
+              // "utm_medium": '(none)'
             };
           }
         } catch (error) {
           console.debug("ERROR LOADING SBJS");
         }
         return {
-          "utm_term": '(none)',
-          "utm_source": '(none)',
-          "utm_campaign": '(none)',
-          "utm_content": '(none)',
-          "utm_medium": '(none)'
+          // "utm_term": '(none)',
+          // "utm_source": '(none)',
+          // "utm_campaign": '(none)',
+          // "utm_content": '(none)',
+          // "utm_medium": '(none)'
         };
       }
 
-    function getFormData() {
-      // Fetch values from form inputs
-      const formData = {
-        ecl_data: window.hash_vals.ecl_data,
-        name: document.getElementById('name').value,
-        address: document.getElementById('formAddress').value,
-        phone: document.getElementById('phone').value,
-        credit_score: document.getElementById('credit-score').value,
-        bill: window.current_bill, // Get the value of the slider
-        owner: document.getElementById('owner').checked,
-        array_area: document.getElementById('array_area').value,
-        roof_area: document.getElementById('roof_area').value,
-        max_panels: document.getElementById('max_panels').value,
-        wattage: document.getElementById('wattage').value,
-        sunlight_hours: document.getElementById('sunlight_hours').value,
-        lat: document.getElementById('lat').value,
-        lon: document.getElementById('lon').value,
-        street: document.getElementById('formStreet').value,
-        city: document.getElementById('formCity').value,
-        state_short: document.getElementById('formStateShort').value,
-        state_long: document.getElementById('formStateLong').value,
-        zip: document.getElementById('formZip').value,
-        business_name: document.getElementById('businessName').value,
+      function getFormData() {
+        // Fetch values from form inputs
+        const formData = {
+          type: 'initial',
+          name: document.getElementById('name').value,
+          address: document.getElementById('formAddress').value,
+          phone: document.getElementById('phone').value,
+          credit_score: document.getElementById('credit-score').value,
+          bill: window.current_bill, // Get the value of the slider
+          owner: document.getElementById('owner').checked,
+          array_area: document.getElementById('array_area').value,
+          roof_area: document.getElementById('roof_area').value,
+          max_panels: document.getElementById('max_panels').value,
+          wattage: document.getElementById('wattage').value,
+          sunlight_hours: document.getElementById('sunlight_hours').value,
+          lat: document.getElementById('lat').value,
+          lon: document.getElementById('lon').value,
+          street: document.getElementById('formStreet').value,
+          city: document.getElementById('formCity').value,
+          state_short: document.getElementById('formStateShort').value,
+          state_long: document.getElementById('formStateLong').value,
+          zip: document.getElementById('formZip').value,
+          business_name: document.getElementById('businessName').value,
+          carbon_offset: document.getElementById('carbon_offset').value
+        };
+        if(formData.credit_score === '640-700' || formData.credit_score === '700+'){
+          formData['score'] = 'SQL'
+        } else {
+          formData['score'] = 'MQL'
+        }
+        if(window.hash_vals.ecl_data){
+          formData["ecl_data"] = window.hash_vals.ecl_data
+        }
+        return formData;
+      }
 
-        carbon_offset: document.getElementById('carbon_offset').value
-      };
-      return formData;
-    }
-
-    function postFormData() {
+      function postFormData() {
         const formData = getFormData();
         const utmParams = getUTMs();
         const combinedData = {
           ...formData,
           ...utmParams
         };
+  
         if(combinedData.phone === "1+ (555) 555-5555"){
           combinedData['test'] = true
         }
         combinedData['hash'] = window.hash_vals.hash
         let hook_failed = false
         let fallback_failed = false
-
+  
         fetch("https://hook.us1.make.com/8xt51qbsf0c2o58sd12w62gv5gypn8ms", {
             method: "POST",
             headers: {
@@ -317,9 +325,13 @@ if (window.location.href.indexOf('quote') !== -1) {
             // displayError("An error occurred while submitting the form.");
           });
   
+          const encodableData = {
+            ...combinedData,
+            ...combinedData.ecl_data
+          }
           let encodedData = new URLSearchParams();
-          for (const key in combinedData) {
-            encodedData.append(key, combinedData[key]);
+          for (const key in encodableData) {
+            encodedData.append('results__'+key, encodableData[key]);
           }
   
           fetch("https://script.google.com/macros/s/AKfycbx7-6jXhp-ECM7-I_7GlNwhVirwqLhBEcQeUq8dGcE59_1yDoaENdWou071KF1hXcdQgQ/exec", {
@@ -355,6 +367,7 @@ if (window.location.href.indexOf('quote') !== -1) {
           });
   
       }
+  
   
 
 

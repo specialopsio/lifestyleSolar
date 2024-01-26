@@ -198,29 +198,29 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
           };
         } else {
           return {
-            "utm_term": '(none)',
-            "utm_source": '(none)',
-            "utm_campaign": '(none)',
-            "utm_content": '(none)',
-            "utm_medium": '(none)'
+            // "utm_term": '(none)',
+            // "utm_source": '(none)',
+            // "utm_campaign": '(none)',
+            // "utm_content": '(none)',
+            // "utm_medium": '(none)'
           };
         }
       } catch (error) {
         console.debug("ERROR LOADING SBJS");
       }
       return {
-        "utm_term": '(none)',
-        "utm_source": '(none)',
-        "utm_campaign": '(none)',
-        "utm_content": '(none)',
-        "utm_medium": '(none)'
+        // "utm_term": '(none)',
+        // "utm_source": '(none)',
+        // "utm_campaign": '(none)',
+        // "utm_content": '(none)',
+        // "utm_medium": '(none)'
       };
     }
 
     function getFormData() {
       // Fetch values from form inputs
       const formData = {
-        ecl_data: window.hash_vals.ecl_data,
+        type: 'initial',
         name: document.getElementById('name').value,
         address: document.getElementById('formAddress').value,
         phone: document.getElementById('phone').value,
@@ -240,9 +240,16 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
         state_long: document.getElementById('formStateLong').value,
         zip: document.getElementById('formZip').value,
         business_name: document.getElementById('businessName').value,
-
         carbon_offset: document.getElementById('carbon_offset').value
       };
+      if(formData.credit_score === '640-700' || formData.credit_score === '700+'){
+        formData['score'] = 'SQL'
+      } else {
+        formData['score'] = 'MQL'
+      }
+      if(window.hash_vals.ecl_data){
+        formData["ecl_data"] = window.hash_vals.ecl_data
+      }
       return formData;
     }
 
@@ -319,9 +326,13 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
           // displayError("An error occurred while submitting the form.");
         });
 
+        const encodableData = {
+          ...combinedData,
+          ...combinedData.ecl_data
+        }
         let encodedData = new URLSearchParams();
-        for (const key in combinedData) {
-          encodedData.append(key, combinedData[key]);
+        for (const key in encodableData) {
+          encodedData.append('results__'+key, encodableData[key]);
         }
 
         fetch("https://script.google.com/macros/s/AKfycbx7-6jXhp-ECM7-I_7GlNwhVirwqLhBEcQeUq8dGcE59_1yDoaENdWou071KF1hXcdQgQ/exec", {
@@ -1310,8 +1321,47 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
   // Call the function when the DOM is fully loaded
   document.addEventListener('DOMContentLoaded', setupTelephoneLinkListener);
 
-  function calendlyEventHandler(event) {
+  async function calendlyEventHandler(event) {
     if (event.data.event && event.data.event === 'calendly.event_scheduled') {
+      try {
+          // const eventDetails = await fetchCalendlyDetails(event.data.payload.event.uri);
+          // const inviteeDetails = await fetchCalendlyDetails(event.data.payload.invitee.uri);
+
+          // console.debug("Event Details:", eventDetails);
+          // console.debug("Invitee Details:", inviteeDetails);
+          const calendly_data = {
+            type: 'calendly',
+            hash: window.hash_vals.hash,
+            name: document.getElementById('name').value,
+            phone: document.getElementById('phone').value,
+            email: 'test@test.com',
+            date: '01/02/24',
+            time: '1:30pm EST'
+          }
+          if(calendly_data.phone === "1+ (555) 555-5555"){
+            calendly_data['test'] = true
+          }
+          fetch("https://hook.us1.make.com/p3ahdyh2g8av5dwtp3bipg78pjlzaz08", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(calendly_data),
+          })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error('Network response was not ok')
+            }
+            return response.text()
+          })
+          .then((text) => {
+            if (text === "Accepted") {
+              console.debug("INPUT ACCEPTED")
+            }
+          })
+      } catch (error) {
+          console.error("Error sending calendly event details:", error);
+      }
       setTimeout(function() {
         if (typeof fbq === "function") {
           fbq('track', 'Schedule');
@@ -1323,7 +1373,7 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
         }
         // showSuccess();
       }, 1000);
-    }
+    } 
   }
 
   document.addEventListener("DOMContentLoaded", function() {
