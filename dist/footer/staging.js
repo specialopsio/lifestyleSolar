@@ -220,6 +220,7 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
     function getFormData() {
       // Fetch values from form inputs
       const formData = {
+        ecl_data: window.hash_vals.ecl_data,
         name: document.getElementById('name').value,
         address: document.getElementById('formAddress').value,
         phone: document.getElementById('phone').value,
