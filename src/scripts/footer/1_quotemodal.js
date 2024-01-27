@@ -237,7 +237,7 @@ if (window.location.href.indexOf('quote') !== -1) {
           zip: data.zip,
           rent_own: data.owner ? 'Own' : 'Rent',
           bill: String(data.bill),
-          credit_score: data.scredit_score,
+          credit_score: data.credit_score,
           max_panels: data.max_panels,
           roof_area: data.roof_area,
           sunlight_hours: data.sunlight_hours,
