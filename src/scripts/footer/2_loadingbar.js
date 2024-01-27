@@ -30,6 +30,7 @@ let load_bar_filled
                 messageElement.textContent = "Measuring sunlight";
               } else {
                 messageElement.textContent = "Getting quote";
+                window.load_bar_filled = true
               }
 
               if (current_progress >= 100 && window.hash_vals && window.current_bill) {

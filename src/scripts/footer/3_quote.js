@@ -482,17 +482,24 @@ if (urlParams.has('hash') && window.location.href.indexOf('quote') !== -1) {
         })
         .then(response => response.json())
         .then(data => {
-        if (data.lat) {
-            if (window.current_bill) {
+         if (data.lat) {
+            // if (window.current_bill) {
             window.page_data_loaded = true
-            }
+            // }
             window.hash_vals = data
+            if(data.ecl_data && data.ecl_data.mean_monthly_usage){
+              window.current_bill = data.ecl_data.mean_monthly_usage
+              const sliders = document.querySelectorAll('.slider-container')
+              sliders[0].style.display = 'none'
+            } else {
+              window.current_bill = 150
+            }
             document.getElementById('formAddress').value = hash_vals.display_address
             if (window.load_bar_filled) {
-            setPageData()
-            showPage()
+              setPageData()
+              showPage()
             }
-        }
+          }
         })
     } catch (error) {
     console.debug("ERROR", error)

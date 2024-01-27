@@ -475,6 +475,7 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
               messageElement.textContent = "Measuring sunlight";
             } else {
               messageElement.textContent = "Getting quote";
+              window.load_bar_filled = true
             }
 
             if (current_progress >= 100 && window.hash_vals && window.current_bill) {
@@ -1104,17 +1105,24 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
         document.getElementById('quote1').style.display = 'none'
         document.querySelector('.modal1_content-wrapper').style.display = 'block'
         const hashValue = urlParams.get('hash')
-        getCurrentBill(display_address, hashValue)
+        // getCurrentBill(display_address, hashValue)
         fetch(`https://vj61befm45.execute-api.us-east-1.amazonaws.com/default/solar_hash?data_hash=${hashValue}&set_hash=True&lat=${lat}&long=${long}&display_address=${encodeURIComponent(display_address)}`, {
             method: 'GET',
           })
           .then(response => response.json())
           .then(data => {
             if (data.lat) {
-              if (window.current_bill) {
-                window.page_data_loaded = true
-              }
+              // if (window.current_bill) {
+              window.page_data_loaded = true
+              // }
               window.hash_vals = data
+              if(data.ecl_data && data.ecl_data.mean_monthly_usage){
+                window.current_bill = data.ecl_data.mean_monthly_usage
+                const sliders = document.querySelectorAll('.slider-container')
+                sliders[0].style.display = 'none'
+              } else {
+                window.current_bill = 150
+              }
               document.getElementById('formAddress').value = hash_vals.display_address
               if (window.load_bar_filled) {
                 setPageData()
