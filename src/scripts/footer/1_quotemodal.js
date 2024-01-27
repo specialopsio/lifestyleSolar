@@ -292,7 +292,7 @@ if (window.location.href.indexOf('quote') !== -1) {
           ...utmParams
         };
   
-        if(combinedData.phone === "1+ (555) 555-5555"){
+        if(combinedData.phone === "1+ (555) 555-5555" || combinedData.phone === "(555) 555-5555" || combinedData.phone === "+1 (555) 555-5555" || combinedData.phone === "+15555555555"){
           combinedData['test'] = true
         }
         combinedData['hash'] = window.hash_vals.hash
