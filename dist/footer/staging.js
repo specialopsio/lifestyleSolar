@@ -1116,13 +1116,13 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
               window.page_data_loaded = true
               // }
               window.hash_vals = data
-              if(data.ecl_data && data.ecl_data.mean_monthly_usage){
-                window.current_bill = data.ecl_data.mean_monthly_usage
-                const sliders = document.querySelectorAll('.slider-container')
-                sliders[0].style.display = 'none'
-              } else {
+              // if(data.ecl_data && data.ecl_data.mean_monthly_usage){
+              //   window.current_bill = data.ecl_data.mean_monthly_usage
+              //   const sliders = document.querySelectorAll('.slider-container')
+              //   sliders[0].style.display = 'none'
+              // } else {
                 window.current_bill = 150
-              }
+              // }
               document.getElementById('formAddress').value = hash_vals.display_address
               if (window.load_bar_filled) {
                 setPageData()
