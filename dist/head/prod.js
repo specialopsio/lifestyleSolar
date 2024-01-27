@@ -1104,13 +1104,20 @@
         const display_address = selected_place.formatted_address
         const hash = generateRandomString()
         if (is_quote) {
-          getCurrentBill(display_address, hash)
+          // getCurrentBill(display_address, hash)
           fetch(`https://vj61befm45.execute-api.us-east-1.amazonaws.com/default/solar_hash?data_hash=${hash}&set_hash=True&lat=${lat}&long=${long}&display_address=${display_address}`)
             .then(response => response.json())
             .then(data => {
               window.hash_vals = data
-              if (window.current_bill) {
-                window.page_data_loaded = true
+              window.page_data_loaded = true
+              //  if (window.current_bill) {
+              //}
+              if(data.ecl_data && data.ecl_data.mean_monthly_usage){
+                window.current_bill = data.ecl_data.mean_monthly_usage
+                const sliders = document.querySelectorAll('.slider-container')
+                sliders[0].style.display = 'none'
+              } else {
+                window.current_bill = 150
               }
               document.getElementById('formAddress').value = hash_vals.display_address
               if (window.load_bar_filled) {
