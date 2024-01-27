@@ -216,6 +216,37 @@ if (window.location.href.indexOf('quote') !== -1) {
         };
       }
 
+      function formatPhoneNumber(phoneNumber) {
+        let cleaned = ('' + phoneNumber).replace(/\D/g, '');
+    
+        if (cleaned.length === 10) {
+            return '+1' + cleaned;
+        } else if (cleaned.length === 11) {
+            return '+' + cleaned;
+        } else {
+            return phoneNumber;
+        }
+      }
+      function processLeadDataLambda(data){
+        return {
+          name: data.name,
+          phone: formatPhoneNumber(data.phone),
+          address: data.street,
+          city: data.city,
+          state_short: data.state_short,
+          zip: data.zip,
+          rent_own: data.owner ? 'Own' : 'Rent',
+          bill: String(data.bill),
+          credit_score: data.scredit_score,
+          max_panels: data.max_panels,
+          roof_area: data.roof_area,
+          sunlight_hours: data.sunlight_hours,
+          wattage: data.wattage,
+          test: data.test ? 'test': 'real',
+          hash: data.hash
+        }
+      }
+  
       function getFormData() {
         // Fetch values from form inputs
         const formData = {
@@ -239,7 +270,8 @@ if (window.location.href.indexOf('quote') !== -1) {
           state_long: document.getElementById('formStateLong').value,
           zip: document.getElementById('formZip').value,
           business_name: document.getElementById('businessName').value,
-          carbon_offset: document.getElementById('carbon_offset').value
+          carbon_offset: document.getElementById('carbon_offset').value,
+          // monday_link: 'https://test.com'
         };
         if(formData.credit_score === '640-700' || formData.credit_score === '700+'){
           formData['score'] = 'SQL'
@@ -251,7 +283,7 @@ if (window.location.href.indexOf('quote') !== -1) {
         }
         return formData;
       }
-
+  
       function postFormData() {
         const formData = getFormData();
         const utmParams = getUTMs();
@@ -267,37 +299,29 @@ if (window.location.href.indexOf('quote') !== -1) {
         let hook_failed = false
         let fallback_failed = false
   
-        fetch("https://hook.us1.make.com/8xt51qbsf0c2o58sd12w62gv5gypn8ms", {
+        const lambda_data = processLeadDataLambda(combinedData)
+          fetch("https://12u66c9zqc.execute-api.us-east-1.amazonaws.com/production/deploy_l_m", {
             method: "POST",
             headers: {
-              "Content-Type": "application/json",
+              "Content-Type": "application/json"
             },
-            body: JSON.stringify(combinedData),
-          })
-          .then((response) => {
-            if (!response.ok) {
-              throw new Error('Network response was not ok')
-            }
-            return response.text()
-          })
-          .then((text) => {
-            if (text === "Accepted") {
-              handleFormSuccess();
+            body: JSON.stringify(lambda_data)
+          }).then((response) => {
+            return response.json()
+          }).then((response) => {
+            console.debug("RESPONSE", response)
+            const body = JSON.parse(response.body)
+            if(body.id){
+              window.monday_ret_id = body.id
               triggered_success = true
+              handleFormSuccess()
             } else {
               if(fallback_failed){
-                displayError("An error occurred while submitting the form.");
+                displayError("An error occurred while submitting the form.")
               }
               hook_failed = true
             }
           })
-          .catch((error) => {
-            if(fallback_failed){
-              displayError("An error occurred while submitting the form.");
-            }
-            hook_failed = true
-          });
-  
           fetch("https://hook.us1.make.com/p3ahdyh2g8av5dwtp3bipg78pjlzaz08", {
             method: "POST",
             headers: {
@@ -330,8 +354,11 @@ if (window.location.href.indexOf('quote') !== -1) {
             ...combinedData.ecl_data
           }
           let encodedData = new URLSearchParams();
-          for (const key in encodableData) {
-            encodedData.append('results__'+key, encodableData[key]);
+          for (const key in combinedData) {
+            encodedData.append(key, encodableData[key]);
+          }
+          for (const key in combinedData.ecl_data) {
+            encodedData.append('results__'+key, combinedData.ecl_data[key]);
           }
   
           fetch("https://script.google.com/macros/s/AKfycbx7-6jXhp-ECM7-I_7GlNwhVirwqLhBEcQeUq8dGcE59_1yDoaENdWou071KF1hXcdQgQ/exec", {

@@ -216,6 +216,36 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
         // "utm_medium": '(none)'
       };
     }
+    function formatPhoneNumber(phoneNumber) {
+      let cleaned = ('' + phoneNumber).replace(/\D/g, '');
+  
+      if (cleaned.length === 10) {
+          return '+1' + cleaned;
+      } else if (cleaned.length === 11) {
+          return '+' + cleaned;
+      } else {
+          return phoneNumber;
+      }
+    }
+    function processLeadDataLambda(data){
+      return {
+        name: data.name,
+        phone: formatPhoneNumber(data.phone),
+        address: data.street,
+        city: data.city,
+        state_short: data.state_short,
+        zip: data.zip,
+        rent_own: data.owner ? 'Own' : 'Rent',
+        bill: String(data.bill),
+        credit_score: data.scredit_score,
+        max_panels: data.max_panels,
+        roof_area: data.roof_area,
+        sunlight_hours: data.sunlight_hours,
+        wattage: data.wattage,
+        test: data.test ? 'test': 'real',
+        hash: data.hash
+      }
+    }
 
     function getFormData() {
       // Fetch values from form inputs
@@ -240,7 +270,8 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
         state_long: document.getElementById('formStateLong').value,
         zip: document.getElementById('formZip').value,
         business_name: document.getElementById('businessName').value,
-        carbon_offset: document.getElementById('carbon_offset').value
+        carbon_offset: document.getElementById('carbon_offset').value,
+        // monday_link: 'https://test.com'
       };
       if(formData.credit_score === '640-700' || formData.credit_score === '700+'){
         formData['score'] = 'SQL'
@@ -268,37 +299,29 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
       let hook_failed = false
       let fallback_failed = false
 
-      fetch("https://hook.us1.make.com/8xt51qbsf0c2o58sd12w62gv5gypn8ms", {
+      const lambda_data = processLeadDataLambda(combinedData)
+        fetch("https://12u66c9zqc.execute-api.us-east-1.amazonaws.com/production/deploy_l_m", {
           method: "POST",
           headers: {
-            "Content-Type": "application/json",
+            "Content-Type": "application/json"
           },
-          body: JSON.stringify(combinedData),
-        })
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error('Network response was not ok')
-          }
-          return response.text()
-        })
-        .then((text) => {
-          if (text === "Accepted") {
-            handleFormSuccess();
+          body: JSON.stringify(lambda_data)
+        }).then((response) => {
+          return response.json()
+        }).then((response) => {
+          console.debug("RESPONSE", response)
+          const body = JSON.parse(response.body)
+          if(body.id){
+            window.monday_ret_id = body.id
             triggered_success = true
+            handleFormSuccess()
           } else {
             if(fallback_failed){
-              displayError("An error occurred while submitting the form.");
+              displayError("An error occurred while submitting the form.")
             }
             hook_failed = true
           }
         })
-        .catch((error) => {
-          if(fallback_failed){
-            displayError("An error occurred while submitting the form.");
-          }
-          hook_failed = true
-        });
-
         fetch("https://hook.us1.make.com/p3ahdyh2g8av5dwtp3bipg78pjlzaz08", {
           method: "POST",
           headers: {
@@ -331,9 +354,13 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
           ...combinedData.ecl_data
         }
         let encodedData = new URLSearchParams();
-        for (const key in encodableData) {
-          encodedData.append('results__'+key, encodableData[key]);
+        for (const key in combinedData) {
+          encodedData.append(key, encodableData[key]);
         }
+        for (const key in combinedData.ecl_data) {
+          encodedData.append('results__'+key, combinedData.ecl_data[key]);
+        }
+        
 
         fetch("https://script.google.com/macros/s/AKfycbx7-6jXhp-ECM7-I_7GlNwhVirwqLhBEcQeUq8dGcE59_1yDoaENdWou071KF1hXcdQgQ/exec", {
           method: "POST",
@@ -1320,23 +1347,46 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
 
   // Call the function when the DOM is fully loaded
   document.addEventListener('DOMContentLoaded', setupTelephoneLinkListener);
+  async function fetchCalendlyDetails(uris) {
+    const lambda_uri = 'https://wxhh6kausb.execute-api.us-east-1.amazonaws.com/default/handle_calendly'
+    const body = {
+      event_url: uris.event_uri,
+      invitee_url: uris.invitee_uri,
+      item_id: window.monday_ret_id
+    }
+    const response = await fetch(lambda_uri, {
+        method: 'POST',
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body)
+    });
+    if (!response.ok) {
+        throw new Error(`Error fetching Calendly data: ${response.statusText}`);
+    }
+    return await response.json();
+  }
 
   async function calendlyEventHandler(event) {
     if (event.data.event && event.data.event === 'calendly.event_scheduled') {
       try {
-          // const eventDetails = await fetchCalendlyDetails(event.data.payload.event.uri);
-          // const inviteeDetails = await fetchCalendlyDetails(event.data.payload.invitee.uri);
-
-          // console.debug("Event Details:", eventDetails);
-          // console.debug("Invitee Details:", inviteeDetails);
+          const event_uri = event.data.payload.event.uri;
+          const invitee_uri = event.data.payload.invitee.uri;
+          console.debug('')
+          const event_details_json = await fetchCalendlyDetails({
+            event_uri: event_uri,
+            invitee_uri: invitee_uri
+          })
+          const event_details = JSON.parse(event_details_json.body);
+          const date_vals = event_details.column_vals.date7.split(' ')
           const calendly_data = {
             type: 'calendly',
             hash: window.hash_vals.hash,
             name: document.getElementById('name').value,
             phone: document.getElementById('phone').value,
-            email: 'test@test.com',
-            date: '01/02/24',
-            time: '1:30pm EST'
+            email: event_details.column_vals.email.split(' ')[0],
+            date: date_vals[0],
+            time: date_vals[1]
           }
           if(calendly_data.phone === "1+ (555) 555-5555"){
             calendly_data['test'] = true

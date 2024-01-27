@@ -1,19 +1,42 @@
+async function fetchCalendlyDetails(uris) {
+  const lambda_uri = 'https://wxhh6kausb.execute-api.us-east-1.amazonaws.com/default/handle_calendly'
+  const body = {
+    event_url: uris.event_uri,
+    invitee_url: uris.invitee_uri,
+    item_id: window.monday_ret_id
+  }
+  const response = await fetch(lambda_uri, {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body)
+  });
+  if (!response.ok) {
+      throw new Error(`Error fetching Calendly data: ${response.statusText}`);
+  }
+  return await response.json();
+}
+
 async function calendlyEventHandler(event) {
   if (event.data.event && event.data.event === 'calendly.event_scheduled') {
     try {
-        // const eventDetails = await fetchCalendlyDetails(event.data.payload.event.uri);
-        // const inviteeDetails = await fetchCalendlyDetails(event.data.payload.invitee.uri);
-
-        // console.debug("Event Details:", eventDetails);
-        // console.debug("Invitee Details:", inviteeDetails);
+        const event_uri = event.data.payload.event.uri;
+        const invitee_uri = event.data.payload.invitee.uri;
+        const event_details_json = await fetchCalendlyDetails({
+          event_uri: event_uri,
+          invitee_uri: invitee_uri
+        })
+        const event_details = JSON.parse(event_details_json.body);
+        const date_vals = event_details.column_vals.date7.split(' ')
         const calendly_data = {
           type: 'calendly',
           hash: window.hash_vals.hash,
           name: document.getElementById('name').value,
           phone: document.getElementById('phone').value,
-          email: 'test@test.com',
-          date: '01/02/24',
-          time: '1:30pm EST'
+          email: event_details.column_vals.email.split(' ')[0],
+          date: date_vals[0],
+          time: date_vals[1]
         }
         if(calendly_data.phone === "1+ (555) 555-5555"){
           calendly_data['test'] = true

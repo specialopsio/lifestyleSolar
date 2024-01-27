@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     // Function to initialize Calendly widget
-    function initCalendly(is_timeout=false) {
+    function initCalendly(is_timeout = false) {
       if (!window.calendly_initialized && is_timeout || !is_timeout) {
         Calendly.initPopupWidget({
           url: 'https://calendly.com/lifestyle-solar/discoverycall?hide_event_type_details=1&hide_gdpr_banner=1&text_color=0f0f0f&primary_color=00ba81' + `&location=${document.getElementById('phone').value}`,
