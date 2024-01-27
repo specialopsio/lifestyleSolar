@@ -285,6 +285,10 @@ if (window.location.href.indexOf('quote') !== -1) {
       }
   
       async function postFormData() {
+        if(window.submitting){
+          return
+        }
+        window.submitting = true
         const formData = getFormData();
         const utmParams = getUTMs();
         const combinedData = {
@@ -309,10 +313,10 @@ if (window.location.href.indexOf('quote') !== -1) {
                 },
                 body: JSON.stringify(lambda_data)
             });
-    
+  
             let responseData = await response.json();
             console.debug("RESPONSE", responseData);
-    
+  
             const body = JSON.parse(responseData.body);
             if (body.id) {
                 window.monday_ret_id = body.id;
@@ -321,13 +325,14 @@ if (window.location.href.indexOf('quote') !== -1) {
             } else {
                 if (fallback_failed) {
                     displayError("An error occurred while submitting the form.");
+                    window.submitting = false
                 }
                 hook_failed = true;
             }
-    
+  
             // Update combinedData with the monday_link
             combinedData['monday_link'] = `https://lifestylemarketing-co.monday.com/boards/2225844788/pulses/${window.monday_ret_id}`;
-    
+  
             // Second fetch request
             response = await fetch("https://hook.us1.make.com/p3ahdyh2g8av5dwtp3bipg78pjlzaz08", {
                 method: "POST",
@@ -336,7 +341,7 @@ if (window.location.href.indexOf('quote') !== -1) {
                 },
                 body: JSON.stringify(combinedData),
             });
-    
+  
             let textResponse = await response.text();
             if (textResponse === "Accepted") {
                 if (!triggered_success) {
@@ -362,6 +367,7 @@ if (window.location.href.indexOf('quote') !== -1) {
           for (const key in combinedData.ecl_data) {
             encodedData.append('results__'+key, combinedData.ecl_data[key]);
           }
+          
   
           fetch("https://script.google.com/macros/s/AKfycbx7-6jXhp-ECM7-I_7GlNwhVirwqLhBEcQeUq8dGcE59_1yDoaENdWou071KF1hXcdQgQ/exec", {
             method: "POST",
@@ -384,6 +390,7 @@ if (window.location.href.indexOf('quote') !== -1) {
             } else {
               if(hook_failed){
                 displayError("An error occurred while submitting the form.");
+                window.submitting = false
               }
               fallback_failed = true
             }
@@ -391,6 +398,7 @@ if (window.location.href.indexOf('quote') !== -1) {
           .catch((error) => {
             if(hook_failed){
               displayError("An error occurred while submitting the form.");
+              window.submitting = false
             }
             fallback_failed = true
           });

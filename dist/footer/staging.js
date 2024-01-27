@@ -285,6 +285,10 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
     }
 
     async function postFormData() {
+      if(window.submitting){
+        return
+      }
+      window.submitting = true
       const formData = getFormData();
       const utmParams = getUTMs();
       const combinedData = {
@@ -321,6 +325,7 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
           } else {
               if (fallback_failed) {
                   displayError("An error occurred while submitting the form.");
+                  window.submitting = false
               }
               hook_failed = true;
           }
@@ -385,6 +390,7 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
           } else {
             if(hook_failed){
               displayError("An error occurred while submitting the form.");
+              window.submitting = false
             }
             fallback_failed = true
           }
@@ -392,6 +398,7 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
         .catch((error) => {
           if(hook_failed){
             displayError("An error occurred while submitting the form.");
+            window.submitting = false
           }
           fallback_failed = true
         });
