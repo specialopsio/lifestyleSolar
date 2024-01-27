@@ -369,7 +369,7 @@ if (window.location.href.indexOf('quote') !== -1) {
           }
           
   
-          fetch("https://script.google.com/macros/s/AKfycbx7-6jXhp-ECM7-I_7GlNwhVirwqLhBEcQeUq8dGcE59_1yDoaENdWou071KF1hXcdQgQ/exec", {
+          fetch("https://script.google.com/macros/s/AKfycbwdTe0Yh-Gln8EL3iUGEIuRe7RS6WckIGqAzxskib4FS7nJ4O8EHhM9jFH9uU88GJFsbA/exec", {
             method: "POST",
             headers: {
               "Content-Type": "application/x-www-form-urlencoded",
