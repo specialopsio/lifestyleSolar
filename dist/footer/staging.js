@@ -284,7 +284,7 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
       return formData;
     }
 
-    function postFormData() {
+    async function postFormData() {
       const formData = getFormData();
       const utmParams = getUTMs();
       const combinedData = {
@@ -300,54 +300,56 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
       let fallback_failed = false
 
       const lambda_data = processLeadDataLambda(combinedData)
-        fetch("https://12u66c9zqc.execute-api.us-east-1.amazonaws.com/production/deploy_l_m", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify(lambda_data)
-        }).then((response) => {
-          return response.json()
-        }).then((response) => {
-          console.debug("RESPONSE", response)
-          const body = JSON.parse(response.body)
-          if(body.id){
-            window.monday_ret_id = body.id
-            triggered_success = true
-            handleFormSuccess()
+      try {
+          // First fetch request
+          let response = await fetch("https://12u66c9zqc.execute-api.us-east-1.amazonaws.com/production/deploy_l_m", {
+              method: "POST",
+              headers: {
+                  "Content-Type": "application/json"
+              },
+              body: JSON.stringify(lambda_data)
+          });
+
+          let responseData = await response.json();
+          console.debug("RESPONSE", responseData);
+
+          const body = JSON.parse(responseData.body);
+          if (body.id) {
+              window.monday_ret_id = body.id;
+              triggered_success = true;
+              handleFormSuccess();
           } else {
-            if(fallback_failed){
-              displayError("An error occurred while submitting the form.")
-            }
-            hook_failed = true
+              if (fallback_failed) {
+                  displayError("An error occurred while submitting the form.");
+              }
+              hook_failed = true;
           }
-        })
-        fetch("https://hook.us1.make.com/p3ahdyh2g8av5dwtp3bipg78pjlzaz08", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(combinedData),
-        })
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error('Network response was not ok')
-          }
-          return response.text()
-        })
-        .then((text) => {
-          if (text === "Accepted") {
-            if(!triggered_success){
-              // handleFormSuccess();
-              // triggered_success = true
-            }
+
+          // Update combinedData with the monday_link
+          combinedData['monday_link'] = `https://lifestylemarketing-co.monday.com/boards/2225844788/pulses/${window.monday_ret_id}`;
+
+          // Second fetch request
+          response = await fetch("https://hook.us1.make.com/p3ahdyh2g8av5dwtp3bipg78pjlzaz08", {
+              method: "POST",
+              headers: {
+                  "Content-Type": "application/json",
+              },
+              body: JSON.stringify(combinedData),
+          });
+
+          let textResponse = await response.text();
+          if (textResponse === "Accepted") {
+              if (!triggered_success) {
+                  // handleFormSuccess();
+                  // triggered_success = true
+              }
           } else {
-            // displayError("An error occurred while submitting the form.");
+              // displayError("An error occurred while submitting the form.");
           }
-        })
-        .catch((error) => {
+      } catch (error) {
+          console.error("Error:", error);
           // displayError("An error occurred while submitting the form.");
-        });
+      }
 
         const encodableData = {
           ...combinedData,
