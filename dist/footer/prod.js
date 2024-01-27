@@ -7,11 +7,11 @@
         if (typeof google !== "undefined" && google.maps && google.maps.places) {
           initializeAutocomplete();
         }
-
+  
         // Form Submission Event Listener
         document.getElementById("propertyForm").addEventListener("submit", function(event) {
           event.preventDefault();
-
+  
           var businessName = document.getElementById('businessName').value
           var name = document.getElementById("name").value;
           var address = document.getElementById("formAddress").value;
@@ -19,7 +19,7 @@
           var creditScore = document.getElementById("credit-score").value;
           var owner = document.getElementById("owner").checked;
           var current_bill = document.querySelector('input#bill').value
-
+  
           if (validateFormData(name, address, phone, creditScore, owner, businessName)) {
             var formData = {
               name,
@@ -39,7 +39,7 @@
           }
         });
         var selectElement = document.getElementById('credit-score');
-
+  
         selectElement.addEventListener('change', function() {
           if (this.value !== 'Credit Score') {
             this.classList.remove('text-gray-400');
@@ -49,19 +49,19 @@
             this.classList.add('text-gray-400');
           }
         });
-
+  
         // Phone Number Formatting Event Listener
         document.getElementById('phone').addEventListener('input', function(e) {
           var input = e.target.value.replace(/\D/g, '');
           var formattedNumber;
-
+  
           if (input.startsWith('1')) {
             formattedNumber = '1+ ';
             input = input.substr(1);
           } else {
             formattedNumber = '';
           }
-
+  
           if (input.length > 3) {
             formattedNumber += '(' + input.substr(0, 3) + ') ';
             if (input.length >= 6) {
@@ -72,10 +72,10 @@
           } else {
             formattedNumber += input;
           }
-
+  
           e.target.value = formattedNumber;
         });
-
+  
         // Adding Event Listeners to All Input Fields for Error Handling
         ["name", "address", "phone", "credit-score", "owner", "formAddress"].forEach((id) => {
           var element = document.getElementById(id);
@@ -88,12 +88,12 @@
           });
         });
       });
-
+  
       function initializeAutocomplete() {
         var addressInput = document.getElementById("formAddress");
         var autocomplete = new google.maps.places.Autocomplete(addressInput);
         autocomplete.setFields(['address_components', 'geometry', 'name']);
-
+  
         autocomplete.addListener('place_changed', function() {
           var place = autocomplete.getPlace();
           var components = place.address_components;
@@ -102,7 +102,7 @@
           var stateShort = '';
           var stateLong = '';
           var zip = '';
-
+  
           for (var i = 0; i < components.length; i++) {
             var addressType = components[i].types[0];
             switch (addressType) {
@@ -124,7 +124,7 @@
                 break;
             }
           }
-
+  
           document.getElementById('formStreet').value = street;
           document.getElementById('formCity').value = city;
           document.getElementById('formStateShort').value = stateShort;
@@ -132,12 +132,12 @@
           document.getElementById('formZip').value = zip;
         });
       }
-
-
+  
+  
       function validateFormData(name, address, phone, creditScore, owner, businessName) {
         resetFormStyling();
         var isValid = true;
-
+  
         if (!name || !address || !phone || creditScore === "Credit Score" || !owner || (isCommercial() && !businessName)) {
           displayError("Please complete all fields.");
           highlightIncompleteFields({
@@ -149,10 +149,10 @@
           });
           isValid = false;
         }
-
+  
         return isValid;
       }
-
+  
       function displayError(message) {
         var errorElement = document.getElementById("error");
         errorElement.textContent = message;
@@ -161,14 +161,14 @@
           document.getElementById('address').classList.add("bg-red-50")
         }
       }
-
+  
       function clearError() {
         let errorElement = document.getElementById('error')
         errorElement.textContent = ''
         errorElement.style.opacity = 0
       }
       window.clearError = clearError
-
+  
       function resetFormStyling() {
         document.getElementById("error").style.opacity = 0;
         ["name", "address", "phone", "credit-score", "owner"].forEach((id) => {
@@ -177,7 +177,7 @@
           ownerLabel.classList.replace("text-red-500", "text-gray-900");
         });
       }
-
+  
       function highlightIncompleteFields(fields) {
         for (var field in fields) {
           if (!fields[field] || (field === "creditScore" && fields[field] === "Credit Score")) {
@@ -186,7 +186,7 @@
           }
         }
       }
-
+  
       function getUTMs() {
         try {
           if (window.sbjs) {
@@ -217,7 +217,37 @@
           // "utm_medium": '(none)'
         };
       }
-
+      function formatPhoneNumber(phoneNumber) {
+        let cleaned = ('' + phoneNumber).replace(/\D/g, '');
+    
+        if (cleaned.length === 10) {
+            return '+1' + cleaned;
+        } else if (cleaned.length === 11) {
+            return '+' + cleaned;
+        } else {
+            return phoneNumber;
+        }
+      }
+      function processLeadDataLambda(data){
+        return {
+          name: data.name,
+          phone: formatPhoneNumber(data.phone),
+          address: data.street,
+          city: data.city,
+          state_short: data.state_short,
+          zip: data.zip,
+          rent_own: data.owner ? 'Own' : 'Rent',
+          bill: String(data.bill),
+          credit_score: data.scredit_score,
+          max_panels: data.max_panels,
+          roof_area: data.roof_area,
+          sunlight_hours: data.sunlight_hours,
+          wattage: data.wattage,
+          test: data.test ? 'test': 'real',
+          hash: data.hash
+        }
+      }
+  
       function getFormData() {
         // Fetch values from form inputs
         const formData = {
@@ -241,7 +271,8 @@
           state_long: document.getElementById('formStateLong').value,
           zip: document.getElementById('formZip').value,
           business_name: document.getElementById('businessName').value,
-          carbon_offset: document.getElementById('carbon_offset').value
+          carbon_offset: document.getElementById('carbon_offset').value,
+          // monday_link: 'https://test.com'
         };
         if(formData.credit_score === '640-700' || formData.credit_score === '700+'){
           formData['score'] = 'SQL'
@@ -253,7 +284,7 @@
         }
         return formData;
       }
-
+  
       function postFormData() {
         const formData = getFormData();
         const utmParams = getUTMs();
@@ -269,37 +300,29 @@
         let hook_failed = false
         let fallback_failed = false
   
-        fetch("https://hook.us1.make.com/8xt51qbsf0c2o58sd12w62gv5gypn8ms", {
+        const lambda_data = processLeadDataLambda(combinedData)
+          fetch("https://12u66c9zqc.execute-api.us-east-1.amazonaws.com/production/deploy_l_m", {
             method: "POST",
             headers: {
-              "Content-Type": "application/json",
+              "Content-Type": "application/json"
             },
-            body: JSON.stringify(combinedData),
-          })
-          .then((response) => {
-            if (!response.ok) {
-              throw new Error('Network response was not ok')
-            }
-            return response.text()
-          })
-          .then((text) => {
-            if (text === "Accepted") {
-              handleFormSuccess();
+            body: JSON.stringify(lambda_data)
+          }).then((response) => {
+            return response.json()
+          }).then((response) => {
+            console.debug("RESPONSE", response)
+            const body = JSON.parse(response.body)
+            if(body.id){
+              window.monday_ret_id = body.id
               triggered_success = true
+              handleFormSuccess()
             } else {
               if(fallback_failed){
-                displayError("An error occurred while submitting the form.");
+                displayError("An error occurred while submitting the form.")
               }
               hook_failed = true
             }
           })
-          .catch((error) => {
-            if(fallback_failed){
-              displayError("An error occurred while submitting the form.");
-            }
-            hook_failed = true
-          });
-  
           fetch("https://hook.us1.make.com/p3ahdyh2g8av5dwtp3bipg78pjlzaz08", {
             method: "POST",
             headers: {
@@ -332,9 +355,13 @@
             ...combinedData.ecl_data
           }
           let encodedData = new URLSearchParams();
-          for (const key in encodableData) {
-            encodedData.append('results__'+key, encodableData[key]);
+          for (const key in combinedData) {
+            encodedData.append(key, encodableData[key]);
           }
+          for (const key in combinedData.ecl_data) {
+            encodedData.append('results__'+key, combinedData.ecl_data[key]);
+          }
+          
   
           fetch("https://script.google.com/macros/s/AKfycbx7-6jXhp-ECM7-I_7GlNwhVirwqLhBEcQeUq8dGcE59_1yDoaENdWou071KF1hXcdQgQ/exec", {
             method: "POST",
@@ -371,8 +398,6 @@
       }
   
   
-
-
       function handleFormSuccess() {
         const credit_val = document.getElementById('credit-score').value
         if (credit_val === '640-700' || credit_val === '700+') {
@@ -409,11 +434,11 @@
     window.load_bar_filled = load_bar_filled
     let page_data_loaded
     if (window.location.href.indexOf('quote') !== -1) {
-
+  
       document.addEventListener("DOMContentLoaded", function() {
         var current_progress = 0;
         var interval;
-
+  
         var startProgress = function() {
           clearError()
           interval = setInterval(function() {
@@ -424,11 +449,11 @@
             }
             var dynamicElement = document.getElementById("dynamic");
             var messageElement = document.getElementById("current-progress");
-
+  
             if (dynamicElement) {
               dynamicElement.style.width = current_progress + "%";
               dynamicElement.setAttribute("aria-valuenow", current_progress);
-
+  
               if (current_progress <= 25) {
                 messageElement.textContent = "Searching address";
               } else if (current_progress <= 50) {
@@ -438,10 +463,10 @@
               } else {
                 messageElement.textContent = "Getting quote";
               }
-
+  
               if (current_progress >= 100 && window.hash_vals && window.current_bill) {
                 clearInterval(interval);
-
+  
                 setTimeout(function() {
                   var formAddress = document.getElementById("formAddress");
                   var quote1 = document.getElementById("quote1");
@@ -482,12 +507,12 @@
             }
           }, 500);
         };
-
+  
         var checkHashAndStart = function() {
           if (window.location.hash) {
             var quote1 = document.getElementById("quote1");
             var quote2 = document.getElementById("quote2");
-
+  
             if (quote1) {
               quote1.style.display = "none";
             }
@@ -497,9 +522,9 @@
             }
           }
         };
-
+  
         checkHashAndStart();
-
+  
         var quote2 = document.getElementById("quote2");
         var quote2Observer = new MutationObserver(function(mutations) {
           mutations.forEach(function(mutation) {
@@ -512,11 +537,11 @@
             }
           });
         });
-
+  
         quote2Observer.observe(quote2, {
           attributes: true
         });
-
+  
         var quote1 = document.getElementById("quote1");
         var quote1Observer = new MutationObserver(function(mutations) {
           mutations.forEach(function(mutation) {
@@ -528,14 +553,14 @@
             }
           });
         });
-
+  
         quote1Observer.observe(quote1, {
           attributes: true
         });
       });
     }
     // embed 1
-
+  
     window.hash_vals = null
     let maskData = {}
     let fluxData = {}
@@ -546,20 +571,20 @@
     window.solar_panels = []
     let solarPotentialData
     let map
-
+  
     function generateRandomString() {
       const characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
       const length = 6
       let result = ''
-
+  
       for (let i = 0; i < length; i++) {
         const randomIndex = Math.floor(Math.random() * characters.length)
         result += characters.charAt(randomIndex)
       }
-
+  
       return result
     }
-
+  
     // function initAutoComplete() {
     //     var inputElements = document.querySelectorAll('input.address-input')
     //     inputElements.forEach(function (element) {
@@ -571,15 +596,15 @@
     //     })
     // }
     // google.maps.event.addDomListener(window, 'load', initAutoComplete)
-
+  
     // function updateButtonState(area) {
     //     const button = document.getElementById('calculateButton')
     //     if (button.classList.contains("disabled") && selectedPlace) {
     //         button.classList.remove("disabled")
     //     }
     // }
-
-
+  
+  
     async function setPageData() {
       const uniqueQuery = new Date().getTime()
       const gmapCanvas = document.getElementById('gmap_canvas')
@@ -598,7 +623,7 @@
       }
       // Select all elements that have the ID 'billValue'
       var elements = document.querySelectorAll('[id="billValue"]');
-
+  
       // Loop through each element and update its text content
       elements.forEach(function(element) {
         element.textContent = '$' + window.current_bill;
@@ -644,18 +669,20 @@
           })
           const sliderContainer = document.getElementById('solarPanelSliderContainer');
           map.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(sliderContainer)
-          // sliderContainer.style.display = 'flex'
+          setInterval(() => {
+            // sliderContainer.style.display = 'flex'
+          }, 2000);
         }
       }
     }
     window.setPageData = setPageData
-
+  
     function createGroundOverlay(canvas, bounds, map) {
       const imageUrl = canvas.toDataURL()
       const overlay = new google.maps.GroundOverlay(imageUrl, bounds)
       overlay.setMap(map)
     }
-
+  
     async function fetchAndProcessTiffs(fluxUrl, maskUrl) {
       try {
         let maskData = await processGeoTiff(maskUrl)
@@ -668,7 +695,7 @@
         console.error("Fetching TIFFs failed", error)
       }
     }
-
+  
     async function processGeoTiff(url) {
       try {
         const response = await fetch(url)
@@ -680,10 +707,10 @@
         const image = await tiff.getImage()
         const rasters = await image.readRasters()
         const bounds = calculateBoundingBox(hash_vals.lat, hash_vals.lon, 30)
-
+  
         const geoKeys = image.getGeoKeys()
         const box = image.getBoundingBox()
-
+  
         const projection = proj4(geoKeys.ProjLinearUnitsGeoKey || 'WGS84')
         const sw = projection.forward({
           x: box[0],
@@ -693,22 +720,22 @@
           x: box[2],
           y: box[3]
         })
-
+  
         return {
           width: image.getWidth(),
           height: image.getHeight(),
           rasters: rasters,
           bounds: bounds
         }
-
+  
       } catch (error) {
         console.error('Error processing GeoTIFF:', error)
         throw error
       }
     }
-
+  
     // embed 2
-
+  
     async function showSolarPotential(map) {
       window.solar_panels.forEach(panel => panel.setMap(null))
       const solarPotential = solarPotentialData
@@ -744,7 +771,7 @@
         const orientation = panel.orientation === 'PORTRAIT' ? 90 : 0
         const azimuth = solarPotential.roofSegmentStats[panel.segmentIndex].azimuthDegrees
         const colorIndex = Math.round(normalize(panel.yearlyEnergyDcKwh, maxEnergy, minEnergy) * 255)
-
+  
         return new google.maps.Polygon({
           paths: points.map(({
               x,
@@ -763,7 +790,7 @@
           fillOpacity: 0.9
         })
       })
-
+  
       const init_amount = Math.ceil((window.solar_panels.length - 1) / 4)
       if (init_amount > 4) {
         updateSolarPanels(map, init_amount)
@@ -772,7 +799,7 @@
       }
       return true
     }
-
+  
     function updateSolarPanels(map, setIndex) {
       window.solar_panels.forEach(panel => panel.setMap(null))
       for (let i = 0; i <= setIndex; i++) {
@@ -781,11 +808,11 @@
       let slider = document.getElementById('sliderValue')
       slider.innerText = setIndex + 1
       slider.value = setIndex
-
+  
       let closestConfigIndex = solarPotentialData.solarPanelConfigs.findIndex(config => config.panelsCount >= setIndex);
       if (closestConfigIndex === -1) closestConfigIndex = solarPotentialData.solarPanelConfigs.length - 1;
       let closestConfig = solarPotentialData.solarPanelConfigs[closestConfigIndex];
-
+  
       let panelCapacityRatio = 1.0
       let dcToAcDerate = 0.85
       let monthlyAverageEnergyBill = 300 //hash_vals.bill
@@ -823,23 +850,23 @@
       let costOfElectricityWithoutSolar = yearlyCostWithoutSolar.reduce((x, y) => x + y, 0)
       let totalCostWithSolar = remainingLifeTimeUtilityBill - solarIncentives
       let savings = costOfElectricityWithoutSolar - totalCostWithSolar
-
+  
       document.getElementById('savingsDollars').textContent = `$${savings.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
-
+  
     }
-
+  
     function calculateBoundingBox(centerLat, centerLng, radius) {
       const earthRadius = 6371
       const radiusInKm = radius / 1000
-
+  
       const deltaLat = radiusInKm / earthRadius
       const deltaLng = Math.asin(radiusInKm / (earthRadius * Math.cos(Math.PI * centerLat / 180)))
-
+  
       const north = centerLat + deltaLat * 180 / Math.PI
       const south = centerLat - deltaLat * 180 / Math.PI
       const east = centerLng + deltaLng * 180 / Math.PI
       const west = centerLng - deltaLng * 180 / Math.PI
-
+  
       return {
         north,
         south,
@@ -847,8 +874,8 @@
         west
       }
     }
-
-
+  
+  
     function initializeMap(lat, lng, elementId) {
       const mapCenter = new google.maps.LatLng(lat, lng);
       const minZoomLevel = 18
@@ -863,18 +890,18 @@
         streetViewControl: false,
         zoomControl: false,
       };
-
+  
       const mapElement = document.getElementById(elementId);
       const map = new google.maps.Map(mapElement, mapOptions);
-
+  
       map.addListener('zoom_changed', function() {
         console.debug("Map", map.getZoom())
         if (map.getZoom() < minZoomLevel) map.setZoom(minZoomLevel);
       });
-
+  
       return map;
     }
-
+  
     function renderPalette(data, mask, colors, min, max) {
       const canvas = document.createElement('canvas')
       canvas.width = mask.width
@@ -888,32 +915,32 @@
           const value = normalize(data.rasters[0][idx], min, max)
           const colorIdx = Math.round(value * (palette.length - 1)) > 255 ? 255 : Math.round(value * (palette.length - 1))
           const color = palette[colorIdx]
-
+  
           img.data[idx * 4 + 0] = color.r
           img.data[idx * 4 + 1] = color.g
           img.data[idx * 4 + 2] = color.b
           img.data[idx * 4 + 3] = mask.rasters[0][idx] ? 255 : 0
         }
       }
-
+  
       ctx.putImageData(img, 0, 0);
       return canvas;
     }
-
+  
     // embed 3
-
+  
     function isCommercial() {
       const urlParams = new URLSearchParams(window.location.search);
       return urlParams.get('commercial') === 'true';
     }
-
+  
     function showPage() {
       document.getElementById('quote3').style.display = 'block'
       document.getElementById('quote2').style.display = 'none'
     }
-
+  
     window.showPage = showPage
-
+  
     function showSuccess() {
       document.getElementById('app').style.display = 'block'
       document.getElementById('quote3').style.display = 'none'
@@ -924,18 +951,18 @@
         }
       }, 1000);
     }
-
+  
     function hidePage() {
       document.getElementById('app').style.display = 'none'
       document.getElementById('modal').style.display = 'block'
     }
-
+  
     function getCookie(name) {
       const value = `; ${document.cookie}`;
       const parts = value.split(`; ${name}=`);
       if (parts.length === 2) return parts.pop().split(';').shift();
     }
-
+  
     function deriveLongAddress(code) {
       const address_mapping = {
         "AL": "Alabama",
@@ -991,7 +1018,7 @@
       }
       return address_mapping[code]
     }
-
+  
     function getCurrentBill(display_address, hash) {
       const address = display_address.split(',')
       const fetch_url = "https://hook.us1.make.com/tep8c8fk7o805g1fk9dd16vjder5hpp9"
@@ -1043,10 +1070,10 @@
         // sliders[0].style.display = 'none'
         return
       }
-
+  
     }
     window.getCurrentBill = getCurrentBill
-
+  
     const urlParams = new URLSearchParams(window.location.search)
     document.addEventListener("DOMContentLoaded", function() {
       if (isCommercial()) {
@@ -1090,7 +1117,7 @@
         document.querySelector('.modal1_content-wrapper').style.display = 'block'
       }
     })
-
+  
     // function getAutocompleteValue() {
     //     if (selectedPlace.geometry && selectedPlace.formatted_address) {
     //         lat = selectedPlace.geometry.location.lat()
@@ -1111,29 +1138,29 @@
     //         console.debug("NO VALID ADDRESS INPUT")
     //     }
     // }
-
+  
     // function updateSliderValue(value, area) {
     //     sliderValue = value
     // }
-
+  
     function drawImageOnCanvas(canvasID) {
       var canvas = document.getElementById(canvasID)
       var ctx = canvas.getContext('2d')
       var image = new Image()
-
+  
       image.onload = function() {
         const imageHeight = image.height / 3
         const imageWidth = image.width / 3
-
+  
         const xPosition = canvas.width - imageWidth - 10
         const yPosition = canvas.height - imageHeight - 10
-
+  
         ctx.drawImage(image, xPosition, yPosition, imageWidth, imageHeight);
       };
-
+  
       image.src = 'https://assets-global.website-files.com/65130b13c5e81529f31d4b2b/6579df7bb617f410309546f5_Legend.png'
     }
-
+  
     function colorToRGB(color) {
       const hex = color.startsWith('#') ? color.slice(1) : color
       return {
@@ -1142,11 +1169,11 @@
         b: parseInt(hex.substring(4, 6), 16),
       }
     }
-
+  
     function lerp(start, end, t) {
       return start + t * (end - start)
     }
-
+  
     function createPalette(hexColors, size = 256) {
       const rgbColors = hexColors.map(colorToRGB)
       const step = (rgbColors.length - 1) / (size - 1)
@@ -1163,11 +1190,11 @@
         }
       })
     }
-
+  
     function normalize(value, min, max) {
       return (value - min) / (max - min)
     }
-
+  
     function getNeighbors(x, y, width, height) {
       const neighbors = []
       for (let dx = -1; dx <= 1; dx++) {
@@ -1185,7 +1212,7 @@
       }
       return neighbors
     }
-
+  
     function bfs(mask, startX, startY, width, height) {
       const visited = new Set()
       const queue = [{
@@ -1193,7 +1220,7 @@
         y: startY
       }]
       const cluster = []
-
+  
       while (queue.length > 0) {
         const {
           x,
@@ -1201,13 +1228,13 @@
         } = queue.shift()
         const index = y * width + x
         if (visited.has(index) || mask[index] === 0) continue
-
+  
         visited.add(index)
         cluster.push({
           x,
           y
         })
-
+  
         const neighbors = getNeighbors(x, y, width, height)
         for (const neighbor of neighbors) {
           const neighborIndex = neighbor.y * width + neighbor.x
@@ -1218,11 +1245,11 @@
       }
       return cluster
     }
-
+  
     function findClusters(mask, width, height) {
       const clusters = []
       const visited = new Set()
-
+  
       for (let y = 0; y < height; y++) {
         for (let x = 0; x < width; x++) {
           const index = y * width + x
@@ -1235,7 +1262,7 @@
       }
       return clusters
     }
-
+  
     function calculateCentroid(cluster) {
       let sumX = 0,
         sumY = 0
@@ -1248,11 +1275,11 @@
         y: sumY / cluster.length
       }
     }
-
+  
     function findMostCentralCluster(clusters, centerX, centerY) {
       let minDistance = Infinity
       let centralCluster = null
-
+  
       clusters.forEach(cluster => {
         const centroid = calculateCentroid(cluster)
         const distance = Math.sqrt(Math.pow(centroid.x - centerX, 2) + Math.pow(centroid.y - centerY, 2))
@@ -1263,7 +1290,7 @@
       });
       return centralCluster
     }
-
+  
     function modifyMask(mask, width, height, centralCluster) {
       const newMask = new Array(mask.length).fill(0)
       centralCluster.forEach(point => {
@@ -1277,7 +1304,7 @@
       function isDesktop() {
         return window.matchMedia('(pointer:fine)').matches;
       }
-
+  
       // Set a timer to change the display and text after one minute
       setTimeout(() => {
         // Only change the display if it's not a desktop or if the exit intent hasn't been shown yet
@@ -1286,7 +1313,7 @@
           document.getElementById('exitHeading').textContent = "Get a FREE solar savings estimate!";
         }
       }, 60000); // 60000 milliseconds = 1 minute
-
+  
       // Only add mouseout listener on desktop devices
       if (isDesktop()) {
         // Function to detect exit intent on desktop
@@ -1296,16 +1323,16 @@
             document.getElementById('exitIntent').style.display = 'block';
           }
         }
-
+  
         // Add an event listener for mouseout on desktop
         document.addEventListener('mouseout', showExitIntent);
       }
     });
-
+  
     function setupTelephoneLinkListener() {
       // Find all telephone links on the page
       const telLinks = document.querySelectorAll('a[href^="tel:"]');
-
+  
       // Add click event listener to each telephone link
       telLinks.forEach(link => {
         link.addEventListener('click', function(event) {
@@ -1318,26 +1345,49 @@
         });
       });
     }
-
+  
     // Call the function when the DOM is fully loaded
     document.addEventListener('DOMContentLoaded', setupTelephoneLinkListener);
-
+    async function fetchCalendlyDetails(uris) {
+      const lambda_uri = 'https://wxhh6kausb.execute-api.us-east-1.amazonaws.com/default/handle_calendly'
+      const body = {
+        event_url: uris.event_uri,
+        invitee_url: uris.invitee_uri,
+        item_id: window.monday_ret_id
+      }
+      const response = await fetch(lambda_uri, {
+          method: 'POST',
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(body)
+      });
+      if (!response.ok) {
+          throw new Error(`Error fetching Calendly data: ${response.statusText}`);
+      }
+      return await response.json();
+    }
+  
     async function calendlyEventHandler(event) {
       if (event.data.event && event.data.event === 'calendly.event_scheduled') {
         try {
-            // const eventDetails = await fetchCalendlyDetails(event.data.payload.event.uri);
-            // const inviteeDetails = await fetchCalendlyDetails(event.data.payload.invitee.uri);
-  
-            // console.debug("Event Details:", eventDetails);
-            // console.debug("Invitee Details:", inviteeDetails);
+            const event_uri = event.data.payload.event.uri;
+            const invitee_uri = event.data.payload.invitee.uri;
+            console.debug('')
+            const event_details_json = await fetchCalendlyDetails({
+              event_uri: event_uri,
+              invitee_uri: invitee_uri
+            })
+            const event_details = JSON.parse(event_details_json.body);
+            const date_vals = event_details.column_vals.date7.split(' ')
             const calendly_data = {
               type: 'calendly',
               hash: window.hash_vals.hash,
               name: document.getElementById('name').value,
               phone: document.getElementById('phone').value,
-              email: 'test@test.com',
-              date: '01/02/24',
-              time: '1:30pm EST'
+              email: event_details.column_vals.email.split(' ')[0],
+              date: date_vals[0],
+              time: date_vals[1]
             }
             if(calendly_data.phone === "1+ (555) 555-5555"){
               calendly_data['test'] = true
@@ -1376,7 +1426,7 @@
         }, 1000);
       } 
     }
-
+  
     document.addEventListener("DOMContentLoaded", function() {
       window.addEventListener('message', function(e) {
         calendlyEventHandler(e)
@@ -1396,7 +1446,7 @@
         function isDesktop() {
           return window.matchMedia('(pointer:fine)').matches;
         }
-
+  
         // Function to initialize Calendly widget
         function initCalendly(is_timeout = false) {
           if (!window.calendly_initialized && is_timeout || !is_timeout) {
@@ -1411,7 +1461,7 @@
           }
         }
         window.initCalendly = initCalendly
-
+  
         // Function to check the required conditions
         function checkConditions() {
           var calendlyClicked = document.getElementById('calendlyLink');
@@ -1420,7 +1470,7 @@
           return !calendlyClicked.clicked && urlContainsQuote && exitCTAButtonVisible;
         }
         window.checkConditions = checkConditions
-
+  
         function startCalendlyTimer() {
           var countdownElement = document.getElementById('loadingCountdownNumber');
           if (countdownElement) {
@@ -1433,7 +1483,7 @@
               }
             }, 1000); // 1000 milliseconds = 1 second
           }
-
+  
           setTimeout(function() {
             if (checkConditions()) {
               initCalendly(true);
@@ -1441,12 +1491,12 @@
           }, 10000); // 10000 milliseconds = 10 seconds
         }
         window.startCalendlyTimer = startCalendlyTimer
-
+  
         // Event listener to set 'clicked' property on the calendlyClicked element
         document.getElementById('calendlyLink').addEventListener('click', function() {
           this.clicked = true;
         });
-
+  
         // Only add mouseout listener on desktop devices
         if (isDesktop()) {
           // Function to detect exit intent on desktop
@@ -1456,7 +1506,7 @@
               initCalendly();
             }
           }
-
+  
           // Add an event listener for mouseout on desktop
           // document.addEventListener('mouseout', showExitIntent);
         }
