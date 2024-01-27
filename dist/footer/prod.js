@@ -244,6 +244,11 @@
           sunlight_hours: data.sunlight_hours,
           wattage: data.wattage,
           test: data.test ? 'test': 'real',
+          utm_term: data.utm_term,
+          utm_source: data.utm_source, 
+          utm_campaign: data.utm_campaign,
+          utm_content: data.utm_content, 
+          utm_medium: data.utm_medium,
           hash: data.hash
         }
       }
