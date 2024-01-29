@@ -255,7 +255,7 @@
   
       function getFormData() {
         // Fetch values from form inputs
-        const formData = {
+        let formData = {
           type: 'initial',
           name: document.getElementById('name').value,
           address: document.getElementById('formAddress').value,
@@ -263,11 +263,6 @@
           credit_score: document.getElementById('credit-score').value,
           bill: window.current_bill, // Get the value of the slider
           owner: document.getElementById('owner').checked,
-          array_area: document.getElementById('array_area').value,
-          roof_area: document.getElementById('roof_area').value,
-          max_panels: document.getElementById('max_panels').value,
-          wattage: document.getElementById('wattage').value,
-          sunlight_hours: document.getElementById('sunlight_hours').value,
           lat: document.getElementById('lat').value,
           lon: document.getElementById('lon').value,
           street: document.getElementById('formStreet').value,
@@ -276,9 +271,28 @@
           state_long: document.getElementById('formStateLong').value,
           zip: document.getElementById('formZip').value,
           business_name: document.getElementById('businessName').value,
-          carbon_offset: document.getElementById('carbon_offset').value,
           // monday_link: 'https://test.com'
         };
+        const solar_data = {
+          array_area: document.getElementById('array_area').value,
+          roof_area: document.getElementById('roof_area').value,
+          max_panels: document.getElementById('max_panels').value,
+          wattage: document.getElementById('wattage').value,
+          sunlight_hours: document.getElementById('sunlight_hours').value,
+          carbon_offset: document.getElementById('carbon_offset').value,
+        }
+        let add_solar = true
+        for (let key in solar_data) {
+          if (solar_data[key] === '--' || solar_data[key] === undefined) {
+            add_solar = false
+          }
+        }
+        if(add_solar){
+          formData = {
+            ...formData,
+            ...solar_data
+          }
+        }
         if(formData.credit_score === '640-700' || formData.credit_score === '700+'){
           formData['score'] = 'SQL'
         } else {
