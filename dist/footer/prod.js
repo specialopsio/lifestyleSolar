@@ -190,33 +190,29 @@
       function getUTMs() {
         try {
           if (window.sbjs) {
-            return {
-              "utm_term": window.sbjs.get.current.trm,
-              "utm_source": window.sbjs.get.current.src,
-              "utm_campaign": window.sbjs.get.current.cmp,
-              "utm_content": window.sbjs.get.current.cnt,
-              "utm_medium": window.sbjs.get.current.mdm
-            };
+            const utms = {
+              utm_term: window.sbjs.get.current.trm,
+              utm_source: window.sbjs.get.current.src,
+              utm_campaign: window.sbjs.get.current.cmp,
+              utm_content: window.sbjs.get.current.cnt,
+              utm_medium: window.sbjs.get.current.mdm
+            }
+      
+            Object.keys(utms).forEach(key => {
+              if (utms[key] === '(none)' || utms[key] === undefined || utms[key] === '') {
+                delete utms[key]
+              }
+            })
+      
+            return utms
           } else {
-            return {
-              // "utm_term": '(none)',
-              // "utm_source": '(none)',
-              // "utm_campaign": '(none)',
-              // "utm_content": '(none)',
-              // "utm_medium": '(none)'
-            };
+            return {}
           }
         } catch (error) {
-          console.debug("ERROR LOADING SBJS");
+          console.debug("ERROR LOADING SBJS")
         }
-        return {
-          // "utm_term": '(none)',
-          // "utm_source": '(none)',
-          // "utm_campaign": '(none)',
-          // "utm_content": '(none)',
-          // "utm_medium": '(none)'
-        };
       }
+      
       function formatPhoneNumber(phoneNumber) {
         let cleaned = ('' + phoneNumber).replace(/\D/g, '');
     
