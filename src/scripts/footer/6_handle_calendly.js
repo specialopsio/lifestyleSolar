@@ -41,7 +41,7 @@ async function calendlyEventHandler(event) {
         if(calendly_data.phone === "1+ (555) 555-5555"){
           calendly_data['test'] = true
         }
-        fetch("https://hook.us1.make.com/p3ahdyh2g8av5dwtp3bipg78pjlzaz08", {
+        fetch("https://hook.us1.make.com/ipz50uifuwj9cydlq68mpvcc2kx5gf32", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
