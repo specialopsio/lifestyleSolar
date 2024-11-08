@@ -353,7 +353,7 @@
             combinedData['monday_link'] = `https://lifestylemarketing-co.monday.com/boards/2225844788/pulses/${window.monday_ret_id}`;
   
             // Second fetch request
-            response = await fetch("https://hook.us1.make.com/p3ahdyh2g8av5dwtp3bipg78pjlzaz08", {
+            response = await fetch("https://hook.us1.make.com/ipz50uifuwj9cydlq68mpvcc2kx5gf32", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
