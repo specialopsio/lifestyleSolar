@@ -353,7 +353,7 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
           combinedData['monday_link'] = `https://lifestylemarketing-co.monday.com/boards/2225844788/pulses/${window.monday_ret_id}`;
 
           // Second fetch request
-          response = await fetch("https://hook.us1.make.com/ipz50uifuwj9cydlq68mpvcc2kx5gf32", {
+          response = await fetch("https://hook.us1.make.com/p3ahdyh2g8av5dwtp3bipg78pjlzaz08", {
               method: "POST",
               headers: {
                   "Content-Type": "application/json",
@@ -1427,7 +1427,7 @@ if (window.location.href.indexOf("lifestyle-solar.webflow.io") !== -1) {
           if(calendly_data.phone === "1+ (555) 555-5555"){
             calendly_data['test'] = true
           }
-          fetch("https://hook.us1.make.com/ipz50uifuwj9cydlq68mpvcc2kx5gf32", {
+          fetch("https://hook.us1.make.com/p3ahdyh2g8av5dwtp3bipg78pjlzaz08", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
